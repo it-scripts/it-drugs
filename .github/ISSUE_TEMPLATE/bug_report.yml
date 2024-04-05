@@ -1,0 +1,50 @@
+name: Bug Report
+description: Create a report to help us improve
+title: "[BUG REPORT]: "
+labels: ["bug"]
+assignees: 
+  - AllRoundJonU
+body:
+- type: markdown
+  attributes:
+    value: |-
+      Thanks for taking the time to fill out this bug report!
+
+      Please keep in mind that this is a Bug Report template, not a help desk. If you need help with using the Script pleas use a other template.
+- type: input
+  attributes:
+    label: "Version of the Script"
+    description: |-
+      Please let us know, which specific version of the Script you used.
+      If your version is outdated, maybe try updating and see if that already fixes your problem.
+      If you are using the development version, please let us know the commit hash.
+      You can see the latest version in the [Releases](https://github.com/inseltreff-net/it-smallheists/releases).
+    placeholder: "For example 1.2.2"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Describe the bug
+    description: A clear and concise description of what the bug is.
+    placeholder: "A bug happened!"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: To Reproduce
+    description: Please a detailed description of how to reproduce the bug.
+    placeholder: |-
+      First ...
+      Second ...
+      Third ...
+      ...
+    render: bash
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Relevant log output
+    description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+    render: shell
+  validations:
+    required: false
