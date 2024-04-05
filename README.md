@@ -25,7 +25,7 @@ Become a master herbalist with this comprehensive script! Grow a variety of plan
 - [x] Creating drugs yourself
 - [x] Processing tables
 - [x] Growth speed zones
-- [] Sell drugs to NPC (will come in one of the next updates)
+- [ ] Sell drugs to NPC (will come in one of the next updates)
 - [x] Unlimted plants
 - [x] Configurable
 
