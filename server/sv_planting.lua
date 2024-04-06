@@ -361,8 +361,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             ['coords'] = json.encode(coords),
             ['time'] = time,
             ['type'] = plantItem,
-            ['water'] = json.encode({}),
-            ['fertilizer'] = json.encode({}),
+            ['water'] = 0.0,
+            ['fertilizer'] = 0.0,
             ['growtime'] = growTime,
         }, function(id)
             plants[plant] = {
