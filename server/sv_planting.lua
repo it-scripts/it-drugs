@@ -74,8 +74,8 @@ end
 --- @param growth number - growth index [0-99]
 --- @return stage number - growth stage number [1-3]
 local calcStage = function(growth)
-    local stage = math.floor(growth / 33)
-    if stage == 0 then stage += 1 end
+    local stage = math.floor(growth / 33) + 1
+    if stage > 3 then stage = 3 end
     return stage
 end
 
@@ -348,11 +348,12 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         FreezeEntityPosition(plant, true)
         local time = os.time()
 
-        local growTime
+        local growTime = Config.GlobalGrowTime
+        if plantInfos.growTime ~= nil then
+            growTime = plantInfos.growTime
+        end
         if Config.Zones[zone] ~= nil then
-            growTime = (Config.GlobalGrowTime / Config.Zones[zone].growMultiplier)
-        else
-            growTime = Config.GlobalGrowTime
+            growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
         sendWebhook(src, 'Planted Plant', 'Coords: '..coords..'\nType: '..plantItem..'\nGrowTime: '..growTime, 65280, false)

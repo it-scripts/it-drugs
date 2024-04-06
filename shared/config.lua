@@ -29,7 +29,7 @@ Config.Webhook = {
     ['active'] = false, -- Set to true to enable the webhook
     ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
     ['name'] = 'it-drugs', -- Name for the webhook
-    ['avatar'] = 'https://i.imgur.com/KVtd6OT.png', -- Avatar for the webhook
+    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
     ['color'] = 16711680, -- Default color for the webhook
 }
 
@@ -60,7 +60,6 @@ Config.Zones = {
             vector2(2031.4441, 4851.1611),
         },
         growMultiplier = 2, -- GlobalGrowTime / growMultiplier = Time in minutes for a plant to grow in this zone
-        
         blip = {
             display = true, -- Display blip on map
             sprite = 469, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
@@ -107,8 +106,8 @@ Config.AllowedGrounds = {   -- Allowed ground types for planting
     -461750719,
 }
 
-Config.WaterDecay = 0.5 -- Percent of water that decays every minute
-Config.FertilizerDecay = 0.7 -- Percent of fertilizers that decays every minute
+Config.WaterDecay = 1 -- Percent of water that decays every minute
+Config.FertilizerDecay = 1 -- Percent of fertilizers that decays every minute
 
 Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
