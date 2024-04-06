@@ -10,6 +10,7 @@ shared_script 'bridge/init.lua'
 
 shared_scripts {
     'shared/config.lua',
+    'locales/en.lua',
     'locales/*.lua',
     '@ox_lib/init.lua',
     'bridge/**/shared.lua',

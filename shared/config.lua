@@ -27,7 +27,7 @@ Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_t
 ]]
 Config.Webhook = {
     ['active'] = false, -- Set to true to enable the webhook
-    ['url'] = nil, -- This will do nothing set you webhook url in server/webhook.lua
+    ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
     ['name'] = 'it-drugs', -- Name for the webhook
     ['avatar'] = 'https://i.imgur.com/KVtd6OT.png', -- Avatar for the webhook
     ['color'] = 16711680, -- Default color for the webhook
@@ -450,7 +450,7 @@ end
     Debug mode, you can see all kinds of prints/logs using debug,
     but it's only for development.
 ]]
-Config.EnableVersionCheck = false -- Enable version check
+Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = true -- Set to true to enable debug mode
-Config.DebugPoly = true -- Set to true to enable debug mode for PolyZone
+Config.Debug = false -- Set to true to enable debug mode
+Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone
