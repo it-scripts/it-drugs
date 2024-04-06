@@ -75,8 +75,6 @@ function it.createUsableItem(item, cb)
         ConsumableItems[item] = cb
 	elseif it.core == "esx" and it.inventory == 'esx' then
 		CoreObject.RegisterUsableItem(item, cb)
-        lib.print.info('Registered new item: ', item)
-        lib.print.info('Callback: ', cb)
         ConsumableItems[item] = cb
     elseif it.core == "esx" and it.inventory == 'ox' then
         CoreObject.RegisterUsableItem(item, cb)

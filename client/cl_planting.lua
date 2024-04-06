@@ -170,9 +170,7 @@ end)
 
 RegisterNetEvent('it-drugs:client:checkPlant', function(data)
     local netId = NetworkGetNetworkIdFromEntity(data.entity)
-    lib.print.info('NetId:', netId) -- DEBUG
     lib.callback('it-drugs:server:getPlantData', false, function(result)
-        lib.print.info('Checking Data:', result) -- DEBUG
         if not result then return end
         if Config.Debug then lib.print.info('Checking Data:', result) end -- DEBUG
         -- Find event in client/cl_menus.lua
