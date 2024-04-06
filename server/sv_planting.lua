@@ -352,7 +352,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         if plantInfos.growTime ~= nil then
             growTime = plantInfos.growTime
         end
-        if Config.Zones[zone] ~= nil then
+        if Config.Zones[zone] ~= nil and Config.Zones[zone].growMultiplier then
             growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
