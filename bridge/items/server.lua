@@ -78,7 +78,10 @@ function it.createUsableItem(item, cb)
         lib.print.info('Registered new item: ', item)
         lib.print.info('Callback: ', cb)
         ConsumableItems[item] = cb
-	end
+    elseif it.core == "esx" and it.inventory == 'ox' then
+        CoreObject.RegisterUsableItem(item, cb)
+        ConsumableItems[item] = cb
+    end
 end
 
 function it.toggleItem(source, toggle, name, amount, metadata)

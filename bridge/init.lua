@@ -24,6 +24,16 @@ elseif GetResourceState('es_extended') == 'started' then
     CoreObject = exports['es_extended']:getSharedObject()
 end
 
+
+--[[ if GetResourceState('ox_inventory') ~= 'started' and GetResourceState('es_extended') == 'started' then
+    it.inventory = 'esx'
+elseif GetResourceState('qb-inventory') == 'started' then
+    it.inventory = 'qb'
+elseif GetResourceState('ox_inventory') == 'started' then
+    it.inventory = 'ox'
+end ]]
+
+
 -- Get Inventory Object
 if GetResourceState('ox_inventory') == 'started' then
     it.inventory = 'ox'
