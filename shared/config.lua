@@ -60,6 +60,7 @@ Config.Zones = {
             vector2(2031.4441, 4851.1611),
         },
         growMultiplier = 2, -- GlobalGrowTime / growMultiplier = Time in minutes for a plant to grow in this zone
+        
         blip = {
             display = true, -- Display blip on map
             sprite = 469, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
@@ -107,7 +108,7 @@ Config.AllowedGrounds = {   -- Allowed ground types for planting
 }
 
 Config.WaterDecay = 1 -- Percent of water that decays every minute
-Config.FertilizerDecay = 1 -- Percent of fertilizers that decays every minute
+Config.FertilizerDecay = 0.7 -- Percent of fertilizers that decays every minute
 
 Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
@@ -150,7 +151,11 @@ Config.Plants = { -- Create seeds for drugs
             ['weed_lemonhaze'] = {min = 1, max = 4},  
             --['other_item'] = {min = 1, max = 2}
         },
-        seedChance = 50, -- Percent of getting back the seed
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
         time = 3000 -- Time it takes to plant/harvest in miliseconds
     },
     ['coca_seed'] = {
@@ -158,7 +163,11 @@ Config.Plants = { -- Create seeds for drugs
         label = 'Coca Plant', --
         plantType = 'small_plant', -- Choose plant types from (plant1, plant2, small_plant) also you can change plants yourself in main/client.lua line: 2
         products = {coca = {min = 1, max = 2}}, -- Item the plant is going to produce when harvested with the max amount
-        seedChance = 50, -- Percent of getting back the seed
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
         time = 3000 -- Time it takes to harvest in miliseconds
     },
 }
