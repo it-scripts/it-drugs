@@ -54,7 +54,6 @@ CreateThread(function()
                         name = 'it-drugs-check-plant',
                         icon = 'cannabis',
                         onSelect = function(data)
-                            lib.print.info('Plant Data', data)
                             TriggerEvent('it-drugs:client:checkPlant', {entity = data.entity})
                         end,
                         distance = 1.5
