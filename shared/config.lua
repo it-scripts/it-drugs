@@ -38,7 +38,6 @@ Config.rayCastingDistance = 7.0 -- distance in meters
 Config.ObjectZOffset = -0.5 -- Z-coord offset for WeedProps
 Config.FireTime = 10000 -- in ms
 Config.ClearOnStartup = true -- Clear dead plants on script start-up
-Config.LoopUpdate = 5 -- Time in minutes to perform a loop update to check for plant stats
 
 -- ┌───────────────────────────┐
 -- │ _____                     │

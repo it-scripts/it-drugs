@@ -4,54 +4,26 @@ local plants = {}
 --- @param k number - WeedPlants table index
 --- @return health number - health index [0-100]
 local calcHealth = function(k)
-    if not plants[k] then return false end
-    local health = 100
-    local current_time = os.time()
-    local planted_time = plants[k].time
-    local elapsed_time = os.difftime(current_time, planted_time)
-    local intervals = math.floor(elapsed_time / 60 / Config.LoopUpdate)
-    if intervals == 0 then return 100 end
+    if not plants[k] then return 0 end
+    local health = plants[k].health
 
-    for i=1, intervals, 1 do
-        -- fertilizer at interval_time amount:
-        local fertilizer_amount = plants[k].fertilizer
-        local water_amount = plants[k].water
+    -- fertilizer at interval_time amount:
+    local fertilizer_amount = plants[k].fertilizer
+    local water_amount = plants[k].water
 
-        if fertilizer_amount == 0 and water_amount == 0 then
-            health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-        else
-            if fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
-                health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-            end
-        end
-
-        if fertilizer_amount == 0 or water_amount == 0 then
-            health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-        else
-            if fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
-                health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-            end
-        end
-
-        --[[ if fertilizer_amount == 0 then
-            health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-        else
-            if fertilizer_amount < Config.FertilizerThreshold then
-                health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-            end
-        end
-
-        -- water at interval_time amount:
-        local water_amount = plants[k].water
-        if water_amount == 0 then
-            health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-        else
-            if water_amount < Config.WaterThreshold then
-                health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-            end
-        end ]]
+    if fertilizer_amount == 0 and water_amount == 0 then
+        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+    elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
+        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
+    if fertilizer_amount == 0 or water_amount == 0 then
+        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+    elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
+         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+    end
+
+    plants[k].health = math.max(health, 0.0)
     return math.max(health, 0.0)
 end
 
@@ -61,7 +33,7 @@ end
 local calcGrowth = function(k)
     if not plants[k] then return false end
     -- If the plant is dead the growth doesnt change anymore
-    if calcHealth(k) == 0 then return 0 end
+    if plants[k].health <= 0 then return 0 end
     local current_time = os.time()
     local growTime = plants[k].growtime * 60
     local progress = os.difftime(current_time, plants[k].time)
@@ -106,6 +78,7 @@ local setupPlants = function()
             fertilizer = v.fertilizer,
             water = v.water,
             growtime = v.growtime,
+            health = v.health,
         }
     end
 end
@@ -128,7 +101,7 @@ end
 local updatePlantProp = function(k, stage)
     if not plants[k] then return end
     if not DoesEntityExist(k) then return end
-    if calcHealth(k) == 0 then return end
+    if plants[k].health <= 0 then return end
 
     local plantType = Config.Plants[plants[k].type].plantType
 
@@ -139,22 +112,6 @@ local updatePlantProp = function(k, stage)
     plants[plant] = plants[k]
     plants[k] = nil
 end
-
---- Method to perform an update on every weedplant, updating their prop if needed, repeats every Shared.LoopUpdate minutes
---- @return nil
-updatePlants = function()
-    for k, v in pairs(plants) do
-        local growth = calcGrowth(k)
-        local stage = calcStage(growth)
-        if stage ~= v.stage then
-            plants[k].stage = stage
-            updatePlantProp(k, stage)
-        end
-    end
-
-    SetTimeout(Config.LoopUpdate * 60 * 1000, updatePlants)
-end
-
 
 updatePlantNeeds = function ()
     for k, v in pairs(plants) do
@@ -178,9 +135,11 @@ updatePlantNeeds = function ()
             else
                 plants[k].water = 0
             end
-            MySQL.update('UPDATE drug_plants SET water = (:water), fertilizer = (:fertilizer) WHERE id = (:id)', {
+            local health = calcHealth(k)
+            MySQL.update('UPDATE drug_plants SET water = (:water), fertilizer = (:fertilizer), health = (:health) WHERE id = (:id)', {
                 ['water'] = v.water,
                 ['fertilizer'] = v.fertilizer,
+                ['health'] = health,
                 ['id'] = v.id,
             })
         end
@@ -197,11 +156,16 @@ end
 
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
+    while not DatabaseSetuped do
+        lib.print.info('Waiting for Database to be setup')
+        Wait(100)
+    end
+    if Config.Debug then lib.print.info('Setup Plants') end
     setupPlants()
     if Config.ClearOnStartup then
         Wait(5000) -- Wait 5 seconds to allow all functions to be executed on startup
         for k, v in pairs(plants) do
-            if calcHealth(k) == 0 then
+            if plants[k].health == 0 then
                 DeleteEntity(k)
                 MySQL.query('DELETE from drug_plants WHERE id = :id', {
                     ['id'] = plants[k].id
@@ -234,8 +198,7 @@ end)
 RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
     if not plants[entity] then return end
     if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
-    -- if calcHealth(entity) ~= 0 then return end
-
+  
     sendWebhook(source, 'Destroyed Plant', 'Coords: '..plants[entity].coords..'\nType: '..plants[entity].type, 16711680, false)
 
     if Config.Debug then lib.print.info('Does Entity Exists:', DoesEntityExist(entity)) end
@@ -359,12 +322,13 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
 
         sendWebhook(src, 'Planted Plant', 'Coords: '..coords..'\nType: '..plantItem..'\nGrowTime: '..growTime, 65280, false)
 
-        MySQL.insert('INSERT INTO `drug_plants` (coords, time, type, water, fertilizer, growtime) VALUES (:coords, :time, :type, :water, :fertilizer, :growtime)', {
+        MySQL.insert('INSERT INTO `drug_plants` (coords, time, type, water, fertilizer, health, growtime) VALUES (:coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
             ['coords'] = json.encode(coords),
             ['time'] = time,
             ['type'] = plantItem,
             ['water'] = 0.0,
             ['fertilizer'] = 0.0,
+            ['health'] = 100.0,
             ['growtime'] = growTime,
         }, function(id)
             plants[plant] = {
@@ -374,6 +338,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
                 type = plantItem,
                 water = 0.0,
                 fertilizer = 0.0,
+                health = 100.0,
                 growtime = growTime,
             }
         end)
@@ -393,41 +358,13 @@ lib.callback.register('it-drugs:server:getPlantData', function(source, netId)
         fertilizer = plants[entity].fertilizer,
         water = plants[entity].water,
         stage = calcStage(calcGrowth(entity)),
-        health = calcHealth(entity),
+        health = plants[entity].health,
         growth = calcGrowth(entity),
         entity = entity
     }
     if Config.Debug then lib.print.info('Plant Data', temp) end
     return temp
 end)
-
-lib.callback.register('it-drugs:server:getPlantDataById', function(source, plantId)
-    local entity = nil
-    for k, v in pairs(plants) do
-        if v.id == plantId then
-            entity = k
-            break
-        end
-    end
-
-    if not plants[entity] then return nil end
-    if Config.Debug then lib.print.info('Get Plant Data:', entity) end
-    local temp = {
-        id = plants[entity].id,
-        coords = plants[entity].coords,
-        time = plants[entity].time,
-        type = plants[entity].type,
-        fertilizer = plants[entity].fertilizer,
-        water = plants[entity].water,
-        stage = calcStage(calcGrowth(entity)),
-        health = calcHealth(entity),
-        growth = calcGrowth(entity),
-        entity = entity
-    }
-    if Config.Debug then lib.print.info('Plant Data', temp) end
-    return temp
-end)
-
 
 lib.callback.register('it-drugs:server:getPlants', function(source)
     return plants
@@ -435,7 +372,6 @@ end)
 
 --- Threads
 CreateThread(function()
-    Wait(10000) -- Wait 10 seconds to allow all functions to be executed on startup
-    updatePlants()
+    Wait(2000) -- Wait 5 seconds to allow all functions to be executed on startup
     updatePlantNeeds()
 end)

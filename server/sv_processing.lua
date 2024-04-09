@@ -1,5 +1,4 @@
 if not Config.EnableProcessing then return end
-
 local processingTables = {}
 
 --- Method to setup all the weedplants, fetched from the database
@@ -38,6 +37,11 @@ end
 
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
+
+    while not DatabaseSetuped do
+        Wait(100)
+    end
+    if Config.Debug then lib.print.info('Setting up Processing Tables') end
     setupTables()
 end)
 

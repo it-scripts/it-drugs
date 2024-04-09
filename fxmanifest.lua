@@ -5,7 +5,6 @@ author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
 version '1.0.0'
 
-
 shared_script 'bridge/init.lua'
 
 shared_scripts {
@@ -44,7 +43,13 @@ server_scripts {
     'server/sv_selling.lua',
     'server/sv_usableitems.lua',
     'server/sv_versioncheck.lua',
-    'server/sv_webhooks.lua'
+    'server/sv_webhooks.lua',
+    'server/database/sv_setupdatabase.lua'
+}
+
+files = {
+    'server/database/drug_plants.sql',
+    'server/database/drug_processing.sql',
 }
 
 dependencies {

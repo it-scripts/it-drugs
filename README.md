@@ -35,18 +35,20 @@ Become a master herbalist with this comprehensive script! Grow a variety of plan
 - [ox-lib](https://github.com/overextended/ox_lib)
 #### Optional
 - [ox-target](https://github.com/overextended/ox_target)*
-- [qb-target]()
+- [qb-target](http://github.com/qbcore-framework/qb-target)
+
+*Currently required if you use the ESX version of the script.
 
 <div align="center">
 
 ![Smallheists Banner](https://i.imgur.com/9cXbmut.png)
 
 </div>
-<details><summary><b>QbCore</b> (Click to view)</summary>
+<h3><details><summary><b>QbCore</b> (Click to view)</summary>
 1. Download the script and put it in your resources folder.<br>
 2. Add the items to your `qb-core/shared/items.lua` file <br>
 3. Make sure you have all the dependencies installed. (See Dependencies)<br>
-4. Make sure that all the dependencies are started before you start this script.
+4. Make sure that all the dependencies are started before you start this script.<br>
 5. Configure the script to your liking.<br>
 6. Restart your server and you are good to go!<br>
 
@@ -70,6 +72,7 @@ cocaine_processing_table 	 = {name = 'cocaine_processing_table', 	    label = 'c
 ```
 </details>
 
+<br>
 
 <details><summary><b>ESX</b> (Click to view)</summary>
 1. Download the script and put it in your resources folder.<br>
@@ -102,29 +105,7 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ```
 </details>
 
-Add the following to your database:
-```sql
--- Tabelle drug_plants
-CREATE TABLE IF NOT EXISTS drug_plants (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    coords LONGTEXT NOT NULL CHECK (JSON_VALID(coords)),
-    time INT(255) NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    fertilizer DOUBLE NOT NULL,
-    water DOUBLE NOT NULL,
-    growtime INT(11) NOT NULL,
-    PRIMARY KEY (id)
-);
-
--- Tabelle drug_processing
-CREATE TABLE IF NOT EXISTS drug_processing (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    coords LONGTEXT NOT NULL CHECK (JSON_VALID(coords)),
-    rotation DOUBLE NOT NULL,
-    type VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id)
-);
-```
+### The Script also works with oxInventory. Currently, there is no guide for it.
 
 <div align="center">
 
