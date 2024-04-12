@@ -118,7 +118,7 @@ Config.PlantWater = { -- Create water for plants
 }
 
 Config.PlantFertilizer = { -- Create fertilizer for plants
-    ['sandwich'] = 33, -- Item and percent it adds to overall plant food
+    ['fertilizer'] = 33, -- Item and percent it adds to overall plant food
 }
 
 Config.PlantTypes = {
