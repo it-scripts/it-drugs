@@ -287,7 +287,7 @@ Config.Drugs = { -- Create you own drugs
 -- │                        |___/ │
 -- └──────────────────────────────┘
 
-Config.EnableSelling = true -- Enable processing system
+Config.EnableSelling = true -- Enable selling system (Currently selling is disabled)
 
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
 Config.ChanceSell = 70 -- Chance to sell drug (in %)

@@ -1,4 +1,4 @@
-if not Config.EnableSelling then return end
+if true then return end
 if it.getCoreName() == 'esx' then return end
 
 -- \ Locals and tables

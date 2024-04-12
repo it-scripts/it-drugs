@@ -1,4 +1,4 @@
-if not Config.EnableSelling then return end
+if true then return end
 if it.getCoreName() == 'esx' then return end
 RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 	local src = source
