@@ -16,13 +16,13 @@
 Become a master herbalist with this comprehensive script! Grow a variety of plants, each with unique properties. Process your harvest into consumable concoctions or soothing remedies.
 
 ### Supported Frameworks
-- `✅`** | [ESX](https://github.com/inseltreff-net)**
-- `✅`** | [GitHub](https://github.com/inseltreff-net)**
+- `✅` **| [ESX](https://github.com/inseltreff-net)**
+- `✅` **| [GitHub](https://github.com/inseltreff-net)**
 
 ### Suported Inventorys
-- `✅`** | [esx_inventory](https://github.com/esx-framework/esx_core)**
-- `✅`** | [qb_inventory](https://github.com/qbcore-framework/qb-inventory)**
-- `✅`** | [ox_inventory](https://github.com/overextended/ox_inventory)**
+- `✅` **| [esx_inventory](https://github.com/esx-framework/esx_core)**
+- `✅` **| [qb_inventory](https://github.com/qbcore-framework/qb-inventory)**
+- `✅` **| [ox_inventory](https://github.com/overextended/ox_inventory)**
 
 
 <div align="center">
