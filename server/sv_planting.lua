@@ -175,8 +175,8 @@ AddEventHandler('onResourceStart', function(resource)
         end
     end
 
-    if not Config.Webhook['active'] then return end
-    sendWebhook(0, 'Started Resource', 'Started '..GetCurrentResourceName()..' logger', 65280, false)
+    SendToWebhook(0, 'message', nil, 'Started '..GetCurrentResourceName()..' logger')
+
 end)
 
 AddEventHandler('onResourceStop', function(resource)
@@ -198,8 +198,8 @@ end)
 RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
     if not plants[entity] then return end
     if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
-  
-    sendWebhook(source, 'Destroyed Plant', 'Coords: '..plants[entity].coords..'\nType: '..plants[entity].type, 16711680, false)
+
+    SendToWebhook(source, 'plant', 'destroy', plants[entity])
 
     if Config.Debug then lib.print.info('Does Entity Exists:', DoesEntityExist(entity)) end
     if DoesEntityExist(entity) then
@@ -239,7 +239,8 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(entity)
         end
     
         DeleteEntity(entity)
-        sendWebhook(src, 'Harvested Plant', 'Coords: '..plants[entity].coords..'\nType: '..plants[entity].type, 65280, false)
+        SendToWebhook(src, 'plant', 'harvest', plants[entity])
+  
         MySQL.query('DELETE from drug_plants WHERE id = :id', {
             ['id'] = plants[entity].id
         })
@@ -256,7 +257,7 @@ RegisterNetEvent('it-drugs:server:giveWater', function(entity, item)
 
     if it.removeItem(src, item, 1) then
 
-        sendWebhook(src, 'Watered Plant', 'Coords: '..plants[entity].coords..'\nType: '..plants[entity].type, 65280, false)
+        SendToWebhook(src, 'plant', 'water', plants[entity])
 
         local itemStrength = Config.PlantWater[item]
         local currentWater = plants[entity].water
@@ -281,7 +282,7 @@ RegisterNetEvent('it-drugs:server:giveFertilizer', function(entity, item)
     if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
 
     if it.removeItem(src, item, 1) then
-        sendWebhook(src, 'Fertilized Plant', 'Coords: '..plants[entity].coords..'\nType: '..plants[entity].type, 65280, false)
+        SendToWebhook(src, 'plant', 'fertilize', plants[entity])
         
         local itemStrength = Config.PlantFertilizer[item]
         local currentFertilizer = plants[entity].fertilizer
@@ -320,8 +321,6 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
-        sendWebhook(src, 'Planted Plant', 'Coords: '..coords..'\nType: '..plantItem..'\nGrowTime: '..growTime, 65280, false)
-
         MySQL.insert('INSERT INTO `drug_plants` (coords, time, type, water, fertilizer, health, growtime) VALUES (:coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
             ['coords'] = json.encode(coords),
             ['time'] = time,
@@ -340,7 +339,9 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
                 fertilizer = 0.0,
                 health = 100.0,
                 growtime = growTime,
+                entity = plant
             }
+            SendToWebhook(src, 'plant', 'plant', plants[plant])
         end)
     end
 end)

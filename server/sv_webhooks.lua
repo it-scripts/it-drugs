@@ -1,10 +1,10 @@
-local webhookUrl= "https://discord.com/api/webhooks/***********/*************************************************" -- Discord Webhook Link
+local webhookUrl= "https://discord.com/api/webhooks/***********/******************" -- Discord Webhook Link
 
 local errors = {
     [200] = "Everything is fine the webhook message was sent successfully!",
     [204] = "Everything is fine the webhook message was sent successfully but without any content! (You don't need to worry about this)",
 
-    [400] = "Your webhook message is invalid!",
+    [400] = "Your webhook URL is invalid!",
     [401] = "Your webhook URL is invalid!",
     [404] = "Your webhook URL is invalide!",
     [429] = "You are being rate limited by Discord!",
@@ -14,75 +14,137 @@ local errors = {
     [504] = "Discord is having internal server issues!",
 }
 
-RegisterNetEvent('it-smallheists:server:sendWebhook')
-AddEventHandler('it-smallheists:server:sendWebhook', function(title, message, color, ping)
-    local src = source
-    sendWebhook(src, title, message, color, ping)
-end)
 
-function sendWebhook(source, title, message, color, ping)
+local messagesToSend = {}
 
-    if not Config.Webhook['active'] then return end
-
-    local postData = {}
-
-    local license = 'NA'
-    local discordID = 'NA'
-    local fivem = 'NA'
-
-    local nameSource = 'NA'
-
-    if source == 0 then
-        source = 'Console'
-    end
-
-    if source ~= 'Console' then
-
-        nameSource = GetPlayerName(source)
-
-        for k,v in pairs(GetPlayerIdentifiers(source)) do 
-            if string.sub(v, 1, string.len("license:")) == "license:" then
-                license = v
-            elseif string.sub(v, 1, string.len("discord:")) == "discord:" then
-                discordID = string.gsub(v, "discord:", "")
-            elseif string.sub(v, 1, string.len("fivem:")) == "fivem:" then
-                fivem = v
-            end
-        end
-    end
-
+local function buildPlaceHolderEmbed(type, itemData)
     local embed = {
-        ["color"] = Config.Webhook['color'] or color,
+        ["color"] = Config.Webhook['color'],
         ["author"] = {
             ["name"] = Config.Webhook['name'],
             ["icon_url"] = Config.Webhook['avatar'],
             ["url"] = Config.Webhook['avatar'],
-        },
-        ["fields"] = {
+        }
+    }
+    if type == 'plant' then
+        embed["title"] = "Plant: "..Config.Plants[itemData.type].label.." ("..itemData.entity..")"
+        embed["description"] = "### Plant History:\n"
+        embed["fields"] = {
             {
-                ["name"] = "**Player Details: **"..nameSource..' ('..source..')',
-                ["value"] = "**Discord ID:** <@"..discordID.."> *("..discordID..")* \n**License:** "..license.."\n**fivem:** "..fivem,
+                ["name"] = "Plant Data:",
+                ["value"] = "**ID:** `"..itemData.id.."`\n"..
+                            "**Type:** `"..itemData.type.."`\n"..	
+                            "**Coords:** `"..itemData.coords.."`\n"..
+                            "**Growtime:**`" ..(itemData.growtime).."min`\n"..
+                            "**Start Time:** <t:"..itemData.time..">\n"..
+                            "**End Time:** <t:"..(itemData.time + (itemData.growtime * 60))..">\n",
                 ["inline"] = false,
             },
-        },
-        ["title"] = title,
-        ["description"] = message,
-        ["footer"] = {
+        }
+        embed["footer"] = {
             ["text"] = os.date("%c"),
             ["icon_url"] = Config.Webhook['avatar'],
-        },
-    }
-    if ping then
-        postData = {username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], content = '@everyone', embeds = {}}
-    else
-        postData = {username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {}}
+        }
+    elseif type == 'table' then
+        embed["title"] = "Table: "..itemData.entity
+        embed["description"] = "### Table History:\n"
+        embed["fields"] = {
+            {
+                ["name"] = "Table Data:",
+                ["value"] = "**ID:** `"..itemData.id.."`\n"..
+                            "**Type:** `"..itemData.type.."`\n"..	
+                            "**Coords:** `"..itemData.coords.."`\n",
+                ["inline"] = false,
+            },
+        }
+        embed["footer"] = {
+            ["text"] = os.date("%c"),
+            ["icon_url"] = Config.Webhook['avatar'],
+        }
+    elseif type == 'message' then
+        embed["title"] = "Script Message"
+        embed["description"] = itemData
+        embed["footer"] = {
+            ["text"] = os.date("%c"),
+            ["icon_url"] = Config.Webhook['avatar'],
+        }
     end
-    postData.embeds[#postData.embeds + 1] = embed
-    PerformHttpRequest(webhookUrl, function(err, text, headers) 
-    if err == 200 or err == 204 then
-    else
-        print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-        Config.Webhook['active'] = false
-    end
-    end, 'POST', json.encode(postData), { ['Content-Type'] = 'application/json' })
+    return embed
 end
+
+local function getPlayerDiscordId(source)
+    local src = source
+    local discordID = 'NA'
+    for k,v in pairs(GetPlayerIdentifiers(source)) do 
+        if string.sub(v, 1, string.len("discord:")) == "discord:" then
+            discordID = string.gsub(v, "discord:", "")
+        end
+    end
+    return discordID
+end
+
+function SendToWebhook(source, type, action, itemData)
+    if not Config.Webhook['active'] then return end
+    local entity = itemData.entity
+    local embedMessage = nil
+    if type == 'message' then
+        embedMessage = buildPlaceHolderEmbed(type, itemData)
+        PerformHttpRequest(webhookUrl, function(err, text, headers) 
+            if err == 200 or err == 204 then
+            else
+                print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                Config.Webhook['active'] = false
+            end
+        end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
+        return
+    end
+
+    if messagesToSend[entity] == nil then
+        embedMessage = buildPlaceHolderEmbed(type, itemData)
+        messagesToSend[entity] = embedMessage
+    end
+
+    local discordID = getPlayerDiscordId(source)
+    local time = os.time()
+
+    if type == 'plant' then
+        if action == 'plant' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Planted Plant\n"
+        elseif action == 'fertilize' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Fertilized Plant\n"
+        elseif action == 'water' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Watered Plant\n"
+        elseif action == 'harvest' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Harvested Plant\n"
+        elseif action == 'destroy' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Destroyed Plant\n"
+        end
+    elseif type == 'table' then
+        if action == 'place' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Added Item\n"
+        elseif action == 'remove' then
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Removed Item\n"
+        elseif action == 'processe' then 
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Processed Item\n"
+        end
+    end
+end
+
+
+CreateThread(function()
+    if not Config.Webhook['active'] then return end
+    while true do
+        Wait(1000 * 60) -- Wait 1 minute
+        if messagesToSend == nil then return end
+        for k,v in pairs(messagesToSend) do
+            PerformHttpRequest(webhookUrl, function(err, text, headers) 
+                if err == 200 or err == 204 then
+                    messagesToSend[k] = nil
+                else
+                    print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                    Config.Webhook['active'] = false
+                end
+            end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {v}}), { ['Content-Type'] = 'application/json' })
+        end
+    end
+end)

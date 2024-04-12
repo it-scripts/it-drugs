@@ -57,7 +57,6 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
 
     local player = it.getPlayer(source)
     local tableInfos = Config.ProcessingTables[processingTables[entity].type]
-    lib.print.info('Processing Drug Info', tableInfos)
 
     if not player then return end
     local givenItems = {}
@@ -75,7 +74,7 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
             table.insert(givenItems, {name = k, amount = v})
         end
     end
-
+    SendToWebhook(source, 'table', 'process', processingTables[entity])
     it.giveItem(source, tableInfos.output, 1)
 end)
 
@@ -87,7 +86,7 @@ RegisterNetEvent('it-drugs:server:removeTable', function(entity)
     local player = it.getPlayer(source)
     it.giveItem(source, processingTables[entity].type, 1)
 
-    sendWebhook(source, 'Drug Processing', 'Player removed a drug processing table\nCoords: '..processingTables[entity].coords..'\nType: '..processingTables[entity].type, 65280, false)
+    SendToWebhook(source, 'table', 'remove', processingTables[entity])
 
     if DoesEntityExist(entity) then
         DeleteEntity(entity)
@@ -113,8 +112,6 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
         SetEntityHeading(table, rotation)
         FreezeEntityPosition(table, true)
 
-        sendWebhook(src, 'Drug Processing', 'Player created a drug processing table\nCoords: '..coords..'\nType: '..type, 65280, false)
-
         MySQL.insert('INSERT INTO `drug_processing` (coords, type, rotation) VALUES (:coords, :type, :rotation)', {
             ['coords'] = json.encode(coords),
             ['type'] = type,
@@ -124,8 +121,10 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
                 id = id,
                 coords = coords,
                 type = type,
-                rot = rotation
+                rot = rotation,
+                entity = table
             }
+            SendToWebhook(src, 'table', 'place', processingTables[table])
         end)
     else
         if Config.Debug then lib.print.error("Can not remove item") end
