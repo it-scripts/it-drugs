@@ -6,8 +6,8 @@
 
 <div align="center">
 
-[![FiveM](https://img.shields.io/badge/FiveM-Ready-success?logo=fivem)]()
-![](https://img.shields.io/github/downloads/inseltreff-net/it-drugs/total?logo=github)
+[![FiveM](https://img.shields.io/badge/Discord%20-Join%20now-blue?logo=discord)]()
+[![Downloads](https://img.shields.io/github/downloads/inseltreff-net/it-drugs/total?logo=github)]()
 [![Version](https://img.shields.io/github/v/release/inseltreff-net/it-drugs?logo=github)]()
 [![License](https://img.shields.io/github/license/inseltreff-net/it-drugs?logo=github)]()
 
@@ -16,13 +16,16 @@
 Become a master herbalist with this comprehensive script! Grow a variety of plants, each with unique properties. Process your harvest into consumable concoctions or soothing remedies.
 
 ### Supported Frameworks
-- `✅` **| [ESX](https://github.com/inseltreff-net)**
-- `✅` **| [GitHub](https://github.com/inseltreff-net)**
+- `✅` **| [ESX](https://github.com/esx-framework/esx_core)**
+- `✅` **| [QbCore](https://github.com/qbcore-framework/qb-core)**
 
 ### Suported Inventorys
 - `✅` **| [esx_inventory](https://github.com/esx-framework/esx_core)**
 - `✅` **| [qb_inventory](https://github.com/qbcore-framework/qb-inventory)**
 - `✅` **| [ox_inventory](https://github.com/overextended/ox_inventory)**
+- `🔧` **| [qs_inventory](https://github.com/overextended/ox_inventory)** *(Nativ qb-core support should work)*
+
+`✅` **| Supported** `🔧` **| Pending** `❌` **| Not Supported**
 
 
 <div align="center">
