@@ -44,7 +44,7 @@ end
 AddEventHandler('onResourceStart', function(resource)
     if resource == GetCurrentResourceName() and Config.EnableVersionCheck then
         Wait(3000)
-        updatePath = "inseltreff-net/it-drugs"
+        updatePath = "it-scripts/it-drugs"
         local branch = Config.Branch
         PerformHttpRequest("https://raw.githubusercontent.com/"..updatePath.."/"..branch.."/version", checkResourceVersion, "GET")
     end
