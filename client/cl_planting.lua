@@ -119,25 +119,6 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
     end
 end
 
-local getForwardCoords = function(distance)
-
-    local ped = PlayerPedId()
-    -- Lokale Variablen
-    local pos = GetEntityCoords(ped) -- Spielerposition
-    local heading = GetEntityHeading(ped) -- Spieler Blickrichtung
-    
-    -- Berechnung der x- und y-Koordinaten
-    local dx = distance * math.cos(heading)
-    local dy = distance * math.sin(heading)
-    
-    -- Berechnung der neuen Koordinaten
-    local newX = pos.x + dx
-    local newY = pos.y + dy
-    
-    -- Rückgabe der neuen Koordinaten
-    return vector3(newX, newY, pos.z)
-  end
-
 -- Events
 RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
 
