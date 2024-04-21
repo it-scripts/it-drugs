@@ -38,8 +38,12 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
         icon = "spoon",
     })
 
+    -- Placing Table allways on the ground
     local hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-    local table = CreateObject(hashModel, dest.x, dest.y, dest.z - Config.ObjectZOffset, false, false, false)
+    local coords = GetEntityCoords(ped)
+    local _, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, true)
+
+    local table = CreateObject(hashModel, coords.x, coords.y, groundZ, false, false, false)
     SetEntityCollision(table, false, false)
     SetEntityAlpha(table, 150, true)
     SetEntityHeading(table, 0.0)
@@ -100,14 +104,13 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
                     },
                 }) then
                     TriggerServerEvent('it-drugs:server:createNewTable', dest, tableItem, rotation)
-                    tablePlacing = false
+
                     placed = true
                     ClearPedTasks(ped)
                     RemoveAnimDict('amb@medic@standing@kneel@base')
                     RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
                 else
                     ShowNotification(_U('NOTIFICATION_CANCELED'), "error")
-                    tablePlacing = false
                     placed = true
                     ClearPedTasks(ped)
                     RemoveAnimDict('amb@medic@standing@kneel@base')
@@ -115,6 +118,14 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
                 end
             end
 
+            if IsControlJustPressed(0, 47) then
+                placed = true
+                tablePlacing = false
+                lib.hideTextUI()
+                DeleteObject(table)
+                return
+            end
+        else
             if IsControlJustPressed(0, 47) then
                 placed = true
                 tablePlacing = false
