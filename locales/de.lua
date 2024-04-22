@@ -20,6 +20,8 @@ Locales['de'] = {
     ['MENU__PLANT__HARVEST'] = 'Ernten',
     ['MENU__PLANT__HARVEST__DESC'] = 'Diese Pflanze ernten',
 
+    ['MENU__ITEM_DESC'] = 'Nutze diese Item im dich um deine Pflanze zu kümmern',
+
     ['MENU_PROCESSING'] = 'Verarbeiten',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unbekannte Zutat',
@@ -34,8 +36,7 @@ Locales['de'] = {
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
     ['NOTIFICATION__CANCELED'] = 'Abgebrochen...',
-    ['NOTIFICATION__NO__WATER'] = 'Du hast kein Wasser',
-    ['NOTIFICATION__NO__FERTILIZER'] = 'Du hast keinen Dünger',
+    ['NOTIFICATION__NO__ITEMS'] = 'Du hast keine Items um die um diese Pflanze zu kümmern',
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'Du hast nicht alle Zutaten',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast dich mit Drogen beschäftigt',
