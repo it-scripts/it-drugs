@@ -36,6 +36,89 @@ local GetGroundHash = function(ped)
     return arg5
 end
 
+local getCurrentZone = function(coords, plantItem)
+    for k, v in pairs(growZones) do
+        if growZones[k]:isPointInside(vector3(coords.x, coords.y, coords.z)) then
+            if Config.Debug then lib.print.info('Inside Zone: ', k) end -- DEBUG
+            for _, drug in ipairs(Config.Zones[k].exclusive) do
+                if Config.Debug then lib.print.info('Drugs: ', Config.Zones[k].exclusive) end -- DEBUG
+                if drug == plantItem then
+                    if Config.Debug then lib.print.info('Zone: ', k) end -- DEBUG
+                    return k
+                end
+            end
+        end
+    end
+    return nil
+end
+
+local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
+    local canplant = false
+    if Config.Debug then lib.print.info('Current Ground Hash: ' .. GetGroundHash(plant)) end -- DEBUG 
+
+
+    if Config.OnlyAllowedGrounds then
+        for _, ground in ipairs(Config.AllowedGrounds) do
+            if GetGroundHash(plant) == ground then
+                canplant = true
+            end
+        end
+
+        if not canplant then
+            ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
+            DeleteObject(plant)
+            return
+        end
+    end
+
+    local zone = getCurrentZone(coords, plantItem)
+    if Config.OnlyZones then
+        if zone == nil then
+            ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
+            DeleteObject(plant)
+            return
+        end
+    end
+
+    DeleteObject(plant)
+
+    RequestAnimDict('amb@medic@standing@kneel@base')
+    RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
+    while 
+        not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
+        not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
+    do 
+        Wait(0) 
+    end
+
+    TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+
+
+    if lib.progressBar({
+        duration = plantInfos.time,
+        label = _U('PROGRESSBAR__SPAWN__PLANT'),
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            car = true,
+            move = true,
+            combat = true,
+        },
+    }) then
+        TriggerServerEvent('it-drugs:server:createNewPlant', coords, plantItem, zone)
+        ClearPedTasks(ped)
+        RemoveAnimDict('amb@medic@standing@kneel@base')
+        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+    else
+        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ClearPedTasks(ped)
+        RemoveAnimDict('amb@medic@standing@kneel@base')
+        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+
+    end
+end
+
 -- Events
 RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
 
@@ -58,11 +141,15 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
         icon = "spoon",
     })
 
+    -- Placing the plant on the ground and waiting for the player to press [E] to plant it
     local hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-    local plant = CreateObject(hashModel, dest.x, dest.y, dest.z + customOffset, false, false, false)
+    local coords = GetEntityCoords(ped)
+    local _, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, true)
+
+    local plant = CreateObject(hashModel, coords.x, coords.y, groundZ + customOffset, false, false, false)
     SetEntityCollision(plant, false, false)
     SetEntityAlpha(plant, 150, true)
-
+    
     local planted = false
     while not planted do
         Wait(0)
@@ -76,84 +163,8 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
                 planted = true
                 lib.hideTextUI()
 
-                local canplant = false
-                if Config.Debug then lib.print.info('Current Ground Hash: ' .. GetGroundHash(plant)) end -- DEBUG 
-
-
-                if Config.OnlyAllowedGrounds then
-                    for _, ground in ipairs(Config.AllowedGrounds) do
-                        if GetGroundHash(plant) == ground then
-                            canplant = true
-                        end
-                    end
-    
-                    if not canplant then
-                        ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
-                        DeleteObject(plant)
-                        return
-                    end
-                end
-
-                local zone = nil
-                for k, v in pairs(growZones) do
-                    if growZones[k]:isPointInside(vector3(dest.x, dest.y, dest.z)) then
-                        if Config.Debug then lib.print.info('Inside Zone: ', k) end -- DEBUG
-                        for _, drug in ipairs(Config.Zones[k].exclusive) do
-                            if Config.Debug then lib.print.info('Drugs: ', Config.Zones[k].exclusive) end -- DEBUG
-                            if drug == plantItem then
-                                if Config.Debug then lib.print.info('Zone: ', k) end -- DEBUG
-                                zone = k
-                            end
-                        end
-                    end
-                end
-                if Config.OnlyZones then
-                    if zone == nil then
-                        ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
-                        DeleteObject(plant)
-                        return
-                    end
-                end
-
-                DeleteObject(plant)
-
-                RequestAnimDict('amb@medic@standing@kneel@base')
-                RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
-                while 
-                    not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
-                    not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
-                do 
-                    Wait(0) 
-                end
-
-                TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-                TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
-
-
-                if lib.progressBar({
-                    duration = plantInfos.time,
-                    label = _U('PROGRESSBAR__SPAWN__PLANT'),
-                    useWhileDead = false,
-                    canCancel = true,
-                    disable = {
-                        car = true,
-                        move = true,
-                        combat = true,
-                    },
-                }) then
-                    TriggerServerEvent('it-drugs:server:createNewPlant', dest, plantItem, zone)
-                    planted = true
-                    ClearPedTasks(ped)
-                    RemoveAnimDict('amb@medic@standing@kneel@base')
-                    RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-                else
-                    ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
-                    planted = true
-                    ClearPedTasks(ped)
-                    RemoveAnimDict('amb@medic@standing@kneel@base')
-                    RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-
-                end
+                plantSeed(ped, plant, plantInfos, plantItem, dest)
+                return
             end
 
             -- [G] To destroy plant
@@ -161,6 +172,27 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
                 if Config.Debug then lib.print.info('Control 47 pressed') end -- DEBUG
                 lib.hideTextUI()
                 planted = true
+                DeleteObject(plant)
+                return
+            end
+        else
+
+            coords = GetEntityCoords(ped)
+            local forardVector = GetEntityForwardVector(ped)
+            _, groundZ = GetGroundZFor_3dCoord(coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), coords.z + (forardVector.z * .5), true)
+            
+            SetEntityCoords(plant, coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), groundZ + customOffset)
+            if IsControlJustPressed(0, 38) then
+                planted = true
+                local coords = GetEntityCoords(plant)
+                plantSeed(ped, plant, plantInfos, plantItem, vector3(coords.x, coords.y, coords.z + (math.abs(customOffset))))
+                lib.hideTextUI()
+                return
+            end
+            if IsControlJustPressed(0, 47) then
+                if Config.Debug then lib.print.info('Control 47 pressed') end -- DEBUG
+                planted = true
+                lib.hideTextUI()
                 DeleteObject(plant)
                 return
             end
