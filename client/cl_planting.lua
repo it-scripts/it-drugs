@@ -53,13 +53,13 @@ local getCurrentZone = function(coords, plantItem)
 end
 
 local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
-    local canplant = false
-    if Config.Debug then lib.print.info('Current Ground Hash: ' .. GetGroundHash(plant)) end -- DEBUG 
-
 
     if Config.OnlyAllowedGrounds then
-        for _, ground in ipairs(Config.AllowedGrounds) do
-            if GetGroundHash(plant) == ground then
+        local groundHash = GetGroundHash(plant)
+        local canplant = false
+        if Config.Debug then lib.print.info('Current Ground Hash: ' .. groundHash) end -- DEBUG 
+        for _, ground in pairs(Config.AllowedGrounds) do
+            if groundHash == ground then
                 canplant = true
             end
         end

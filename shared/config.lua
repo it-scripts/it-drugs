@@ -103,6 +103,8 @@ Config.AllowedGrounds = {   -- Allowed ground types for planting
     -1885547121,
     223086562,
     -461750719,
+    1333033863,
+    -1907520769,
 }
 
 Config.WaterDecay = 1 -- Percent of water that decays every minute
