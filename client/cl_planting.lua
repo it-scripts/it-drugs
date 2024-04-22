@@ -254,20 +254,8 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
     end
 end)
 
-RegisterNetEvent('it-drugs:client:giveWater', function(args)
-    local waterItem = nil
-
-    for k, v in pairs(Config.PlantWater) do
-        if it.hasItem(k, 1) then
-            waterItem = k
-            break
-        end
-    end
-    if waterItem == nil then
-        ShowNotification(_U('NOTIFICATION__NO__WATER'), "error")
-        return
-    end
-
+local giveWater = function(args)
+    local item = args.item
     local type = args.type
     local entity = args.entity
 
@@ -299,7 +287,7 @@ RegisterNetEvent('it-drugs:client:giveWater', function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:giveWater', entity, waterItem)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
@@ -309,22 +297,10 @@ RegisterNetEvent('it-drugs:client:giveWater', function(args)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
     end
-end)
+end
 
-RegisterNetEvent('it-drugs:client:giveFertilizer', function(args)
-    local fertilizerItem = nil
-
-    for k, v in pairs(Config.PlantFertilizer) do
-        if it.hasItem(k, 1) then
-            fertilizerItem = k
-            break
-        end
-    end
-    if fertilizerItem == nil then
-        ShowNotification(_U('NOTIFICATION__NO__FERTILIZER'), "error")
-        return
-    end
-
+local giveFertilizer = function(args)
+    local item = args.item
     local type = args.type
     local entity = args.entity
 
@@ -353,13 +329,29 @@ RegisterNetEvent('it-drugs:client:giveFertilizer', function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:giveFertilizer', entity, fertilizerItem)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     else
         ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         DeleteEntity(created_object)
+    end
+end
+
+RegisterNetEvent('it-drugs:client:useItem', function (args)
+    local item = args.item
+
+    if not it.hasItem(item, 1 ) then
+        ShowNotification(_U('NOTIFICATION__NO__ITEMS'), "error")
+        return
+    end
+
+    local itemInfos = Config.Items[item]
+    if itemInfos.water ~= 0 then
+        giveWater(args)
+    elseif itemInfos.fertilizer ~= 0 then
+        giveFertilizer(args)
     end
 end)
 

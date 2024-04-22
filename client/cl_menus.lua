@@ -168,8 +168,8 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     arrow = true,
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange",
-                    event = "it-drugs:client:giveFertilizer",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    event = "it-drugs:client:showItemMenu",
+                    args = {entity = plantData.entity, type = plantData.type, eventType = "fertilizer"}
                 },
                 {
                     title = _U('MENU__PLANT__WATER'),
@@ -181,8 +181,8 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     arrow = true,
                     progress = math.floor(plantData.water),
                     colorScheme = "blue",
-                    event = "it-drugs:client:giveWater",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    event = "it-drugs:client:showItemMenu",
+                    args = {entity = plantData.entity, type = plantData.type, eventType = "water"}
                 },
                 {
                     title = _U('MENU__PLANT__DESTROY'),
@@ -196,6 +196,59 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
         })
         lib.showContext("it-drugs-plant-menu")
     end
+end)
+
+RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
+    local entity = data.entity
+    local type = data.type
+    local eventType = data.eventType
+
+    local options = {}
+    if eventType == 'water' then
+        for item, itemData in pairs(Config.Items) do
+            if it.hasItem(item, 1) and itemData.water ~= 0 then
+                table.insert(options, {
+                    title = it.getItemLabel(item),
+                    description = _U('MENU__ITEM__DESC'),
+                    metadata = {
+                        {label = _U('MENU__PLANT__WATER'), value = itemData.water},
+                        {label = _U('MENU__PLANT__FERTILIZER'), value = itemData.fertilizer}
+                    },
+                    arrow = true,
+                    event = 'it-drugs:client:useItem',
+                    args = {entity = entity, type = type, item = item}
+                })
+            end
+        end
+    elseif eventType == 'fertilizer' then
+        for item, itemData in pairs(Config.Items) do
+            if it.hasItem(item, 1) and itemData.fertilizer ~= 0 then
+                table.insert(options, {
+                    title = it.getItemLabel(item),
+                    description = _U('MENU__ITEM__DESC'),
+                    metadata = {
+                        {label = _U('MENU__PLANT__WATER'), value = itemData.water},
+                        {label = _U('MENU__PLANT__FERTILIZER'), value = itemData.fertilizer}
+                    },
+                    arrow = true,
+                    event = 'it-drugs:client:useItem',
+                    args = {entity = entity, type = type, item = item}
+                })
+            end
+        end
+    end
+    if #options == 0 then
+        ShowNotification(_U('NOTIFICATION__NO__ITEMS'), 'error')
+        return
+    end
+
+    lib.registerContext({
+        id = "it-drugs-item-menu",
+        title = _U('MENU__ITEM'),
+        options = options
+    })
+
+    lib.showContext("it-drugs-item-menu")
 end)
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐

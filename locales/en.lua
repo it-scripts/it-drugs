@@ -20,6 +20,9 @@ Locales['en'] = {
     ['MENU__PLANT__HARVEST'] = 'Harvest',
     ['MENU__PLANT__HARVEST__DESC'] = 'Harvest this plant',
 
+    ['MENU__ITEM'] = 'Items',
+    ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
+
     ['MENU_PROCESSING'] = 'Proccessing',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unknown Ingrediant',
@@ -34,8 +37,7 @@ Locales['en'] = {
     ['NOTIFICATION__IN__VEHICLE'] = 'You can´t do this in a Vehicle',
     ['NOTIFICATION__CANT__PLACE'] = 'You can´t do this here',
     ['NOTIFICATION__CANCELED'] = 'Canceled...',
-    ['NOTIFICATION__NO__WATER'] = 'You don´t have any water',
-    ['NOTIFICATION__NO__FERTILIZER'] = 'You don´t have any fertilizer',
+    ['NOTIFICATION__NO__ITEMS'] = 'You have no items to take care of this plant',
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'You don´t have all ingredients',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'You have processed on drug',
