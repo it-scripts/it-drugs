@@ -95,7 +95,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
         hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
 
         if hit == 1 then
-            SetEntityCoords(table, dest.x, dest.y, dest.z - Config.ObjectZOffset)
+            SetEntityCoords(table, dest.x, dest.y, dest.z)
 
             if IsControlJustPressed(0, 14) or IsControlJustPressed(0, 16) then
                 rotation = rotation + 1.0
