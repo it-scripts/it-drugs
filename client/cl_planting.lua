@@ -143,7 +143,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
 
     -- Placing the plant on the ground and waiting for the player to press [E] to plant it
     local hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-    local coords = getForwardCoords(2.0)
+    local coords = GetEntityCoords(ped)
     local _, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, true)
 
     local plant = CreateObject(hashModel, coords.x, coords.y, groundZ + customOffset, false, false, false)

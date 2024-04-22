@@ -21,6 +21,47 @@ local RayCastCamera = function(dist)
     return hit, endPos, entityHit, surfaceNormal
 end
 
+
+local placeProcessingTable = function(ped, tableItem, coords, rotation)
+
+
+    RequestAnimDict('amb@medic@standing@kneel@base')
+    RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
+    while 
+        not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
+        not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
+    do 
+        Wait(0) 
+    end
+
+    TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+
+
+    if lib.progressBar({
+        duration = 5000,
+        label = _U('PROGRESSBAR__PLACE__TABLE'),
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            car = true,
+            move = true,
+            combat = true,
+        },
+    }) then
+        TriggerServerEvent('it-drugs:server:createNewTable', coords, tableItem, rotation)
+
+        ClearPedTasks(ped)
+        RemoveAnimDict('amb@medic@standing@kneel@base')
+        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+    else
+        ShowNotification(_U('NOTIFICATION_CANCELED'), "error")
+        ClearPedTasks(ped)
+        RemoveAnimDict('amb@medic@standing@kneel@base')
+        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+    end
+end
+
 RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
     local ped = PlayerPedId()
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
@@ -28,7 +69,6 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
         return
     end
 
-    tablePlacing = true
     local hashModel = GetHashKey(Config.ProcessingTables[tableItem].model)
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
@@ -78,57 +118,36 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
                 lib.hideTextUI()
 
                 DeleteObject(table)
-
-                RequestAnimDict('amb@medic@standing@kneel@base')
-                RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
-                while 
-                    not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
-                    not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
-                do 
-                    Wait(0) 
-                end
-
-                TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-                TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
-
-
-                if lib.progressBar({
-                    duration = 5000,
-                    label = _U('PROGRESSBAR__PLACE__TABLE'),
-                    useWhileDead = false,
-                    canCancel = true,
-                    disable = {
-                        car = true,
-                        move = true,
-                        combat = true,
-                    },
-                }) then
-                    TriggerServerEvent('it-drugs:server:createNewTable', dest, tableItem, rotation)
-
-                    placed = true
-                    ClearPedTasks(ped)
-                    RemoveAnimDict('amb@medic@standing@kneel@base')
-                    RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-                else
-                    ShowNotification(_U('NOTIFICATION_CANCELED'), "error")
-                    placed = true
-                    ClearPedTasks(ped)
-                    RemoveAnimDict('amb@medic@standing@kneel@base')
-                    RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-                end
+                placeProcessingTable(ped, tableItem, dest, rotation)
+                return
             end
 
             if IsControlJustPressed(0, 47) then
                 placed = true
-                tablePlacing = false
                 lib.hideTextUI()
                 DeleteObject(table)
                 return
             end
         else
+
+            coords = GetEntityCoords(ped)
+            local heading = GetEntityHeading(ped)
+            local forardVector = GetEntityForwardVector(ped)
+            _, groundZ = GetGroundZFor_3dCoord(coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), coords.z + (forardVector.z * .5), true)
+
+            SetEntityCoords(table, coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), groundZ)
+            SetEntityHeading(table, heading)
+            if IsControlJustPressed(0, 38) then
+                placed = true
+                local coords = GetEntityCoords(table)
+                lib.hideTextUI()
+                DeleteObject(table)
+                placeProcessingTable(ped, tableItem, coords, heading)
+                return
+            end
+
             if IsControlJustPressed(0, 47) then
                 placed = true
-                tablePlacing = false
                 lib.hideTextUI()
                 DeleteObject(table)
                 return
@@ -241,7 +260,7 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
-    Wait(1500)
+    Wait(200)
 
     RequestAnimDict('amb@medic@standing@kneel@base')
     RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
