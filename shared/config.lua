@@ -113,7 +113,7 @@ Config.WaterThreshold = 10
 Config.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
 Config.PlantWater = { -- Create water for plants
-    ['water_bottle'] = 25, -- Item and percent it adds to overall plant water
+    ['watering_can'] = 25, -- Item and percent it adds to overall plant water
 }
 
 Config.PlantFertilizer = { -- Create fertilizer for plants
