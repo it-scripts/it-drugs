@@ -314,8 +314,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         local time = os.time()
 
         local growTime = Config.GlobalGrowTime
-        if plantInfos.growTime ~= nil then
-            growTime = plantInfos.growTime
+        if plantInfos.growthTime ~= nil then
+            growTime = plantInfos.growthTime
         end
         if Config.Zones[zone] ~= nil and Config.Zones[zone].growMultiplier then
             growTime = (growTime / Config.Zones[zone].growMultiplier)
