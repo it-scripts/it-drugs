@@ -1,4 +1,4 @@
 {
-    "version": "v1.0.2",
-    "message": "Some bug fixes and improvements."
+    "version": "v1.0.3",
+    "message": "Removes custom growthTime bug"
 }
