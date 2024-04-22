@@ -121,7 +121,7 @@ Config.Items = {
         fertilizer = 0,
         itemBack = 'watering_can_empty',
     },
-    ['advanced_water'] = {
+    ['nutration_water'] = {
         water = 40,
         fertilizer = 20,
         itemBack = nil,

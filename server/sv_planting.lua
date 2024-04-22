@@ -290,6 +290,9 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(entity, item)
             })
             SendToWebhook(src, 'plant', 'fertilize', plants[entity])
         end
+        if itemData.itemBack ~= nil then
+            it.giveItem(src, itemData.itemBack, 1)
+        end
     end
 end)
 
