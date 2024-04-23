@@ -9,6 +9,39 @@
     }
 },
 
+["fertilizer"] = {
+    label = "Fertilizer",
+    weight = 500,
+    stack = false,
+    close = false,
+    description = "Fertilizer",
+    client = {
+        image = "fertilizer.png",
+    }
+},
+
+["advanced_fertilizer"] = {
+    label = "Advanced fertilizer",
+    weight = 500,
+    stack = false,
+    close = false,
+    description = "Fertilizer with the litte extra",
+    client = {
+        image = "advanced_fertilizer.png",
+    }
+},
+
+["liquid_fertilizer"] = {
+    label = "Liquid Fertilizer",
+    weight = 200,
+    stack = false,
+    close = false,
+    description = "Basicly Water with nutrations",
+    client = {
+        image = "liquid_fertilizer.png",
+    }
+},
+
 ["weed_lemonhaze_seed"] = {
     label = "Weed Lemonhaze Seed",
     weight = 20,
@@ -75,25 +108,14 @@
     }
 },
 
-["fertilizer"] = {
-    label = "Fertilizer",
-    weight = 500,
-    stack = false,
-    close = false,
-    description = "Fertilizer",
-    client = {
-        image = "nitrous.png",
-    }
-},
-
 ["cocaine"] = {
     label = "Cocaine",
     weight = 20,
     stack = true,
     close = false,
-    description = "Cocaine",
+    description = "Small bag of cocaine",
     client = {
-        image = "fertilizer.png",
+        image = "cocaine.png",
     }
 },
 
