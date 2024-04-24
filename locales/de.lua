@@ -33,25 +33,35 @@ Locales['de'] = {
     ['MENU__TABLE__REMOVE'] = 'Tisch entfernen',
     ['MENU__TABLE__REMOVE__DESC'] = 'Diesen Tisch zurückholen',
 
+    ['MENU__SELL'] = 'Verkaufen',
+    ['MENU__SELL__DEAL'] = 'Deal',
+    ['MENU__SELL__DESC'] = 'Verkaufe %s (x%g) für $%g',
+
+    ['MENU__SELL__ACCEPT'] = 'Angebot annehmen',
+    ['MENU__SELL__ACCEPT__DESC'] = 'Nimm das aktuelle Angebot an',
+
+    ['MENU__SELL__REJECT'] = 'Angebot ablehnen',
+    ['MENU__SELL__REJECT__DESC'] = 'Lehne das aktuelle Angebot ab',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
     ['NOTIFICATION__CANCELED'] = 'Abgebrochen...',
     ['NOTIFICATION__NO__ITEMS'] = 'Du hast keine Items um die um diese Pflanze zu kümmern',
 
+    ['NOTIFICATION__NO__AMOUNT'] = 'Du musst einen Betrag eingeben',
+
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'Du hast nicht alle Zutaten',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast dich mit Drogen beschäftigt',
 
-    ['NOTIFICATION_CALLING_COPS'] = 'Der Käufer ruft die Polizei!',
-    ['NOTIFICATION_NOT_INTERESTED'] = 'Der Käufer ist nicht daran interessiert, jetzt zu kaufen!',
-    ['NOTIFICATION_ALLREADY_SPOKE'] = 'Du hast bereits mit ihm gesprochen.',
-    ['NOTIFICATION_SOLD_DRUG'] = "Du hast $%g erhalten",
-    ['NOTIFICATION_SELL_FAIL'] = 'Du könntest deine %g nicht verkaufen!',
-    ['NOTIFICATION_FALSE_DRUG'] = 'Die Person wollte etwas anderes!',
-    ['NOTIFICATION_NO_ITEM_LEFT'] = 'Du hast keine %g zu verkaufen!',
-    ['NOTIFICATION_TO_LONG'] = 'Du hast Zeit verschwendet, also ist die Person gegangen',
-    ['NOTIFICATION_OFFER_REJECTED'] = 'Du hast das Angebot abgelehnt',
-
-    ['NOTIFICATION__NO__AMOUNT'] = 'Du musst einen Betrag eingeben',
+    ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
+    ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist gerade nicht interessiert!',
+    ['NOTIFICATION__ALLREADY__SPOKE'] = 'Du hast bereits mit diesem Passant gesprochen!',
+    ['NOTIFICATION__NO__DRUGS'] = 'Du hast nichts, was der Käufer haben möchte',
+    ['NOTIFICATION__TO__LONG'] = 'Du hast zu lange gebraucht um das Angebot anzunhemen',
+    ['NOTIFICATION__OFFER__REJECTED'] = 'Du hast das Angebot abgelehnt',  
+    ['NOTIFICATION__SOLD__DRUG'] = "Du hast $%g bekommen",
+    ['NOTIFICATION__SELL__FAIL'] = 'Du konntest deine Drogen nicht verkaufen %g!',
+    ['NOTIFICATION__NO__ITEM__LEFT'] = 'Du hast kein %g zum Verkaufen!',
 
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',

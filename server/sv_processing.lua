@@ -61,9 +61,18 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
     if not player then return end
     local givenItems = {}
 
+    local failChance = math.random(1, 100)
+    if failChance <= tableInfos.failChance then
+        ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'error')
+        for k,v in pairs(tableInfos.ingrediants) do
+            it.removeItem(source, k, v)
+        end
+        return
+    end
+
     for k, v in pairs(tableInfos.ingrediants) do
         if not it.removeItem(source, k, v) then
-            ShowNotification('You do not have the required items', 'error')
+            ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             if #givenItems > 0 then
                 for _, v in pairs(givenItems) do
                     it.giveItem(source, v.name, v.amount)

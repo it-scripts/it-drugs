@@ -22,12 +22,17 @@ end
 
 if Config.EnableDrugs then
     for drug, _ in pairs(Config.Drugs) do
-
         it.createUsableItem(drug, function(source)
             local src = source
             if it.hasItem(src, drug, 1) then
-                it.removeItem(src, drug, 1)
-                TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
+                if Config.Debug then lib.print.info('currentDrug', currentDrug) end
+                if not currentDrug then
+                    it.removeItem(src, drug, 1)
+                    TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                    return
+                end
+                ShowNotification(src, "You are already under the influence of a drug.", "info")
             end
         end)
     end

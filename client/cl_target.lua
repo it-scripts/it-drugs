@@ -115,6 +115,82 @@ CreateThread(function()
     end
 end)
 
+-- ┌─────────────────────────────────────────────────────────────┐
+-- │ ____       _ _ _               _____                    _   │
+-- │/ ___|  ___| | (_)_ __   __ _  |_   _|_ _ _ __ __ _  ___| |_ │
+-- │\___ \ / _ \ | | | '_ \ / _` |   | |/ _` | '__/ _` |/ _ \ __|│
+-- │ ___) |  __/ | | | | | | (_| |   | | (_| | | | (_| |  __/ |_ │
+-- │|____/ \___|_|_|_|_| |_|\__, |   |_|\__,_|_|  \__, |\___|\__|│
+-- │                        |___/                 |___/          │
+-- └─────────────────────────────────────────────────────────────┘
+
+local function isPedBlacklisted(ped)
+	local model = GetEntityModel(ped)
+	for i = 1, #Config.BlacklistPeds do
+		if model == GetHashKey(Config.BlacklistPeds[i]) then
+			return true
+		end
+	end
+	return false
+end
+
+-- Selling Target
+CreateSellTarget = function()
+    if Config.Target == 'qb-target' then
+        if not exports['qb-target'] then return end
+        exports['qb-target']:AddGlobalPed({
+            options = {
+                {
+                    label = _U('TARGET__SELL__LABEL'),
+                    icon = 'fas fa-comment',
+                    action = function(entity)
+                        TriggerEvent('it-drugs:client:checkSellOffer', entity)
+                    end,
+                    canInteract = function(entity)
+                        if not IsPedDeadOrDying(entity, false) and not IsPedInAnyVehicle(entity, false) and (GetPedType(entity)~=28) and (not IsPedAPlayer(entity)) and (not isPedBlacklisted(entity)) and not IsPedInAnyVehicle(PlayerPedId(), false) then
+                            return true
+                        end
+                        return false
+                    end,
+                }
+            },
+            distance = 4,
+        })
+
+    elseif Config.Target == 'ox_target' then
+        -- Check if ox target is running
+        if not exports.ox_target then return end
+        exports.ox_target:addGlobalPed({
+            {
+                label = _U('TARGET__SELL__LABEL'),
+                name = 'it-drugs-sell',
+                icon = 'comment',
+                onSelect = function(data)
+                    TriggerEvent('it-drugs:client:checkSellOffer', data.entity)
+                end,
+                canInteract = function(entity, _, _, _, _)
+                    if not IsPedDeadOrDying(entity, false) and not IsPedInAnyVehicle(entity, false) and (GetPedType(entity)~=28) and (not IsPedAPlayer(entity)) and (not isPedBlacklisted(entity)) and not IsPedInAnyVehicle(PlayerPedId(), false) then
+                        return true
+                    end
+                    return false
+                end,
+                distance = 4
+            }
+        })
+    end
+end
+
+RemoveSellTarget = function()
+    if Config.Target == 'qb-target' then
+        if not exports['qb-target'] then return end
+        exports['qb-target']:RemoveGlobalPed({_U('TARGET__SELL__LABEL')})
+    elseif Config.Target == 'ox_target' then
+        -- Check if ox target is running
+        if not exports.ox_target then return end
+        exports.ox_target:removeGlobalPed('it-drugs-sell')
+    end
+end
+
 -- Remove all Targets
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end

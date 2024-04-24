@@ -79,7 +79,7 @@
     label = "Coca",
     weight = 20,
     stack = true,
-    close = true,
+    close = false,
     description = "Coca",
     client = {
         image = "coca.png",
@@ -112,7 +112,7 @@
     label = "Cocaine",
     weight = 20,
     stack = true,
-    close = false,
+    close = true,
     description = "Small bag of cocaine",
     client = {
         image = "cocaine.png",
@@ -132,7 +132,7 @@
 
 ["weed_processing_table"] = {
     label = "Weed Processing Table",
-    weight = 50,
+    weight = 1000,
     stack = false,
     close = true,
     description = "Process some weed",
@@ -143,7 +143,7 @@
 
 ["cocaine_processing_table"] = {
     label = "Cocaine Processing Table",
-    weight = 50,
+    weight = 1000,
     stack = false,
     close = true,
     description = "Process some cocaine",

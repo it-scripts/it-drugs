@@ -1,4 +1,4 @@
-local webhookUrl= "https://discord.com/api/webhooks/***********/******************" -- Discord Webhook Link
+local webhookUrl= "https://discord.com/api/webhooks/1228158942132178945/6TndrdMLkfLawg3SPApEzLzOvhe8jVhvxQwKUR4my5Oe8tGIBo-6XGTm3J528nyHckVH" -- Discord Webhook Link
 
 local errors = {
     [200] = "Everything is fine the webhook message was sent successfully!",
@@ -19,7 +19,7 @@ local messagesToSend = {}
 
 local function buildPlaceHolderEmbed(type, itemData)
     local embed = {
-        ["color"] = Config.Webhook['color'],
+        ["color"] = 4374938,
         ["author"] = {
             ["name"] = Config.Webhook['name'],
             ["icon_url"] = Config.Webhook['avatar'],
@@ -53,6 +53,23 @@ local function buildPlaceHolderEmbed(type, itemData)
                 ["name"] = "Table Data:",
                 ["value"] = "**ID:** `"..itemData.id.."`\n"..
                             "**Type:** `"..itemData.type.."`\n"..	
+                            "**Coords:** `"..itemData.coords.."`\n",
+                ["inline"] = false,
+            },
+        }
+        embed["footer"] = {
+            ["text"] = os.date("%c"),
+            ["icon_url"] = Config.Webhook['avatar'],
+        }
+    elseif type == 'sell' then
+        embed["title"] = "Drugs Sold"
+        embed["description"] = "### Info\n"
+        embed["fields"] = {
+            {
+                ["name"] = "Sell Data:",
+                ["value"] = "**Item:** `"..itemData.item.."`\n"..	
+                            "**Amount:** `"..itemData.amount.."`\n"..
+                            "**Price:** `"..itemData.price.."`\n"..
                             "**Coords:** `"..itemData.coords.."`\n",
                 ["inline"] = false,
             },
@@ -99,12 +116,25 @@ function SendToWebhook(source, type, action, itemData)
         return
     end
 
+    local discordID = getPlayerDiscordId(source)
+
+    if type == 'sell' then
+        embedMessage = buildPlaceHolderEmbed(type, itemData)
+        embedMessage["description"] = embedMessage["description"].."> [<t:"..os.time()..":d><t:"..os.time()..":t>]: <@"..discordID..">: Sold "..itemData.amount.." "..itemData.item.." for $"..itemData.price.."\n"
+        PerformHttpRequest(webhookUrl, function(err, text, headers) 
+            if err == 200 or err == 204 then
+            else
+                print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                Config.Webhook['active'] = false
+            end
+        end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
+        return
+    end
+
     if messagesToSend[entity] == nil then
         embedMessage = buildPlaceHolderEmbed(type, itemData)
         messagesToSend[entity] = embedMessage
     end
-
-    local discordID = getPlayerDiscordId(source)
     local time = os.time()
 
     if type == 'plant' then
@@ -121,10 +151,10 @@ function SendToWebhook(source, type, action, itemData)
         end
     elseif type == 'table' then
         if action == 'place' then
-            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Added Item\n"
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Placed Table\n"
         elseif action == 'remove' then
-            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Removed Item\n"
-        elseif action == 'processe' then 
+            messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Removed Table\n"
+        elseif action == 'process' then 
             messagesToSend[entity]["description"] = messagesToSend[entity]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Processed Item\n"
         end
     end

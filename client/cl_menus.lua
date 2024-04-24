@@ -238,7 +238,7 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
         end
     end
     if #options == 0 then
-        ShowNotification(_U('NOTIFICATION__NO__ITEMS'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
         return
     end
 
@@ -304,8 +304,55 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
 
     lib.registerContext({
         id = "it-drugs-processing-menu",
-        title = _U('MENU_PROCESSING'),
+        title = _U('MENU__PROCESSING'),
         options = options
     })
     lib.showContext("it-drugs-processing-menu")
+end)
+
+-- ┌──────────────────────────────────────────┐
+-- │ ____       _ _   __  __                  │
+-- │/ ___|  ___| | | |  \/  | ___ _ __  _   _ │
+-- │\___ \ / _ \ | | | |\/| |/ _ \ '_ \| | | |│
+-- │ ___) |  __/ | | | |  | |  __/ | | | |_| |│
+-- │|____/ \___|_|_| |_|  |_|\___|_| |_|\__,_|│
+-- └──────────────────────────────────────────┘
+-- Sell Menu
+
+RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
+    local item = data.item
+    local amount = data.amount
+    local price = data.price
+    local ped = data.entity
+
+    local itemLabel = it.getItemLabel(item)
+
+    lib.registerContext({
+        id = "it-drugs-sell-menu",
+        title = _U('MENU__SELL'),
+        options = {
+            {
+                title = _U('MENU__SELL__DEAL'),
+                description = _U('MENU__SELL__DESC'):format(itemLabel, amount, amount * price),
+                icon = "coins",
+            },
+            {
+                title = _U('MENU__SELL__ACCEPT'),
+                icon = "circle-check",
+                description = _U('MENU__SELL__ACCEPT__DESC'),
+                arrow = true,
+                event = "it-drugs:client:salesInitiate",
+                args = {type = 'buy', item = item, price = price, amount = amount, tped = ped}
+            },
+            {
+                title = _U('MENU__SELL__REJECT'),
+                icon = "circle-xmark",
+                description = _U('MENU__SELL__REJECT__DESC'),
+                arrow = true,
+                event = "it-drugs:client:salesInitiate",
+                args = {type = 'close', tped = ped}
+            }
+        }
+    })
+    lib.showContext("it-drugs-sell-menu")
 end)

@@ -1,12 +1,7 @@
-if true then return end
-if it.getCoreName() == 'esx' then return end
-
 -- \ Locals and tables
 local SoldPeds = {}
 local SellZone = {}
-local CurrentZone = nil
-local AllowedTarget = true
-local InitiateSellProgress = false
+local currentZone = nil
 
 -- \ Create Zones for the drug sales
 for k, v in pairs(Config.SellZones) do
@@ -37,121 +32,70 @@ local function HasSoldPed(entity)
     return SoldPeds[entity] ~= nil
 end
 
-local function ShowSellMenu(ped, item, amt, price)
-	InitiateSellProgress = true
-	local SaleMenu = {
-		{
-			header = tostring(amt).."x "..it.getItemLabel(item).." für "..it.Round(amt * price, 0).."$",
-			isMenuHeader = true
-		},
-		{
-			header = _U('MENU_ACCEPT_OFFER'),
-			params = {
-				event = 'it-drugs:salesinitiate',
-				args = {
-					type = 'buy',
-					item = item,
-					price = price,
-					amt = amt,
-					tped = ped
-				}
-			}
-		},
-		{
-			header = _U('MENU_REJECT_OFFER'),
-			params = {
-				event = 'it-drugs:salesinitiate',
-				args = {
-					type = 'close',
-					tped = ped
-				}
-			}
-		}
-	}
-	exports['qb-menu']:openMenu(SaleMenu)
-	SetTimeout(Config.SellTimeout*1000, function()
-		if InitiateSellProgress then
-			TriggerEvent("it-drugs:notify", _U('NOTIFICATION_TO_LONG'))
-			TriggerEvent("qb-menu:client:closeMenu")
-			SetPedAsNoLongerNeeded(ped)
-		end
-	end)
-end
+RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
+	local copsAmount = lib.callback.await('it-drugs:server:getCopsAmount', false)
 
-local function GetItems(drug)
-    local amount = 0
-    local items = QBCore.Functions.GetPlayerData().items
-    for _, v in pairs(items) do
-        if v.name == drug then
-            amount = v.amount
-            break
-        end
-    end
-    return amount
-end
-
-local function InitiateSell(ped)
-	if not CurrentZone then return end
-	local index = Config.SellZoneDrugs[CurrentZone.name]
-	local randamt = math.random(Config.RandomMinSell, Config.RandomMaxSell)
-	local tries = 0
-	for i=1, #index do
-		Wait(200) -- done change this
-		local data = index[math.random(1, #index)]
-		local maxamt = GetItems(data.item)
-		local price = data.price
-		if maxamt ~= 0 then
-			if randamt > maxamt then randamt = 1 end
-			ShowSellMenu(ped, data.item, randamt, price)
-			break
-		else
-			tries = tries + i
-			if tries == #index then SetPedAsNoLongerNeeded(ped) TriggerEvent('QBCore:Notify', _U('NOTIFICATION_FALSE_DRUG')) end
-			if Config.Debug then print('You dont have ['..data.item..'] to sell') end
-		end
-	end
-end
-
--- \ Interact with the ped
-local function InteractPed(ped)
-	local Playerjob = QBCore.Functions.GetPlayerData().job
-	SetEntityAsMissionEntity(ped, true, true)
-	TaskTurnPedToFaceEntity(ped, PlayerPedId(), Config.SellTimeout*1000)
-	Wait(500)
-	if Playerjob.name == 'police' then
-		TriggerEvent('QBCore:Notify', 'Locals hate cops!')
-		SetPedAsNoLongerNeeded(ped)
-		if Config.Debug then print('Police Not allowed') end
+	if copsAmount < Config.MinimumCops then
+		ShowNotification(nil, _U('NOTIFICATION__NOT__INTERESTED'), 'error')
+		if Config.Debug then lib.print.info('Not Enough Cops Online') end
 		return
 	end
-	local percent = math.random(1, 100)
-	if percent < Config.ChanceSell then
-		InitiateSell(ped)
-	else
-		if Config.Debug then print('Police has been notified') end
-		TriggerEvent('it-drugs:notify', _U('NOTIFICATION_CALLING_COPS'))
-		TaskUseMobilePhoneTimed(ped, 8000)
-		PoliceAlert()
-		SetPedAsNoLongerNeeded(ped)
-	end
-end
 
--- \ Initialize the drug sales
-local function InitiateSales(entity)
-	
-	if 1 > Config.MinimumCops then
-		ShowNotification(_U('NOTIFICATION_NOT_INTERESTED'))
-		if Config.Debug then print('Not Enough Cops') end
-	else
-		local netId = NetworkGetNetworkIdFromEntity(entity)
-		local isSoldtoPed = HasSoldPed(netId)
-		if isSoldtoPed then ShowNotification(_U('NOTIFICATION_ALLREADY_SPOKE')) return false end
-		AddSoldPed(netId)
-		InteractPed(entity)
-		if Config.Debug then print('Drug Sales Initiated now proceding to interact') end
+	local netId = NetworkGetNetworkIdFromEntity(entity)
+	local isSoldtoPed = HasSoldPed(netId)
+	if isSoldtoPed then
+		ShowNotification(nil, _U('NOTIFICATION__ALLREADY__SPOKE'), 'error')
+		return
 	end
-	
-end
+
+	SetEntityAsMissionEntity(entity, true, true)
+	TaskTurnPedToFaceEntity(entity, PlayerPedId(), -1)
+	Wait(500)
+
+	local sellChance = math.random(1, 100)
+
+	if sellChance > Config.SellSettings['sellChange'] then
+		ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'error')
+		TaskUseMobilePhoneTimed(entity, 8000)
+		SetPedAsNoLongerNeeded(entity)
+		ClearPedTasks(PlayerPedId())
+		AddSoldPed(netId)
+
+		local coords = GetEntityCoords(entity)
+		SendPoliceAlert(coords)
+		return
+	end
+
+	if not currentZone then return end
+	local zoneConfig = Config.SellZones[currentZone.name]
+
+	local sellAmount = math.random(Config.SellSettings['sellAmount'].min, Config.SellSettings['sellAmount'].max)
+	local sellItemData = zoneConfig.drugs[math.random(1, #zoneConfig.drugs)]
+	local playerItems = it.getItemCount(sellItemData.item)
+
+	if playerItems == 0 then
+		ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
+		SetPedAsNoLongerNeeded(entity)
+		return
+	end
+
+	if playerItems < sellAmount then
+		sellAmount = playerItems
+	end
+
+	TriggerEvent('it-drugs:client:showSellMenu', {item = sellItemData.item, price = sellItemData.price, amount = sellAmount, entity = entity})
+	SetTimeout(Config.SellSettings['sellTimeout']*1000, function()
+		if Config.Debug then lib.print.info('Sell Menu Timeout... Current Menu', lib.getOpenContextMenu()) end
+		if lib.getOpenContextMenu() ~= nil then
+			local currentMenu = lib.getOpenContextMenu()
+			if currentMenu == 'it-drugs-sell-menu' then
+				ShowNotification(nil, _U('NOTIFICATION__TO__LONG'), 'error')
+				lib.hideContext(false)
+				SetPedAsNoLongerNeeded(entity)
+			end
+		end
+	end)
+end) 
 
 -- \ Blacklist Ped Models
 local function isPedBlacklisted(ped)
@@ -164,50 +108,13 @@ local function isPedBlacklisted(ped)
 	return false
 end
 
--- \ Sell Drugs to peds inside the sellzone
---[[ local function CreateTarget()
-	exports['qb-target']:AddGlobalPed({
-		options = {
-			{
-				icon = 'fas fa-comments',
-				label = _U('TARGET_TALK'),
-				action = function(entity)
-					InitiateSales(entity)
-				end,
-				canInteract = function(entity)
-					if CurrentZone then
-						if not IsPedDeadOrDying(entity, false) and not IsPedInAnyVehicle(entity, false) and CurrentZone.inside and (GetPedType(entity)~=28) and (not IsPedAPlayer(entity)) and (not isPedBlacklisted(entity)) and not IsPedInAnyVehicle(PlayerPedId(), false) then
-							return true
-						end
-					end
-					return false
-				end,
-			}
-		},
-		distance = 4,
-	})
-end
-exports('CreateTarget', CreateTarget) ]]
-
--- \ Remove Sell Drugs to peds inside the sellzone
---[[ local function RemoveTarget()
-	exports['qb-target']:RemoveGlobalPed({"Talk"})
-end ]]
-
--- \ This will toggle allowing/disallowing target even if inside zone
-local function IsTargetAllowed(value)
-	AllowedTarget = value
-end
-
 -- \ event handler to server (execute server side)
-RegisterNetEvent('it-drugs:salesinitiate', function(cad)
+RegisterNetEvent('it-drugs:client:salesInitiate', function(cad)
+	AddSoldPed(cad.tped)
 	if cad.type == 'close' then
-		InitiateSellProgress = false
-		TriggerEvent("it-drugs:notify", _U('NOTIFICATION_OFFER_REJECTED'))
-		TriggerEvent("qb-menu:client:closeMenu")
+		ShowNotification(nil, _U('NOTIFICATION__OFFER__REJECTED'), 'error')
 		SetPedAsNoLongerNeeded(cad.tped)
 	else
-		InitiateSellProgress = false
 		PlayGiveAnim(cad.tped)
 		TriggerServerEvent('it-drugs:server:initiatedrug', cad)
 		SetPedAsNoLongerNeeded(cad.tped)
@@ -225,19 +132,19 @@ CreateThread(function()
 				if SellZone[k] then
 					if SellZone[k]:isPointInside(coord) then
 						SellZone[k].inside = true
-                        CurrentZone = SellZone[k]
+                        currentZone = SellZone[k]
 						if not SellZone[k].target then
 							SellZone[k].target = true
-							--CreateTarget()
-							if Config.Debug then print("Target Added ["..CurrentZone.name.."]") end
+							CreateSellTarget()
+							if Config.Debug then print("Target Added ["..currentZone.name.."]") end
 						end
-						if Config.Debug then print(json.encode(CurrentZone)) end
+						if Config.Debug then print(json.encode(currentZone)) end
 					else
 						SellZone[k].inside = false
 						if SellZone[k].target then
 							SellZone[k].target = false
-							--RemoveTarget()
-							if Config.Debug then print("Target Removed ["..CurrentZone.name.."]") end
+							RemoveSellTarget()
+							if Config.Debug then print("Target Removed ["..SellZone[k].name.."]") end
 						end
 					end
 				end
