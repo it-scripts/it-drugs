@@ -20,6 +20,9 @@ Locales['en'] = {
     ['MENU__PLANT__HARVEST'] = 'Harvest',
     ['MENU__PLANT__HARVEST__DESC'] = 'Harvest this plant',
 
+    ['MENU__ITEM'] = 'Items',
+    ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
+
     ['MENU_PROCESSING'] = 'Proccessing',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unknown Ingrediant',
@@ -31,26 +34,36 @@ Locales['en'] = {
     ['MENU__TABLE__REMOVE'] = 'Remove Table',
     ['MENU__TABLE__REMOVE__DESC'] = 'Get this table back',
 
+    ['MENU__SELL'] = 'Sell',
+    ['MENU__SELL__DEAL'] = 'Deal',
+    ['MENU__SELL__DESC'] = 'Sell %s (x%g) for $%g',
+
+    ['MENU__SELL__ACCEPT'] = 'Accept offer',
+    ['MENU__SELL__ACCEPT__DESC'] = 'Accept the current offer',
+
+    ['MENU__SELL__REJECT'] = 'Reject offer',
+    ['MENU__SELL__REJECT__DESC'] = 'Reject the current offer',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'You can´t do this in a Vehicle',
     ['NOTIFICATION__CANT__PLACE'] = 'You can´t do this here',
     ['NOTIFICATION__CANCELED'] = 'Canceled...',
-    ['NOTIFICATION__NO__WATER'] = 'You don´t have any water',
-    ['NOTIFICATION__NO__FERTILIZER'] = 'You don´t have any fertilizer',
+    ['NOTIFICATION__NO__ITEMS'] = 'You have no items to take care of this plant',
+
+    ['NOTIFICATION__NO__AMOUNT'] = 'You need to enter an amount',
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'You don´t have all ingredients',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'You have processed on drug',
+    ['NOTIFICATION__PROCESS__FAIL'] = 'You faild to process the drug',
 
-    ['NOTIFICATION_CALLING_COPS'] = 'The buyer is calling the police!',
-    ['NOTIFICATION_NOT_INTERESTED'] = 'Buyer is not interested to buy now!',
-    ['NOTIFICATION_ALLREADY_SPOKE'] = 'You already spoke with this local',
-    ['NOTIFICATION_SOLD_DRUG'] = "You recieved $%g",
-    ['NOTIFICATION_SELL_FAIL'] = 'You could not sell your %g!',
-    ['NOTIFICATION_FALSE_DRUG'] = 'Person wanted something else!',
-    ['NOTIFICATION_NO_ITEM_LEFT'] = 'You do not have any %g to sell!',
-    ['NOTIFICATION_TO_LONG'] = 'You wasted time so the person left',
-    ['NOTIFICATION_OFFER_REJECTED'] = 'You rejected the offer',
-
-    ['NOTIFICATION__NO__AMOUNT'] = 'You need to enter an amount',
+    ['NOTIFICATION__CALLING__COPS'] = 'The buyer is calling the police!',
+    ['NOTIFICATION__NOT__INTERESTED'] = 'Buyer is not interested to buy now!',
+    ['NOTIFICATION__ALLREADY__SPOKE'] = 'You already spoke with this local',
+    ['NOTIFICATION__NO__DRUGS'] = 'You have nothing that the person wants',
+    ['NOTIFICATION__TO__LONG'] = 'You wasted time so the person left',
+    ['NOTIFICATION__OFFER__REJECTED'] = 'You rejected the offer',  
+    ['NOTIFICATION__SOLD__DRUG'] = "You recieved $%g",
+    ['NOTIFICATION__SELL__FAIL'] = 'You could not sell your %g!',
+    ['NOTIFICATION__NO__ITEM__LEFT'] = 'You do not have any %g to sell!',
 
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
@@ -71,6 +84,7 @@ Locales['en'] = {
 
     ['TARGET__PLANT__LABEL'] = 'Check Plant',
     ['TARGET__TABLE__LABEL'] = 'Use Table',
+    ['TARGET__SELL__LABEL'] = 'Talk'
 }
 
 function _U(string)

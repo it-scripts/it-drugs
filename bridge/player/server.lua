@@ -14,6 +14,32 @@ function it.getPlayers()
     end
 end
 
+function it.getPlayerJob(player)
+    local job = {}
+    if it.core == 'qb-core' then
+        job = {
+            name = player.job.name,
+            label = player.job.label,
+            grade_name = player.job.grade,
+            grade_label = player.job.grade.name,
+            grade_salary = player.job.payment,
+            isboss = player.job.isboss,
+            onduty = player.job.onduty
+        }
+    elseif it.core == 'esx' then
+        job = {
+            name = player.job.name,
+            label = player.job.label,
+            grade_name = player.job.grade_name,
+            grade_label = player.job.grade_label,
+            grade_salary = player.job.grade_salary,
+            isboss = player.job.grade_name == 'boss' or false,
+            onduty = true
+        }
+    end
+    return job
+end
+
 -- Money
 function it.addMoney(source, moneyType, amount, reason)
    if not reason then reason = 'unknown' end
@@ -39,7 +65,7 @@ function it.addMoney(source, moneyType, amount, reason)
         addedMoney = Player.Functions.AddMoney(moneyType, amount, reason)
     elseif it.core == 'esx' then
         moneyType = types[moneyType]['esx']
-        local currentMoney = Player.getAccount(moneyType)
+        local currentMoney = Player.getAccount(moneyType).money
         Player.addAccountMoney(moneyType, amount)
         if currentMoney + amount == Player.getAccount(moneyType) then
             addedMoney = true

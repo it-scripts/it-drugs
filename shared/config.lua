@@ -30,7 +30,6 @@ Config.Webhook = {
     ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
     ['name'] = 'it-drugs', -- Name for the webhook
     ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
-    ['color'] = 16711680, -- Default color for the webhook
 }
 
 --- Growing Related Settings
@@ -114,12 +113,28 @@ Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
 Config.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
-Config.PlantWater = { -- Create water for plants
-    ['watering_can'] = 25, -- Item and percent it adds to overall plant water
-}
 
-Config.PlantFertilizer = { -- Create fertilizer for plants
-    ['fertilizer'] = 33, -- Item and percent it adds to overall plant food
+Config.Items = {
+    ['watering_can'] = {
+        water = 25,
+        fertilizer = 0,
+        itemBack = nil, -- Example itemBack = 'watering_can' if you want to get the watering can back after used
+    },
+    ['liquid_fertilizer'] = {
+        water = 15,
+        fertilizer = 15,
+        itemBack = nil,
+    },
+    ['fertilizer'] = {
+        water = 0,
+        fertilizer = 25,
+        itemBack = nil,
+    },
+    ['advanced_fertilizer'] = {
+        water = 0,
+        fertilizer = 40,
+        itemBack = nil,
+    },
 }
 
 Config.PlantTypes = {
@@ -138,13 +153,13 @@ Config.PlantTypes = {
         [1] = {"bkr_prop_weed_bud_02b", 0},
         [2] = {"bkr_prop_weed_bud_02b", 0},
         [3] = {"bkr_prop_weed_bud_02a", 0},
-    }
+    },
 }
 
 Config.Plants = { -- Create seeds for drugs
 
     ['weed_lemonhaze_seed'] = {
-        growthTime = 180, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
         label = 'Lemon Haze', --
         plantType = 'plant1', -- Choose plant types from (plant1, plant2, small_plant)
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -159,10 +174,12 @@ Config.Plants = { -- Create seeds for drugs
         time = 3000 -- Time it takes to plant/harvest in miliseconds
     },
     ['coca_seed'] = {
-        growthTime = 180, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = 45, -- Cutsom growth time in minutes false if you want to use the global growth time
         label = 'Coca Plant', --
         plantType = 'small_plant', -- Choose plant types from (plant1, plant2, small_plant) also you can change plants yourself in main/client.lua line: 2
-        products = {coca = {min = 1, max = 2}}, -- Item the plant is going to produce when harvested with the max amount
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['coca']= {min = 1, max = 2}
+        },
         seed = {
             chance = 50, -- Percent of getting back the seed
             min = 1, -- Min amount of seeds
@@ -191,7 +208,7 @@ Config.Plants = { -- Create seeds for drugs
 Config.EnableProcessing = true -- Enable crafting system
 Config.ShowIngrediants = true -- Show ingrediants in the processing table
 
-Config.ProccesingSkillCheck = true -- Enable skill check for processingTables (Replaces the progressbar)
+Config.ProccesingSkillCheck = false -- Enable skill check for processingTables (Replaces the progressbar)
 Config.SkillCheck = {
     difficulty = {'easy', 'easy', 'medium', 'easy'},
     keys = {'w', 'a', 's', 'd'}
@@ -201,7 +218,8 @@ Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
         type = 'weed',
         model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
-        time = 10, -- Time in seconds to process 1 item
+        time = 15, -- Time in seconds to process 1 item
+        failChance = 15, -- Chance to fail processing in %
         ingrediants = {
             ['paper'] = 1,
             ['weed_lemonhaze'] = 3
@@ -213,6 +231,7 @@ Config.ProcessingTables = { -- Create processing table
         type = 'cocaine',
         model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
         time = 10, -- Time in seconds to process 1 item
+        failChance = 25, -- Chance to fail processing in %
         ingrediants = {
             ['coca'] = 3,
             ['nitrous'] = 1
@@ -244,7 +263,9 @@ Config.ProcessingTables = { -- Create processing table
     confusionEffect,
     whiteoutEffect,
     intenseEffect,
-    focusEffect
+    focusEffect,
+    superJump,
+    swimming
 --]]
 
 Config.EnableDrugs = true -- Enable drug effects
@@ -253,7 +274,7 @@ Config.Drugs = { -- Create you own drugs
     ['joint'] = {
         label = 'Joint',
         animation = 'smoke', -- Animations: blunt, sniff, pill
-        time = 30, -- Time of the Effects
+        time = 80, -- Time in seconds of the Effects
         effects = { -- Effects: runningSpeedIncrease, infinateStamina, moreStrength, healthRegen, foodRegen, drunkWalk, psycoWalk, outOfBody, cameraShake, fogEffect, confusionEffect, whiteoutEffect, intenseEffect, focusEffect
             'intenseEffect',
             'healthRegen',
@@ -264,7 +285,7 @@ Config.Drugs = { -- Create you own drugs
     ['cocaine'] = {
         label = 'Cocaine',
         animation = 'sniff', -- Animations: blunt, sniff, pill
-        time = 60, -- Time of the Effects
+        time = 60, -- Time in seconds of the Effects
         effects = { -- Effects: runningSpeedIncrease, infinateStamina, moreStrength, healthRegen, foodRegen, drunkWalk, psycoWalk, outOfBody, cameraShake, fogEffect, confusionEffect, whiteoutEffect, intenseEffect, focusEffect
             'runningSpeedIncrease',
             'infinateStamina',
@@ -291,12 +312,22 @@ Config.Drugs = { -- Create you own drugs
 Config.EnableSelling = true -- Enable selling system (Currently selling is disabled)
 
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
-Config.ChanceSell = 70 -- Chance to sell drug (in %)
-Config.RandomMinSell = 1 -- Random sell amount range min
-Config.RandomMaxSell = 6 -- Random sell amount range max
-Config.SellTimeout = 10 -- Max time you get to choose your option (secs)
-Config.GiveBonusOnPolice = true -- Give bonus money if there is police online
-Config.ShouldToggleSelling = false -- This option decides whether the person has to toggle selling in a zone (radialmenu/command) (Recommended: false)
+Config.PoliceJobs = {
+    'police',
+    'offpolice',
+    'sheriff',
+    'offsheriff',
+}
+
+Config.SellSettings = {
+    ['sellChange'] = 70, -- Chance to sell drug (in %)
+    ['sellAmount'] = { -- Amount of drugs you can sell
+        min = 1,
+        max = 6,
+    },
+    ['sellTimeout'] = 20, -- Max time you get to choose your option (secs)
+    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online
+}
 
 Config.SellZones = {
     ['groove'] = {
@@ -314,6 +345,11 @@ Config.SellZones = {
         },
         minZ = 18.035144805908,
         maxZ = 75.059997558594,
+        drugs = {
+            { item = 'cocaine', price = math.random(100, 200)},
+            { item = 'joint', price = math.random(50, 100)},
+            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+        }
     },
     ['vinewood'] = {
         points = {
@@ -333,99 +369,12 @@ Config.SellZones = {
             vector2(530.7640991211, -193.10136413574)
         },
         minZ = 45.0,
-        maxZ = 125.0
-    },
-    ['forumdr'] = {
-        points = {
-            vector2(-181.78276062012, -1767.562133789),
-            vector2(-232.15049743652, -1728.5841064454),
-            vector2(-257.00219726562, -1706.3781738282),
-            vector2(-316.23831176758, -1670.7681884766),
-            vector2(-317.6089477539, -1671.6815185546),
-            vector2(-339.08483886718, -1659.1655273438),
-            vector2(-345.54052734375, -1655.4389648438),
-            vector2(-370.05755615234, -1640.6751708984),
-            vector2(-357.4814453125, -1617.630859375),
-            vector2(-344.98095703125, -1605.980834961),
-            vector2(-308.92208862304, -1544.8927001954),
-            vector2(-304.6683959961, -1535.6296386718),
-            vector2(-307.36282348632, -1531.2420654296),
-            vector2(-303.91906738282, -1514.8071289062),
-            vector2(-302.4489440918, -1508.5216064454),
-            vector2(-299.51068115234, -1489.9995117188),
-            vector2(-297.42388916016, -1452.6616210938),
-            vector2(-297.9144897461, -1445.0788574218),
-            vector2(-300.47821044922, -1410.740600586),
-            vector2(-243.52647399902, -1409.9093017578),
-            vector2(-228.14682006836, -1408.454711914),
-            vector2(-214.2696685791, -1404.2430419922),
-            vector2(-202.69938659668, -1398.415649414),
-            vector2(-176.32830810546, -1382.9993896484),
-            vector2(-140.07070922852, -1360.1298828125),
-            vector2(-131.92518615722, -1353.8952636718),
-            vector2(-126.67826080322, -1347.0697021484),
-            vector2(-122.79215240478, -1338.1767578125),
-            vector2(-122.24575042724, -1335.2940673828),
-            vector2(-88.574974060058, -1337.8919677734),
-            vector2(-83.885818481446, -1337.3891601562),
-            vector2(-72.32137298584, -1347.8657226562),
-            vector2(-55.457233428956, -1349.6873779296),
-            vector2(-46.141300201416, -1350.8635253906),
-            vector2(0.30536636710166, -1350.3518066406),
-            vector2(19.377029418946, -1349.9018554688),
-            vector2(46.155563354492, -1350.2407226562),
-            vector2(56.231525421142, -1346.1237792968),
-            vector2(61.976043701172, -1336.847290039),
-            vector2(61.876712799072, -1331.4219970704),
-            vector2(94.016792297364, -1317.3137207032),
-            vector2(98.473731994628, -1315.1446533204),
-            vector2(100.91152191162, -1318.8972167968),
-            vector2(116.59771728516, -1309.0223388672),
-            vector2(115.354637146, -1306.6965332032),
-            vector2(142.13439941406, -1291.261352539),
-            vector2(143.9640197754, -1293.9191894532),
-            vector2(159.81324768066, -1280.7825927734),
-            vector2(166.5573272705, -1270.3135986328),
-            vector2(203.52110290528, -1282.7435302734),
-            vector2(231.76536560058, -1329.863647461),
-            vector2(215.84732055664, -1346.2076416016),
-            vector2(190.12483215332, -1387.3775634766),
-            vector2(162.40365600586, -1423.5834960938),
-            vector2(154.98637390136, -1424.7723388672),
-            vector2(126.23979187012, -1458.2556152344),
-            vector2(108.94204711914, -1478.851196289),
-            vector2(113.4779586792, -1482.6186523438),
-            vector2(111.75213623046, -1484.7049560546),
-            vector2(109.91118621826, -1483.4962158204),
-            vector2(92.817611694336, -1503.7390136718),
-            vector2(69.58283996582, -1526.8861083984),
-            vector2(39.489440917968, -1562.9592285156),
-            vector2(16.217784881592, -1590.7109375),
-            vector2(0.90857058763504, -1609.6218261718),
-            vector2(-22.47274017334, -1636.7037353516),
-            vector2(-65.98893737793, -1687.4913330078)
-        },
-        minZ = 15.0,
-        maxZ = 38.0
-    },
-}
-
-Config.SellZoneDrugs = {
-     -- Multiple drugs can be added to a zone like shown below
-     ["groove"] = { -- must be the same as in one of the SellZones!!
-        { item = 'weed_packaged', price = math.random(100, 200)},
-        { item = 'meth_packaged', price = math.random(100, 200)},
-        { item = 'coke_packaged', price = math.random(100, 200)},
-    },
-    ["vinewood"] = {
-        { item = 'weed_packaged', price = math.random(100, 200)},
-        { item = 'meth_packaged', price = math.random(100, 200)},
-        { item = 'coke_packaged', price = math.random(100, 200)},
-    },
-    ["forumdr"] = {
-        { item = 'weed_packaged', price = math.random(100, 200)},
-        { item = 'meth_packaged', price = math.random(100, 200)},
-        { item = 'coke_packaged', price = math.random(100, 200)},
+        maxZ = 125.0,
+        drugs = {
+            { item = 'cocaine', price = math.random(100, 200)},
+            { item = 'joint', price = math.random(50, 100)},
+            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+        }
     },
 }
 
@@ -441,16 +390,34 @@ Config.BlacklistPeds = {
     "s_m_m_migrant_01",
 }
 
+function SendPoliceAlert(coords)
+    -- Add You own police alert system here
+    local message = 'Drug Dealer spotted at '..coords
+    TriggerEvent('chat:addMessage', {
+        args = {message}
+    })
+end
 
-function ShowNotification(message, type)
+function ShowNotification(source, message, type)
     -- Bridge.Functions.Notify(message, type) are the default Framework notifications
     -- You can change this to your own notification systems
-    if type == 'error' then
-        it.notify(message, "error")
-    elseif type == 'success' then
-        it.notify(message, "success")
-    else
-        it.notify(message)
+
+    if source ~= nil then -- Server Messages
+        if type == 'error' then
+            it.notify(source, message, "error")
+        elseif type == 'success' then
+            it.notify(source, message, "success")
+        else
+            it.notify(source, message)
+        end
+    else -- Client Messages
+        if type == 'error' then
+            it.notify(message, "error")
+        elseif type == 'success' then
+            it.notify(message, "success")
+        else
+            it.notify(message)
+        end
     end
 end
 

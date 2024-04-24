@@ -65,7 +65,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
         end
 
         if not canplant then
-            ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
+            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
             DeleteObject(plant)
             return
         end
@@ -74,7 +74,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
     local zone = getCurrentZone(coords, plantItem)
     if Config.OnlyZones then
         if zone == nil then
-            ShowNotification(_U('NOTIFICATION__CANT__PLACE'), "error")
+            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
             DeleteObject(plant)
             return
         end
@@ -111,7 +111,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -127,7 +127,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
     local ped = PlayerPedId()
     local plantInfos = Config.Plants[plantItem]
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
-        ShowNotification(_U('NOTIFICATION__IN__VEHICLE'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
         return
     end
 
@@ -246,7 +246,7 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(_U('NOTIFICATION_CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -254,20 +254,8 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
     end
 end)
 
-RegisterNetEvent('it-drugs:client:giveWater', function(args)
-    local waterItem = nil
-
-    for k, v in pairs(Config.PlantWater) do
-        if it.hasItem(k, 1) then
-            waterItem = k
-            break
-        end
-    end
-    if waterItem == nil then
-        ShowNotification(_U('NOTIFICATION__NO__WATER'), "error")
-        return
-    end
-
+local giveWater = function(args)
+    local item = args.item
     local type = args.type
     local entity = args.entity
 
@@ -299,32 +287,20 @@ RegisterNetEvent('it-drugs:client:giveWater', function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:giveWater', entity, waterItem)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
     else
-        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
     end
-end)
+end
 
-RegisterNetEvent('it-drugs:client:giveFertilizer', function(args)
-    local fertilizerItem = nil
-
-    for k, v in pairs(Config.PlantFertilizer) do
-        if it.hasItem(k, 1) then
-            fertilizerItem = k
-            break
-        end
-    end
-    if fertilizerItem == nil then
-        ShowNotification(_U('NOTIFICATION__NO__FERTILIZER'), "error")
-        return
-    end
-
+local giveFertilizer = function(args)
+    local item = args.item
     local type = args.type
     local entity = args.entity
 
@@ -353,13 +329,29 @@ RegisterNetEvent('it-drugs:client:giveFertilizer', function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:giveFertilizer', entity, fertilizerItem)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     else
-        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         DeleteEntity(created_object)
+    end
+end
+
+RegisterNetEvent('it-drugs:client:useItem', function (args)
+    local item = args.item
+
+    if not it.hasItem(item, 1 ) then
+        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+        return
+    end
+
+    local itemInfos = Config.Items[item]
+    if itemInfos.water ~= 0 then
+        giveWater(args)
+    elseif itemInfos.fertilizer ~= 0 then
+        giveFertilizer(args)
     end
 end)
 
@@ -399,7 +391,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')

@@ -1,9 +1,23 @@
-local infinateStamina = false
-local healthRegen = false
-local foodRegen = false
-local cameraShake = false
-local strength = false
-local outOfBody = false
+local currentDrug = nil
+
+local drugEffects = {
+    ['runningSpeedIncrease'] = false,
+    ['infinateStamina'] = false,
+    ['moreStrength'] = false,
+    ['healthRegen'] = false,
+    ['foodRegen'] = false,
+    ['drunkWalk'] = false,
+    ['psycoWalk'] = false,
+    ['outOfBody'] = false,
+    ['cameraShake'] = false,
+    ['fogEffect'] = false,
+    ['confusionEffect'] = false,
+    ['whiteoutEffect'] = false,
+    ['intenseEffect'] = false,
+    ['focusEffect'] = false,
+    ['superJump'] = false,
+    ['swimming'] = false
+}
 
 local function loadAnimDict(dict)
     RequestAnimDict(dict)
@@ -12,338 +26,262 @@ local function loadAnimDict(dict)
     end
 end
 
-Citizen.CreateThread(
-    function()
-        while true do
-            if healthRegen then
-                local ped = PlayerPedId()
-                local health = GetEntityHealth(ped)
-                SetEntityHealth(ped, health + 5)
-                Citizen.Wait(3000)
-            else
-                Citizen.Wait(3000)
-            end
-        end
-    end
-)
+local setDrugEffects = function(effects)
 
-Citizen.CreateThread(
-    function()
-        while true do
-            if outOfBody then
-                local pid = PlayerId()
-                ShakeGameplayCam("FAMILY5_DRUG_TRIP_SHAKE", 3.2)
-                Citizen.Wait(10000)
-            else
-                Citizen.Wait(1000)
-            end
-        end
-    end
-)
-
-Citizen.CreateThread(
-    function()
-        while true do
-            if cameraShake then
-                local pid = PlayerId()
-                ShakeGameplayCam("MEDIUM_EXPLOSION_SHAKE", 0.2)
-                Citizen.Wait(1100)
-            else
-                Citizen.Wait(1000)
-            end
-        end
-    end
-)
-
-Citizen.CreateThread(
-    function()
-        while true do
-            if infinateStamina then
-                local pid = PlayerId()
-                RestorePlayerStamina(pid, 1.0)
-                Citizen.Wait(0)
-            else
-                Citizen.Wait(1000)
-            end
-        end
-    end
-)
-
-Citizen.CreateThread(function()
-    while true do
-        if foodRegen then
-            --TriggerEvent("QBCore:Server:SetMetaData", "hunger", 40000)
-            --TriggerEvent("QBCore:Server:SetMetaData", "thirst", 20000)
-            Citizen.Wait(4000)
-        else
-            Citizen.Wait(1000)
-        end
-    end
-end)
-
-
-Citizen.CreateThread(
-    function()
-        while true do
-            if strength then
-                local pid = PlayerId()
-                local ped = PlayerPedId()
-                if GetSelectedPedWeapon(ped) == GetHashKey("WEAPON_UNARMED") then
-                    SetPlayerMeleeWeaponDamageModifier(pid, 2.0)
-                end
-                Citizen.Wait(5)
-            else
-                Citizen.Wait(1000)
-            end
-        end
-    end
-)
-
-function addEffect(effect, status)
+    if Config.Debug then lib.print.info('Drug Effects:', effects) end
     local ped = PlayerPedId()
+    for _, effect in pairs(effects) do
 
-    if effect == "runningSpeedIncrease" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    SetPedMoveRateOverride(PlayerId(), 10.0)
-                    SetRunSprintMultiplierForPlayer(PlayerId(), 1.49)
-                end
-            )
-        else
-            SetPedMoveRateOverride(PlayerId(), 0.0)
-            SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
-        end
-    elseif effect == "infinateStamina" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    infinateStamina = true
-                end
-            )
-        else
-            infinateStamina = false
-        end
-    elseif effect == "moreStrength" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    strength = true
-                end
-            )
-        else
-            strength = false
-        end
-    elseif effect == "healthRegen" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    healthRegen = true
-                end
-            )
-        else
-            healthRegen = false
-        end
-    elseif effect == "foodRegen" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    foodRegen = true
-                end
-            )
-        else
-            foodRegen = false
-        end
-    elseif effect == "drunkWalk" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    RequestAnimSet("MOVE_M@DRUNK@VERYDRUNK")
-                    while not HasAnimSetLoaded("MOVE_M@DRUNK@VERYDRUNK") do
-                        Citizen.Wait(0)
-                    end
+        if drugEffects[effect] == nil then return end
+        drugEffects[effect] = true
 
-                    Citizen.Wait(30000)
-                    SetPedMovementClipset(ped, "MOVE_M@DRUNK@VERYDRUNK", true)
+        if effect == "runningSpeedIncrease" then
+            SetPedMoveRateOverride(PlayerId(), 10.0)
+            SetRunSprintMultiplierForPlayer(PlayerId(), 1.49)
+        elseif effect == "drunkWalk" then
+            CreateThread(function()
+                RequestAnimSet("MOVE_M@DRUNK@VERYDRUNK")
+                while not HasAnimSetLoaded("MOVE_M@DRUNK@VERYDRUNK") do
+                    Wait(0)
                 end
-            )
-        else
-            ResetPedMovementClipset(ped, 0)
-        end
-    elseif effect == "psycoWalk" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    RequestAnimSet("MOVE_M@QUICK")
-                    while not HasAnimSetLoaded("MOVE_M@QUICK") do
-                        Citizen.Wait(0)
-                    end
-
-                    Citizen.Wait(30000)
-                    SetPedMovementClipset(ped, "MOVE_M@QUICK", true)
+                SetPedMovementClipset(ped, "MOVE_M@DRUNK@VERYDRUNK", 200)
+            end)
+        elseif effect == "psycoWalk" then
+            CreateThread(function()
+                RequestAnimSet("MOVE_M@QUICK")
+                while not HasAnimSetLoaded("MOVE_M@QUICK") do
+                    Wait(0)
                 end
-            )
-        else
-            ResetPedMovementClipset(ped, 0)
-        end
-    elseif effect == "outOfBody" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    outOfBody = true
-                end
-            )
-        else
-            ShakeGameplayCam("FAMILY5_DRUG_TRIP_SHAKE", 0.0)
-            outOfBody = false
-        end
-    elseif effect == "cameraShake" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    Citizen.Wait(30000)
-                    cameraShake = true
-                end
-            )
-        else
-            ShakeGameplayCam("MEDIUM_EXPLOSION_SHAKE", 0.0)
-            cameraShake = false
-        end
-    elseif effect == "fogEffect" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("DrugsDrivingIn", 30000, true)
-                    Citizen.Wait(30000)
-
-                    AnimpostfxPlay("DrugsMichaelAliensFightIn", 100000, true)
-                end
-            )
-        else
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxStop("DrugsDrivingIn")
-                    AnimpostfxPlay("DrugsDrivingOut", 20000, true)
-                    AnimpostfxStop("DrugsMichaelAliensFightIn")
-                    Citizen.Wait(20000)
-                    AnimpostfxStop("DrugsDrivingOut")
-                end
-            )
-        end
-    elseif effect == "confusionEffect" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("Rampage", 30000, true)
-                    Citizen.Wait(30000)
-                    AnimpostfxPlay("Dont_tazeme_bro", 30000, true)
-                end
-            )
-        else
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxStop("Rampage")
-                    AnimpostfxStop("Dont_tazeme_bro")
-                    AnimpostfxPlay("RampageOut", 20000, true)
-                    Citizen.Wait(20000)
-                    AnimpostfxStop("RampageOut")
-                end
-            )
-        end
-    elseif effect == "whiteoutEffect" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("DrugsDrivingIn", 30000, true)
-                    Citizen.Wait(30000)
-                    AnimpostfxPlay("PeyoteIn", 100000, true)
-                end
-            )
-        else
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("DrugsDrivingOut", 20000, true)
-                    AnimpostfxPlay("PeyoteOut", 20000, true)
-                    AnimpostfxStop("PeyoteIn")
-                    AnimpostfxStop("DrugsDrivingIn")
-                    Citizen.Wait(20000)
-                    AnimpostfxStop("DrugsDrivingOut")
-                    AnimpostfxStop("PeyoteOut")
-                end
-            )
-        end
-    elseif effect == "intenseEffect" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("DrugsDrivingIn", 30000, true)
-                    Citizen.Wait(30000)
-                    AnimpostfxPlay("DMT_flight_intro", 100000, true)
-                end
-            )
-        else
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("DrugsDrivingOut", 20000, true)
-                    AnimpostfxStop("DMT_flight_intro")
-                    AnimpostfxStop("DrugsDrivingIn")
-                    Citizen.Wait(20000)
-                    AnimpostfxStop("DrugsDrivingOut")
-                end
-            )
-        end
-    elseif effect == "focusEffect" then
-        if status then
-            Citizen.CreateThread(
-                function()
-                    AnimpostfxPlay("FocusIn", 100000, true)
-                end
-            )
-        else
-            AnimpostfxStop("FocusIn")
-            AnimpostfxPlay("FocusOut", 10000, false)
+                SetPedMovementClipset(ped, "MOVE_M@QUICK", 200)
+            end)
+        elseif effect == "fogEffect" then
+            CreateThread(function()
+                AnimpostfxPlay("DrugsDrivingIn", 5000, true)
+                Wait(5000)
+                AnimpostfxPlay("DrugsMichaelAliensFightIn", 100000, true)
+            end)
+        elseif effect == "confusionEffect" then
+            CreateThread(function()
+                AnimpostfxPlay("Rampage", 5000, true)
+                Wait(5000)
+                AnimpostfxPlay("Dont_tazeme_bro", 100000, true)
+            end)
+        elseif effect == "whiteoutEffect" then
+            CreateThread(function()
+                AnimpostfxPlay("DrugsDrivingIn", 5000, true)
+                Wait(5000)
+                AnimpostfxPlay("PeyoteIn", 100000, true)
+            end)
+        elseif effect == "intenseEffect" then
+            CreateThread(function()
+                AnimpostfxPlay("DrugsDrivingIn", 5000, true)
+                Wait(5000)
+                AnimpostfxPlay("DMT_flight_intro", 100000, true)
+            end)
+        elseif effect == "focusEffect" then
+            CreateThread(function()
+                AnimpostfxPlay("FocusIn", 100000, true)
+            end)
         end
     end
+    if Config.Debug then lib.print.info('Drug Effects:', drugEffects) end
 end
 
-RegisterNetEvent('it-drugs:client:takeDrug', function(drugItem)
-    print('Drug Used: '..drugItem)
-    --[[ if currentDrug ~= nil then
-        QBCore.Functions.Notify("You are already on a drug..", "error")
-        return
-    end ]]
+local clearDrugEffects = function()
+    if Config.Debug then lib.print.info('Clearing Drug Effects') end
+    local ped = PlayerPedId()
 
-    local drug = Config.Drugs[drugItem]
-    local playerPed = PlayerPedId()
+    SetPedMoveRateOverride(PlayerId(), 0.0)
+    SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+    ResetPedMovementClipset(ped, 0)
+    ShakeGameplayCam("FAMILY5_DRUG_TRIP_SHAKE", 0.0)
+    ShakeGameplayCam("MEDIUM_EXPLOSION_SHAKE", 0.0)
 
-    print(drugItem)
-    print(drug)
-    if drug == nil then return end
-    if drug.animation == 'pill' then
-        loadAnimDict('mp_suicide')
-        TaskPlayAnim(playerPed, 'mp_suicide', 'pill', 3.0, 3.0, 2000, 48, 0, false, false, false)
-    elseif drug.animation == 'sniff' then
-        loadAnimDict('anim@mp_player_intcelebrationmale@face_palm')
-        TaskPlayAnim(playerPed, 'anim@mp_player_intcelebrationmale@face_palm', 'face_palm', 3.0, 3.0, 3000, 48, 0, false, false, false)
-    elseif drug.animation == 'smoke' then
-        loadAnimDict('amb@world_human_smoking_pot@female@base')
-        TaskPlayAnim(playerPed, 'amb@world_human_smoking_pot@female@base', 'base', 3.0, 3.0, 3000, 48, 0, false, false, false)
+    for effect, state in pairs(drugEffects) do
+
+        if effect == "fogEffect" and state then
+            CreateThread(function()
+                AnimpostfxStop("DrugsDrivingIn")
+                    AnimpostfxPlay("DrugsDrivingOut", 5000, true)
+                    AnimpostfxStop("DrugsMichaelAliensFightIn")
+                    Wait(5000)
+                    AnimpostfxStop("DrugsDrivingOut")
+            end)
+        elseif effect == "confusionEffect" and state then
+            CreateThread(function()
+                AnimpostfxStop("Rampage")
+                AnimpostfxStop("Dont_tazeme_bro")
+                AnimpostfxPlay("RampageOut", 5000, true)
+                Wait(5000)
+                AnimpostfxStop("RampageOut")
+            end)
+        elseif effect == "whiteoutEffect" and state then
+            CreateThread(function()
+                AnimpostfxPlay("DrugsDrivingOut", 5000, true)
+                    AnimpostfxPlay("PeyoteOut", 5000, true)
+                    AnimpostfxStop("PeyoteIn")
+                    AnimpostfxStop("DrugsDrivingIn")
+                    Wait(5000)
+                    AnimpostfxStop("DrugsDrivingOut")
+                    AnimpostfxStop("PeyoteOut")
+            end)
+        elseif effect == "intenseEffect" and state then
+            CreateThread(function()
+                AnimpostfxPlay("DrugsDrivingOut", 5000, true)
+                    AnimpostfxStop("DMT_flight_intro")
+                    AnimpostfxStop("DrugsDrivingIn")
+                    Wait(5000)
+                    AnimpostfxStop("DrugsDrivingOut")
+            end)
+        elseif effect == "focusEffect" and state then
+            AnimpostfxStop("FocusIn")
+            AnimpostfxPlay("FocusOut", 5000, false)
+        elseif effect == "swimming" and state then
+            SetPedConfigFlag(ped, 65, false)
+        end
+        drugEffects[effect] = false
     end
+    -- Reset player screen effects
+    currentDrug = nil
+end
 
-    for _, effect in ipairs(drug.effects) do
-        addEffect(effect, true)
-    end
-
-    Wait(drug.time * 1000)
-
-    for _, effect in ipairs(drug.effects) do
-        addEffect(effect, false)
+CreateThread(function()
+    local ped = PlayerPedId()
+    while true do
+        if drugEffects['infinateStamina'] then
+            RestorePlayerStamina(PlayerId(), 1.0)
+            Wait(0)
+        else
+            Wait(5000)
+        end
     end
 end)
 
+CreateThread(function()
+    while true do
+        if drugEffects['healthRegen'] then
+            local ped = PlayerPedId()
+            local health = GetEntityHealth(ped)
+            if health < 200 then
+                SetEntityHealth(ped, health + 1)
+            end
+            Wait(2000)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['outOfBody'] then
+            ShakeGameplayCam("FAMILY5_DRUG_TRIP_SHAKE", 3.2)
+            Wait(10000)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['cameraShake'] then
+            ShakeGameplayCam("MEDIUM_EXPLOSION_SHAKE", 1.0)
+            Wait(1100)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['moreStrength'] then
+            local pid = PlayerId()
+            local ped = PlayerPedId()
+            if GetSelectedPedWeapon(ped) == GetHashKey("WEAPON_UNARMED") then
+                SetPlayerMeleeWeaponDamageModifier(pid, 2.0)
+            end
+            Wait(5)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['foodRegen'] then
+            if it.getCoreName() == "qbcore" then
+                TriggerEvent("QBCore:Server:SetMetaData", "hunger", 40000)
+                TriggerEvent("QBCore:Server:SetMetaData", "thirst", 20000)
+                Wait(4000)
+            elseif it.getCoreName() == "esx" then
+                TriggerEvent("esx_status:set", "hunger", 100000)
+                TriggerEvent("esx_status:set", "thirst", 100000)
+                Wait(4000)
+            end
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['superJump'] then
+            SetSuperJumpThisFrame(PlayerId())
+            SetPedCanRagdoll(PlayerPedId(), false)
+            Wait(0)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        if drugEffects['swimming'] then
+            SetPedConfigFlag(PlayerPedId(), 65, true)
+            Wait(0)
+        else
+            Wait(5000)
+        end
+    end
+end)
+
+RegisterNetEvent('it-drugs:client:takeDrug', function(drugItem)
+    local drugData = Config.Drugs[drugItem]
+    local ped = PlayerPedId()
+
+    if drugData == nil then
+        ShowNotification(nil, "This drug does not exist.", "error")
+        return
+    end
+
+    currentDrug = drugItem
+
+    if drugData.animation == 'pill' then
+        loadAnimDict('mp_suicide')
+        TaskPlayAnim(ped, 'mp_suicide', 'pill', 3.0, 3.0, 2000, 48, 0, false, false, false)
+    elseif drugData.animation == 'sniff' then
+        loadAnimDict('anim@mp_player_intcelebrationmale@face_palm')
+        TaskPlayAnim(ped, 'anim@mp_player_intcelebrationmale@face_palm', 'face_palm', 3.0, 3.0, 3000, 48, 0, false, false, false)
+    elseif drugData.animation == 'smoke' then
+        loadAnimDict('amb@world_human_smoking_pot@female@base')
+        TaskPlayAnim(ped, 'amb@world_human_smoking_pot@female@base', 'base', 3.0, 3.0, 3000, 48, 0, false, false, false)
+    end
+
+    setDrugEffects(drugData.effects)
+    SetTimeout(drugData.time * 1000, clearDrugEffects)
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+    if resource ~= GetCurrentResourceName() then return end
+    if currentDrug == nil then return end
+    clearDrugEffects()
+end)
+
+lib.callback.register('it-drugs:client:getCurrentDrugEffect', function()
+    return currentDrug
+end)

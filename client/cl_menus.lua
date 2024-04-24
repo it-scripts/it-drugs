@@ -168,8 +168,8 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     arrow = true,
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange",
-                    event = "it-drugs:client:giveFertilizer",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    event = "it-drugs:client:showItemMenu",
+                    args = {entity = plantData.entity, type = plantData.type, eventType = "fertilizer"}
                 },
                 {
                     title = _U('MENU__PLANT__WATER'),
@@ -181,8 +181,8 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     arrow = true,
                     progress = math.floor(plantData.water),
                     colorScheme = "blue",
-                    event = "it-drugs:client:giveWater",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    event = "it-drugs:client:showItemMenu",
+                    args = {entity = plantData.entity, type = plantData.type, eventType = "water"}
                 },
                 {
                     title = _U('MENU__PLANT__DESTROY'),
@@ -196,6 +196,59 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
         })
         lib.showContext("it-drugs-plant-menu")
     end
+end)
+
+RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
+    local entity = data.entity
+    local type = data.type
+    local eventType = data.eventType
+
+    local options = {}
+    if eventType == 'water' then
+        for item, itemData in pairs(Config.Items) do
+            if it.hasItem(item, 1) and itemData.water ~= 0 then
+                table.insert(options, {
+                    title = it.getItemLabel(item),
+                    description = _U('MENU__ITEM__DESC'),
+                    metadata = {
+                        {label = _U('MENU__PLANT__WATER'), value = itemData.water},
+                        {label = _U('MENU__PLANT__FERTILIZER'), value = itemData.fertilizer}
+                    },
+                    arrow = true,
+                    event = 'it-drugs:client:useItem',
+                    args = {entity = entity, type = type, item = item}
+                })
+            end
+        end
+    elseif eventType == 'fertilizer' then
+        for item, itemData in pairs(Config.Items) do
+            if it.hasItem(item, 1) and itemData.fertilizer ~= 0 then
+                table.insert(options, {
+                    title = it.getItemLabel(item),
+                    description = _U('MENU__ITEM__DESC'),
+                    metadata = {
+                        {label = _U('MENU__PLANT__WATER'), value = itemData.water},
+                        {label = _U('MENU__PLANT__FERTILIZER'), value = itemData.fertilizer}
+                    },
+                    arrow = true,
+                    event = 'it-drugs:client:useItem',
+                    args = {entity = entity, type = type, item = item}
+                })
+            end
+        end
+    end
+    if #options == 0 then
+        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
+        return
+    end
+
+    lib.registerContext({
+        id = "it-drugs-item-menu",
+        title = _U('MENU__ITEM'),
+        options = options
+    })
+
+    lib.showContext("it-drugs-item-menu")
 end)
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
@@ -251,8 +304,55 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
 
     lib.registerContext({
         id = "it-drugs-processing-menu",
-        title = _U('MENU_PROCESSING'),
+        title = _U('MENU__PROCESSING'),
         options = options
     })
     lib.showContext("it-drugs-processing-menu")
+end)
+
+-- ┌──────────────────────────────────────────┐
+-- │ ____       _ _   __  __                  │
+-- │/ ___|  ___| | | |  \/  | ___ _ __  _   _ │
+-- │\___ \ / _ \ | | | |\/| |/ _ \ '_ \| | | |│
+-- │ ___) |  __/ | | | |  | |  __/ | | | |_| |│
+-- │|____/ \___|_|_| |_|  |_|\___|_| |_|\__,_|│
+-- └──────────────────────────────────────────┘
+-- Sell Menu
+
+RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
+    local item = data.item
+    local amount = data.amount
+    local price = data.price
+    local ped = data.entity
+
+    local itemLabel = it.getItemLabel(item)
+
+    lib.registerContext({
+        id = "it-drugs-sell-menu",
+        title = _U('MENU__SELL'),
+        options = {
+            {
+                title = _U('MENU__SELL__DEAL'),
+                description = _U('MENU__SELL__DESC'):format(itemLabel, amount, amount * price),
+                icon = "coins",
+            },
+            {
+                title = _U('MENU__SELL__ACCEPT'),
+                icon = "circle-check",
+                description = _U('MENU__SELL__ACCEPT__DESC'),
+                arrow = true,
+                event = "it-drugs:client:salesInitiate",
+                args = {type = 'buy', item = item, price = price, amount = amount, tped = ped}
+            },
+            {
+                title = _U('MENU__SELL__REJECT'),
+                icon = "circle-xmark",
+                description = _U('MENU__SELL__REJECT__DESC'),
+                arrow = true,
+                event = "it-drugs:client:salesInitiate",
+                args = {type = 'close', tped = ped}
+            }
+        }
+    })
+    lib.showContext("it-drugs-sell-menu")
 end)

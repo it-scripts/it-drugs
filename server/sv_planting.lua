@@ -248,6 +248,54 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(entity)
     end
 end)
 
+
+RegisterNetEvent('it-drugs:server:plantTakeCare', function(entity, item)
+
+    if not plants[entity] then return end
+    local src = source
+    local player = it.getPlayer(src)
+    if not player then return end
+    if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
+
+    if it.removeItem(src, item, 1) then
+        local itemData = Config.Items[item]
+        if itemData.water ~= 0 then
+            local itemStrength = itemData.water
+            local currentWater = plants[entity].water
+            if currentWater + itemStrength >= 100 then
+                plants[entity].water = 100
+            else
+                plants[entity].water = currentWater + itemStrength
+            end
+
+            MySQL.update('UPDATE drug_plants SET water = (:water) WHERE id = (:id)', {
+                ['water'] = json.encode(plants[entity].water),
+                ['id'] = plants[entity].id,
+            })
+            SendToWebhook(src, 'plant', 'water', plants[entity])
+        end
+
+        if itemData.fertilizer ~= 0 then
+            local itemStrength = itemData.fertilizer
+            local currentFertilizer = plants[entity].fertilizer
+            if currentFertilizer + itemStrength >= 100 then
+                plants[entity].fertilizer = 100
+            else
+                plants[entity].fertilizer = currentFertilizer + itemStrength
+            end
+
+            MySQL.update('UPDATE drug_plants SET fertilizer = (:fertilizer) WHERE id = (:id)', {
+                ['fertilizer'] = json.encode(plants[entity].fertilizer),
+                ['id'] = plants[entity].id,
+            })
+            SendToWebhook(src, 'plant', 'fertilize', plants[entity])
+        end
+        if itemData.itemBack ~= nil then
+            it.giveItem(src, itemData.itemBack, 1)
+        end
+    end
+end)
+
 RegisterNetEvent('it-drugs:server:giveWater', function(entity, item)
     if not plants[entity] then return end
     local src = source
@@ -259,7 +307,7 @@ RegisterNetEvent('it-drugs:server:giveWater', function(entity, item)
 
         SendToWebhook(src, 'plant', 'water', plants[entity])
 
-        local itemStrength = Config.PlantWater[item]
+        local itemStrength = Config.Items[item].water
         local currentWater = plants[entity].water
         if currentWater + itemStrength >= 100 then
             plants[entity].water = 100
@@ -284,7 +332,7 @@ RegisterNetEvent('it-drugs:server:giveFertilizer', function(entity, item)
     if it.removeItem(src, item, 1) then
         SendToWebhook(src, 'plant', 'fertilize', plants[entity])
         
-        local itemStrength = Config.PlantFertilizer[item]
+        local itemStrength = Config.Items[item].fertilizer
         local currentFertilizer = plants[entity].fertilizer
         if currentFertilizer + itemStrength >= 100 then
             plants[entity].fertilizer = 100
@@ -314,7 +362,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         local time = os.time()
 
         local growTime = Config.GlobalGrowTime
-        if plantInfos.growthTime ~= nil then
+        if plantInfos.growthTime then
             growTime = plantInfos.growthTime
         end
         if Config.Zones[zone] ~= nil and Config.Zones[zone].growMultiplier then
@@ -373,6 +421,6 @@ end)
 
 --- Threads
 CreateThread(function()
-    Wait(2000) -- Wait 5 seconds to allow all functions to be executed on startup
+    Wait(1000) -- Wait 5 seconds to allow all functions to be executed on startup
     updatePlantNeeds()
 end)

@@ -55,7 +55,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(_U('NOTIFICATION_CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -65,7 +65,7 @@ end
 RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
     local ped = PlayerPedId()
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
-        ShowNotification(_U('NOTIFICATION__IN__VEHICLE'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
         return
     end
 
@@ -174,14 +174,14 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     })
 
     if not input then
-        ShowNotification(_U('NOTIFICATION__NO__AMOUNT'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'error')
         return
     end
 
     local amount = tonumber(input[1])
     for item, itemAmount in pairs(Config.ProcessingTables[type].ingrediants) do
         if not it.hasItem(item, itemAmount * amount) then
-            ShowNotification(_U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+            ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             proccessing = false
             return
         end
@@ -190,7 +190,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     local netId = NetworkGetNetworkIdFromEntity(entity)
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
-    Wait(1500)
+    Wait(200)
 
     proccessing = true
 
@@ -210,11 +210,11 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         for i = 1, amount, 1 do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then
-                ShowNotification(_U('NOTIFICATION__SKILL__SUCCESS'), 'success')
+                ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
                 TriggerServerEvent('it-drugs:server:processDrugs', entity)
             else
                 proccessing = false
-                ShowNotification(_U('NOTIFICATION_SKILL_ERROR'), 'error')
+                ShowNotification(nil, _U('NOTIFICATION_SKILL_ERROR'), 'error')
                 ClearPedTasks(ped)
                 RemoveAnimDict('amb@medic@standing@kneel@base')
                 RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -241,7 +241,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
             }) then
                 TriggerServerEvent('it-drugs:server:processDrugs', entity)
             else
-                ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+                ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
                 ClearPedTasks(ped)
                 RemoveAnimDict('amb@medic@standing@kneel@base')
                 RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -289,7 +289,7 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(_U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
