@@ -1,4 +1,4 @@
-local webhookUrl= "https://discord.com/api/webhooks/1228158942132178945/6TndrdMLkfLawg3SPApEzLzOvhe8jVhvxQwKUR4my5Oe8tGIBo-6XGTm3J528nyHckVH" -- Discord Webhook Link
+local webhookUrl= "https://discord.com/api/webhooks/*******************************************" -- Discord Webhook Link
 
 local errors = {
     [200] = "Everything is fine the webhook message was sent successfully!",
