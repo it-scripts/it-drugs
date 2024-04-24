@@ -63,6 +63,9 @@ Locales['de'] = {
     ['NOTIFICATION__SELL__FAIL'] = 'Du konntest deine Drogen nicht verkaufen %g!',
     ['NOTIFICATION__NO__ITEM__LEFT'] = 'Du hast kein %g zum Verkaufen!',
 
+    ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Diese Droge hat keine Effekte!',
+    ['NOTIFICATION__DRUG__ALREADY'] = 'Du hast bereits eine Droge eingenommen!',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Gießen...',

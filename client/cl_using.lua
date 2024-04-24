@@ -255,7 +255,7 @@ RegisterNetEvent('it-drugs:client:takeDrug', function(drugItem)
     local ped = PlayerPedId()
 
     if drugData == nil then
-        ShowNotification(nil, "This drug does not exist.", "error")
+        ShowNotification(nil, _U('NOTIFICATION__DRUG__NO__EFFECT'), "error")
         return
     end
 

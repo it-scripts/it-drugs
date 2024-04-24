@@ -65,6 +65,9 @@ Locales['en'] = {
     ['NOTIFICATION__SELL__FAIL'] = 'You could not sell your %g!',
     ['NOTIFICATION__NO__ITEM__LEFT'] = 'You do not have any %g to sell!',
 
+    ['NOTIFICATION__DRUG__NO__EFFECT'] = 'This drug has no effect',
+    ['NOTIFICATION__DRUG__ALREADY'] = 'You are already under the influence of a drug.',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Watering...',

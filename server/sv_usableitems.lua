@@ -32,7 +32,7 @@ if Config.EnableDrugs then
                     TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
                     return
                 end
-                ShowNotification(src, "You are already under the influence of a drug.", "info")
+                ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
             end
         end)
     end
