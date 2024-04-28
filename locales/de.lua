@@ -1,6 +1,6 @@
 Locales['de'] = {
-    ['MENU_PLANT'] = '%s',
-    ['MENU__DEAD_PLANT'] = 'Abgestorbene Pflanze',
+    ['MENU__PLANT'] = '%s',
+    ['MENU__DEAD__PLANT'] = 'Abgestorbene Pflanze',
 
     ['MENU__PLANT__LIFE'] = 'Gesundheit',
     ['MENU__PLANT__LIFE__META'] = 'Der Gesundheitszustand der Pflanze, wenn er 0 erreicht, stirbt die Pflanze',
@@ -22,7 +22,7 @@ Locales['de'] = {
 
     ['MENU__ITEM_DESC'] = 'Nutze diese Item im dich um deine Pflanze zu kümmern',
 
-    ['MENU_PROCESSING'] = 'Verarbeiten',
+    ['MENU__PROCESSING'] = 'Verarbeiten',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unbekannte Zutat',
     ['MENU__INGREDIANT__DESC'] = 'Du benötigen %g dieser Zutat',

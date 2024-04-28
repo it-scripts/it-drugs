@@ -1,6 +1,6 @@
 Locales['en'] = {
-    ['MENU_PLANT'] = '%s',
-    ['MENU__DEAD_PLANT'] = 'Dead Plant',
+    ['MENU__PLANT'] = '%s',
+    ['MENU__DEAD__PLANT'] = 'Dead Plant',
 
     ['MENU__PLANT__LIFE'] = 'Health',
     ['MENU__PLANT__LIFE__META'] = 'The health of the plant, if it reaches 0 the plant will die',
@@ -23,7 +23,7 @@ Locales['en'] = {
     ['MENU__ITEM'] = 'Items',
     ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
 
-    ['MENU_PROCESSING'] = 'Proccessing',
+    ['MENU__PROCESSING'] = 'Proccessing',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unknown Ingrediant',
     ['MENU__INGREDIANT__DESC'] = 'You need %g of this ingrediant',
