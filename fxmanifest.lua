@@ -3,7 +3,7 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
-version 'v1.1.0'
+version 'v1.1.1'
 
 shared_script 'bridge/init.lua'
 
@@ -22,7 +22,6 @@ client_scripts {
 
     'bridge/**/client.lua',
 
-    'client/cl_functions.lua',
     'client/cl_menus.lua',
     'client/cl_planting.lua',
     'client/cl_processing.lua',
