@@ -13,7 +13,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
     if plantData.health == 0 then
         lib.registerContext({
             id = "it-drugs-dead-plant-menu",
-            title = _U('MENU__DEAD_PLANT'),
+            title = _U('MENU__DEAD__PLANT'),
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),
@@ -70,7 +70,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
     elseif plantData.growth == 100 then
         lib.registerContext({
             id = "it-drugs-harvest-plant-menu",
-            title = _U('MENU_PLANT'):format(plantName),
+            title = _U('MENU__PLANT'):format(plantName),
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),
@@ -136,7 +136,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
     else
         lib.registerContext({
             id = "it-drugs-plant-menu",
-            title = _U('MENU_PLANT'):format(plantName),
+            title = _U('MENU__PLANT'):format(plantName),
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),

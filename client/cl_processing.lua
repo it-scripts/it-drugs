@@ -206,7 +206,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
 
 
-    if Config.ProccesingSkillCheck then
+    if Config.ProcessingSkillCheck then
         for i = 1, amount, 1 do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then

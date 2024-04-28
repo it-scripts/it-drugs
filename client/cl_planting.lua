@@ -131,6 +131,14 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
         return
     end
 
+    local ownedPlants = lib.callback.await('it-drugs:server:getPlantsOwned', false)
+    if ownedPlants ~= nil then
+        if #ownedPlants >= Config.PlayerPlantLimit then
+            ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "error")
+            return
+        end
+    end
+
     local hashModel = GetHashKey(Config.PlantTypes[plantInfos.plantType][1][1])
     local customOffset = Config.PlantTypes[plantInfos.plantType][1][2]
     RequestModel(hashModel)
