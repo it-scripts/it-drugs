@@ -36,6 +36,7 @@ Config.Webhook = {
 Config.rayCastingDistance = 7.0 -- distance in meters
 Config.FireTime = 10000 -- in ms
 Config.ClearOnStartup = true -- Clear dead plants on script start-up
+Config.PlayerPlantLimit = 10 -- Max amount of plants a player can have simultaneously
 
 -- ┌───────────────────────────┐
 -- │ _____                     │
@@ -208,7 +209,7 @@ Config.Plants = { -- Create seeds for drugs
 Config.EnableProcessing = true -- Enable crafting system
 Config.ShowIngrediants = true -- Show ingrediants in the processing table
 
-Config.ProccesingSkillCheck = false -- Enable skill check for processingTables (Replaces the progressbar)
+Config.ProcessingSkillCheck = false -- Enable skill check for processingTables (Replaces the progressbar)
 Config.SkillCheck = {
     difficulty = {'easy', 'easy', 'medium', 'easy'},
     keys = {'w', 'a', 's', 'd'}

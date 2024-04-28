@@ -56,6 +56,7 @@ Locales['en'] = {
     ['NOTIFICATION__PROCESS__FAIL'] = 'You faild to process the drug',
 
     ['NOTIFICATION__CALLING__COPS'] = 'The buyer is calling the police!',
+    ['NOTIFICATION__MAX__PLANTS'] = 'Please take care of your current plants first',
     ['NOTIFICATION__NOT__INTERESTED'] = 'Buyer is not interested to buy now!',
     ['NOTIFICATION__ALLREADY__SPOKE'] = 'You already spoke with this local',
     ['NOTIFICATION__NO__DRUGS'] = 'You have nothing that the person wants',

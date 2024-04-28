@@ -44,6 +44,7 @@ Locales['de'] = {
     ['MENU__SELL__REJECT__DESC'] = 'Lehne das aktuelle Angebot ab',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
+    ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich ersteinmal um deinen aktuellen Pflanzen',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
     ['NOTIFICATION__CANCELED'] = 'Abgebrochen...',
     ['NOTIFICATION__NO__ITEMS'] = 'Du hast keine Items um die um diese Pflanze zu kümmern',

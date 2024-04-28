@@ -59,27 +59,42 @@ local setupPlants = function()
 
     for k, v in pairs(result) do
 
-        local plantType = Config.Plants[v.type].plantType
+        if not Config.Plants[v.type] then
+            MySQL.query('DELETE from drug_plants WHERE id = :id', {
+                ['id'] = v.id
+            }, function()
+                lib.print.info('PLANT ID: '.. v.id ..' has an invalid plant type, deleting it from the database')
+            end)
+        elseif v.owner == nil then
+            MySQL.query('DELETE from drug_plants WHERE id = :id', {
+                ['id'] = v.id
+            }, function()
+                lib.print.info('PLANT ID: '.. v.id ..' has no owner, deleting it from the database')
+            end)
+        else
+            local plantType = Config.Plants[v.type].plantType
 
-        local growTime = v.growtime * 60
-        local progress = os.difftime(current_time, v.time)
-        local growth = math.min(it.round(progress * 100 / growTime, 2), 100.00)
-        local stage = calcStage(growth)
-        local modelHash = Config.PlantTypes[plantType][stage][1]
-        local coords = json.decode(v.coords)
-        local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
-        FreezeEntityPosition(plant, true)
-        plants[plant] = {
-            id = v.id,
-            coords = vector3(coords.x, coords.y, coords.z),
-            time = v.time,
-            type = v.type,
-            entity = plant,
-            fertilizer = v.fertilizer,
-            water = v.water,
-            growtime = v.growtime,
-            health = v.health,
-        }
+            local growTime = v.growtime * 60
+            local progress = os.difftime(current_time, v.time)
+            local growth = math.min(it.round(progress * 100 / growTime, 2), 100.00)
+            local stage = calcStage(growth)
+            local modelHash = Config.PlantTypes[plantType][stage][1]
+            local coords = json.decode(v.coords)
+            local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
+            FreezeEntityPosition(plant, true)
+            plants[plant] = {
+                id = v.id,
+                owner = v.owner,
+                coords = vector3(coords.x, coords.y, coords.z),
+                time = v.time,
+                type = v.type,
+                entity = plant,
+                fertilizer = v.fertilizer,
+                water = v.water,
+                growtime = v.growtime,
+                health = v.health,
+            }
+        end
     end
 end
 
@@ -360,6 +375,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantInfos.plantType][1][2], true, true, false)
         FreezeEntityPosition(plant, true)
         local time = os.time()
+        local owner = it.getCitizenId(src)
 
         local growTime = Config.GlobalGrowTime
         if plantInfos.growthTime then
@@ -369,7 +385,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
-        MySQL.insert('INSERT INTO `drug_plants` (coords, time, type, water, fertilizer, health, growtime) VALUES (:coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
+        MySQL.insert('INSERT INTO `drug_plants` (owner, coords, time, type, water, fertilizer, health, growtime) VALUES (:owner, :coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
+            ['owner'] = owner,
             ['coords'] = json.encode(coords),
             ['time'] = time,
             ['type'] = plantItem,
@@ -380,6 +397,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         }, function(id)
             plants[plant] = {
                 id = id,
+                owner = owner,
                 coords = coords,
                 time = time,
                 type = plantItem,
@@ -401,6 +419,7 @@ lib.callback.register('it-drugs:server:getPlantData', function(source, netId)
     if Config.Debug then lib.print.info('Get Plant Data:', entity) end
     local temp = {
         id = plants[entity].id,
+        owner = plants[entity].owner,
         coords = plants[entity].coords,
         time = plants[entity].time,
         type = plants[entity].type,
@@ -412,6 +431,23 @@ lib.callback.register('it-drugs:server:getPlantData', function(source, netId)
         entity = entity
     }
     if Config.Debug then lib.print.info('Plant Data', temp) end
+    return temp
+end)
+
+lib.callback.register('it-drugs:server:getPlantsOwned', function(source)
+    local src = source
+    local citId = it.getCitizenId(src)
+    local temp = {}
+    for k, v in pairs(plants) do
+        if v.owner == citId then
+            table.insert(temp, {
+                id = v.id,
+                owner = v.owner,
+            })
+        end
+    end
+    if Config.Debug then lib.print.info('Plants Owned:', temp) end
+    if #temp == 0 then return nil end
     return temp
 end)
 
