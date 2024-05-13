@@ -1,11 +1,10 @@
 for plant, _ in pairs(Config.Plants) do
-    -- it.createUsableItem(plant, function(source, item)
+    -- it.createUsableItem(plant, function(source, item)  
     it.createUsableItem(plant, function(source)
         local src = source
         if it.hasItem(src, plant, 1) then
             TriggerClientEvent('it-drugs:client:useSeed', src, plant)
         end
-      
     end)
 end
 

@@ -20,7 +20,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     icon = "notes-medical",
                     description = math.floor(plantData.health).. '%',
                     metadata = {
-                        {label = _U('MENU__PLANT__LIFE__META'), value = " "}
+                        _U('MENU__PLANT__LIFE__META')
                     },
                     progress = math.floor(plantData.health),
                     colorScheme = "red",
@@ -30,7 +30,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.growth).. '%',
                     icon = "seedling",
                     metadata = {
-                        {label = _U('MENU__PLANT__STAGE__META'), value = " "}
+                        _U('MENU__PLANT__STAGE__META')
                     },
                     progress = math.floor(plantData.growth),
                     colorScheme = "green"
@@ -40,7 +40,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.fertilizer).. '%',
                     icon = "bucket",
                     metadata = {
-                        {label = _U('MENU__PLANT__STAGE__META'), value = " "}
+                        _U('MENU__PLANT__STAGE__META')
                     },
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange"
@@ -50,7 +50,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.water).. '%',
                     icon = "droplet",
                     metadata = {
-                        {label = _U('MENU__PLANT__STAGE__META'), value = " "}
+                        _U('MENU__PLANT__STAGE__META')
                     },
                     progress = math.floor(plantData.water),
                     colorScheme = "blue"
@@ -77,7 +77,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     icon = "notes-medical",
                     description = math.floor(plantData.health).. '%',
                     metadata = {
-                        {label = _U('MENU__PLANT__LIFE__META'), value = " "}
+                        _U('MENU__PLANT__LIFE__META')
                     },
                     progress = math.floor(plantData.health),
                     colorScheme = "red",
@@ -87,7 +87,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.growth).. '%',
                     icon = "seedling",
                     metadata = {
-                        {label = _U('MENU__PLANT__STAGE__META'), value = " "}
+                       _U('MENU__PLANT__STAGE__META')
                     },
                     progress = math.floor(plantData.growth),
                     colorScheme = "green"
@@ -97,7 +97,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.fertilizer).. '%',
                     icon = "bucket",
                     metadata = {
-                        {label = _U('MENU__PLANT__FERTILIZER__META'), value = " "}
+                        _U('MENU__PLANT__FERTILIZER__META')
                     },
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange"
@@ -107,7 +107,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.water).. '%',
                     icon = "droplet",
                     metadata = {
-                        {label = _U('MENU__PLANT__WATER__META'), value = " "}
+                        _U('MENU__PLANT__WATER__META')
                     },
                     progress = math.floor(plantData.water),
                     colorScheme = "blue"
@@ -143,7 +143,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     icon = "notes-medical",
                     description = math.floor(plantData.health).. '%',
                     metadata = {
-                        {label = _U('MENU__PLANT__LIFE__META'), value = " "}
+                        _U('MENU__PLANT__LIFE__META')
                     },
                     progress = math.floor(plantData.health),
                     colorScheme = "red",
@@ -153,7 +153,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.growth).. '%',
                     icon = "seedling",
                     metadata = {
-                        {label = _U('MENU__PLANT__STAGE__META'), value = " "}
+                        _U('MENU__PLANT__STAGE__META')
                     },
                     progress = math.floor(plantData.growth),
                     colorScheme = "green"
@@ -163,7 +163,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.fertilizer).. '%',
                     icon = "bucket",
                     metadata = {
-                        {label = _U('MENU__PLANT__FERTILIZER__META'), value = " "}
+                        _U('MENU__PLANT__FERTILIZER__META')
                     },
                     arrow = true,
                     progress = math.floor(plantData.fertilizer),
@@ -176,7 +176,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.water).. '%',
                     icon = "droplet",
                     metadata = {
-                        {label = _U('MENU__PLANT__WATER__META'), value = " "}
+                        _U('MENU__PLANT__WATER__META')
                     },
                     arrow = true,
                     progress = math.floor(plantData.water),
@@ -355,4 +355,288 @@ RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
         }
     })
     lib.showContext("it-drugs-sell-menu")
+end)
+
+-- ┌──────────────────────────────────────────────────────────┐
+-- │    _       _           _         __  __                  │
+-- │   / \   __| |_ __ ___ (_)_ __   |  \/  | ___ _ __  _   _ │
+-- │  / _ \ / _` | '_ ` _ \| | '_ \  | |\/| |/ _ \ '_ \| | | |│
+-- │ / ___ \ (_| | | | | | | | | | | | |  | |  __/ | | | |_| |│
+-- │/_/   \_\__,_|_| |_| |_|_|_| |_| |_|  |_|\___|_| |_|\__,_|│
+-- └──────────────────────────────────────────────────────────┘
+
+local function tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
+RegisterNetEvent('it-drugs:client:showMainAdminMenu', function(data)
+
+    local menuType = data.menuType
+    if menuType == 'plants' then
+        local allPlants = lib.callback.await('it-drugs:server:getPlants', false)
+        local plantCount = tablelength(allPlants)
+
+        lib.registerContext({
+            id = "it-drugs-admin-main-menu-plants",
+            title = _U('MENU__ADMIN__PLANT__MAIN'),
+            options = {
+                {
+                    title = _U('MENU__PLANT__COUNT'),
+                    description = _U('MENU__PLANT__COUNT__DESC'):format(plantCount),
+                    icon = "seedling",
+                },
+                {
+                    title = _U('MENU__LIST__PLANTS'),
+                    description = _U('MENU__LIST__PLANTS__DESC'),
+                    icon = "list",
+                    arrow = true,
+                    event = "it-drugs:client:generatePlantListMenu",
+                },
+                {
+                    title = _U('MENU__ADD__BLIPS'),
+                    description = _U('MENU__ADD__PLANT__BLIPS__DESC'),
+                    icon = "map-location-dot",
+                    arrow = true,
+                    event = "it-drugs:client:addAllAdminBlips",
+                    args = {type = 'plants'}
+                },
+                {
+                    title = _U('MENU__REMOVE__BLIPS'),
+                    description = _U('MENU__REMOVE__PLANT__BLIPS__DESC'),
+                    icon = "eraser",
+                    arrow = true,
+                    event = "it-drugs:client:removeAllAdminBlips",
+                    args = {type = 'plants'}
+                },
+            }
+        })
+        lib.showContext("it-drugs-admin-main-menu-plants")
+    elseif menuType == 'tables' then
+        local allTables = lib.callback.await('it-drugs:server:getTables', false)
+        local tableCount = tablelength(allTables)
+
+        lib.registerContext({
+            id = "it-drugs-admin-main-menu-tables",
+            title = _U('MENU__ADMIN__TABLE__MAIN'),
+            options = {
+                {
+                    title = _U('MENU__TABLE__COUNT'),
+                    description = _U('MENU__TABLE__COUNT__DESC'):format(tableCount),
+                    icon = "flask-vial",
+                },
+                {
+                    title = _U('MENU__LIST__TABLES'),
+                    description = _U('MENU__LIST__TABLES__DESC'),
+                    icon = "list",
+                    arrow = true,
+                    event = "it-drugs:client:generateTableListMenu",
+                },
+                {
+                    title = _U('MENU__ADD__BLIPS'),
+                    description = _U('MENU__ADD_TABLE__BLIPS__DESC'),
+                    icon = "map-location-dot",
+                    arrow = true,
+                    event = "it-drugs:client:addAllAdminBlips",
+                    args = {type = 'tables'}
+                },
+                {
+                    title = _U('MENU__REMOVE__BLIPS'),
+                    description = _U('MENU__REMOVE__TABLE__BLIPS__DESC'),
+                    icon = "eraser",
+                    arrow = true,
+                    event = "it-drugs:client:removeAllAdminBlips",
+                    args = {type = 'tables'}
+                },
+            }
+        })
+        lib.showContext("it-drugs-admin-main-menu-tables")
+    end
+end)
+
+RegisterNetEvent('it-drugs:client:showPlantListMenu', function(data)
+
+    local plantList = data.plantList
+
+    local options = {}
+    for _, v in ipairs(plantList) do
+        table.insert(options, {
+            title = v.label,
+            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            icon = "seedling",
+            arrow = true,
+            event = "it-drugs:client:showPlantAdminMenu",
+            args = {plantData = v}
+        })
+    end
+
+    lib.registerContext({
+        id = "it-drugs-plant-list-menu",
+        title = _U('MENU__PLANT__LIST'),
+        menu = 'it-drugs-placeholder',
+        onBack = function()
+            Wait(5)
+            TriggerEvent('it-drugs:client:showMainAdminMenu', {menuType = 'plants'})
+        end,
+        options = options
+    })
+    lib.showContext("it-drugs-plant-list-menu")
+end)
+
+RegisterNetEvent('it-drugs:client:showTableListMenu', function(data)
+    
+    local tableList = data.tableList
+
+    local options = {}
+    for _, v in ipairs(tableList) do
+        table.insert(options, {
+            title = v.label,
+            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            icon = "flask-vial",
+            arrow = true,
+            event = "it-drugs:client:showTableAdminMenu",
+            args = {tableData = v}
+        })
+    end
+
+    lib.registerContext({
+        id = "it-drugs-table-list-menu",
+        title = _U('MENU__TABLE__LIST'),
+        menu = 'it-drugs-placeholder',
+        onBack = function()
+            TriggerEvent('it-drugs:client:showMainAdminMenu', {menuType = 'tables'})
+        end,
+        options = options
+    })
+    lib.showContext("it-drugs-table-list-menu")
+end)
+
+RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
+    local plantData = data.plantData
+    local streetNameHash, _ = GetStreetNameAtCoord(plantData.coords.x, plantData.coords.y, plantData.coords.z)
+    local streetName = GetStreetNameFromHashKey(streetNameHash)
+
+    lib.registerContext({
+        id = "it-drugs-plant-admin-menu",
+        title = _U('MENU__PLANT__ID'):format(plantData.id),
+        menu = 'it-drugs-placeholder',
+        onBack = function()
+            TriggerEvent('it-drugs:client:generatePlantListMenu')
+        end,
+        options = {
+            {
+                title = _U('MENU__OWNER'),
+                description = plantData.owner,
+                icon = "user",
+                metadata = {
+                    _U('MENU__OWNER__META')
+                },
+                onSelect = function()
+                    lib.setClipboard(plantData.owner)
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format(plantData.owner), 'success')
+                end
+            },
+            {
+                title = _U('MENU__PLANT__LOCATION'),
+                description = _U('MENU__LOCATION__DESC'):format(streetName, plantData.coords.x, plantData.coords.y, plantData.coords.z),
+                metadata = {
+                    _U('MENU__LOCATION__META')
+                },
+                icon = "map-marker",
+                onSelect = function()
+                    lib.setClipboard('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__PLANT__TELEPORT'),
+                description = _U('MENU__PLANT__TELEPORT__DESC'),
+                icon = "route",
+                arrow = true,
+                onSelect = function()
+                    SetEntityCoords(PlayerPedId(), plantData.coords.x, plantData.coords.y, plantData.coords.z)
+                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__ADD__BLIP'),
+                description = _U('MENU__ADD__PLANT__BLIP__DESC'),
+                icon = "map-location-dot",
+                arrow = true,
+                event = "it-drugs:client:addAdminBlip",
+                args = {id = plantData.id, coords = plantData.coords, plantType = plantData.type, type = 'plant'}
+            },
+            {
+                title = _U('MENU__PLANT__DESTROY'),
+                description = _U('MENU__PLANT__DESTROY__DESC'),
+                icon = "fire",
+                arrow = true,
+                onSelect = function()
+                    TriggerServerEvent('it-drugs:server:destroyPlant', {entity = plantData.entity, extra='admin'})
+                    ShowNotification(nil, _U('NOTIFICATION__PLANT__DESTROYED'), 'success')
+                end
+            }
+        }
+    })
+    lib.showContext("it-drugs-plant-admin-menu")
+end)
+
+RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
+    local tableData = data.tableData
+    local streetNameHash, _ = GetStreetNameAtCoord(tableData.coords.x, tableData.coords.y, tableData.coords.z)
+    local streetName = GetStreetNameFromHashKey(streetNameHash)
+
+    lib.registerContext({
+        id = "it-drugs-table-admin-menu",
+        title = _U('MENU__TABLE__ID'):format(tableData.id),
+        menu = 'it-drugs-placeholder',
+        onBack = function()
+            TriggerEvent('it-drugs:client:generateTableListMenu')
+        end,
+        options = {
+            {
+                title = _U('MENU__PLANT__LOCATION'),
+                description = _U('MENU__LOCATION__DESC'):format(streetName, tableData.coords.x, tableData.coords.y, tableData.coords.z),
+                metadata = {
+                    _U('MENU__LOCATION__META')
+                },
+                icon = "map-marker",
+                onSelect = function()
+                    lib.setClipboard('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__TABLE__TELEPORT'),
+                description = _U('MENU__TABLE__TELEPORT__DESC'),
+                icon = "route",
+                arrow = true,
+                onSelect = function()
+                    SetEntityCoords(PlayerPedId(), tableData.coords.x, tableData.coords.y, tableData.coords.z)
+                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__ADD__BLIP'),
+                description = _U('MENU__ADD__TABLE__BLIP__DESC'),
+                icon = "map-location-dot",
+                arrow = true,
+                event = "it-drugs:client:addAdminBlip",
+                args = {id = tableData.id, coords = tableData.coords, plantType = tableData.type, type = 'table'}
+            },
+            {
+                title = _U('MENU__TABLE__DESTROY'),
+                description = _U('MENU__TABLE__DESTROY__DESC'),
+                icon = "trash",
+                arrow = true,
+                onSelect = function()
+                    TriggerServerEvent('it-drugs:server:removeTable', {entity = tableData.entity, extra='admin'})
+                    ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'success')
+                end,
+                
+            }
+        }
+    })
+    lib.showContext("it-drugs-table-admin-menu")
 end)

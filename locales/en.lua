@@ -44,6 +44,57 @@ Locales['en'] = {
     ['MENU__SELL__REJECT'] = 'Reject offer',
     ['MENU__SELL__REJECT__DESC'] = 'Reject the current offer',
 
+    ['MENU__ADMIN__PLANT__MAIN'] = 'Plant Management',
+    ['MENU__ADMIN__TABLE__MAIN'] = 'Table Management',
+    
+    ['MENU__PLANT__COUNT'] = 'Total Plant Count',
+    ['MENU__PLANT__COUNT__DESC'] = 'There are currently %g active plants',
+
+    ['MENU__TABLE__COUNT'] = 'Total Table Count',
+    ['MENU__TABLE__COUNT__DESC'] = 'There are currently %g active tables',
+
+    ['MENU__LIST__PLANTS'] = 'View plants by Distance',
+    ['MENU__LIST__PLANTS__DESC'] = 'View detail infomration about each plant',
+
+    ['MENU__LIST__TABLES'] = 'View tables by Distance',
+    ['MENU__LIST__TABLES__DESC'] = 'View detail infomration about each table',
+
+    ['MENU__ADD__BLIPS'] = 'Add Blips to Map',
+    ['MENU__ADD__PLANT__BLIPS__DESC'] = 'Show all plant locations on the map',
+    ['MENU__ADD_TABLE__BLIPS__DESC'] = 'Show all table locations on the map',
+
+    ['MENU__REMOVE__BLIPS'] = 'Remove Blips from Map',
+    ['MENU__REMOVE__PLANT__BLIPS__DESC'] = 'Remove all plant locations from the map',
+    ['MENU__REMOVE__TABLE__BLIPS__DESC'] = 'Remove all table locations from the map',
+
+    ['MENU__PLANT__LIST'] = 'All Plants',
+    ['MENU__TABLE__LIST'] = 'All Tables',
+
+    ['MENU__DIST'] = 'Distance: %gm',
+
+    ['MENU__PLANT__ID'] = 'Plant: %s',
+    ['MENU__TABLE__ID'] = 'Table: %s',
+
+    ['MENU__OWNER'] = 'Owner',
+    ['MENU__OWNER__META'] = 'Click to copy owner identifiere',
+
+    ['MENU__PLANT__LOCATION'] = 'Location',
+    ['MENU__LOCATION__DESC'] = 'Street: %s | Coordinates: (%g, %g, %g)',
+    ['MENU__LOCATION__META'] = 'Click top copy coords',
+
+    ['MENU__PLANT__TELEPORT'] = 'Teleport to Plant',
+    ['MENU__PLANT__TELEPORT__DESC'] = 'Teleport to the plant location',
+
+    ['MENU__TABLE__TELEPORT'] = 'Teleport to Table',
+    ['MENU__TABLE__TELEPORT__DESC'] = 'Teleport to the table location',
+
+    ['MENU__ADD__BLIP'] = 'Add to Map',
+    ['MENU__ADD__PLANT__BLIP__DESC'] = 'Create a blip for this plant',
+    ['MENU__ADD__TABLE__BLIP__DESC'] = 'Create a blip for this table',
+
+    ['MENU__TABLE__DESTROY'] = 'Destroy Table',
+    ['MENU__TABLE__DESTROY__DESC'] = 'Destroy this table',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'You can´t do this in a Vehicle',
     ['NOTIFICATION__CANT__PLACE'] = 'You can´t do this here',
     ['NOTIFICATION__CANCELED'] = 'Canceled...',
@@ -69,6 +120,16 @@ Locales['en'] = {
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'This drug has no effect',
     ['NOTIFICATION__DRUG__ALREADY'] = 'You are already under the influence of a drug.',
 
+    ['NOTIFICATION__NO__PERMISSION'] = 'You do not have permission to do this',
+    ['NOTIFICATION__ADMINMENU__USAGE'] = 'Please use: /%s [plants/tables]',
+
+    ['NOTIFICATION__COPY__CLIPBOARD'] = 'Information copied to clipboard: %s',
+    
+    ['NOTIFICATION__TELEPORTED'] = 'Teleported to entity location',
+
+    ['NOTIFICATION__PLANT__DESTROYED'] = 'Plant got successfuly destroyed',
+    ['NOTIFICATION__TABLE__DESTROYED'] = 'Table got successfuly destroyed',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Watering...',
@@ -88,7 +149,9 @@ Locales['en'] = {
 
     ['TARGET__PLANT__LABEL'] = 'Check Plant',
     ['TARGET__TABLE__LABEL'] = 'Use Table',
-    ['TARGET__SELL__LABEL'] = 'Talk'
+    ['TARGET__SELL__LABEL'] = 'Talk',
+
+    ['COMMAND__ADMINMENU'] = 'drugadmin',
 }
 
 function _U(string)

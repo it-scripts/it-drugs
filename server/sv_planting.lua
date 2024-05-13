@@ -210,10 +210,13 @@ end)
 
 --- Events
 
-RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
+RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
+    local entity = args.entity
     if not plants[entity] then return end
-    if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
-
+    
+    if args.extra == nil then
+        if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
+    end
     SendToWebhook(source, 'plant', 'destroy', plants[entity])
 
     if Config.Debug then lib.print.info('Does Entity Exists:', DoesEntityExist(entity)) end
@@ -222,7 +225,7 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
             ['id'] = plants[entity].id
         })
 
-        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plants[entity].coords)
+        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plants[entity].coords, stage)
         Wait(Config.FireTime / 2)
         DeleteEntity(entity)
 

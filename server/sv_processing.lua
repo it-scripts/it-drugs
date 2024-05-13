@@ -88,13 +88,14 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
 end)
 
 
-RegisterNetEvent('it-drugs:server:removeTable', function(entity)
+RegisterNetEvent('it-drugs:server:removeTable', function(args)
+    local entity = args.entity
     if not processingTables[entity] then return end
-    if #(GetEntityCoords(GetPlayerPed(source)) - processingTables[entity].coords) > 10 then return end
-
-    local player = it.getPlayer(source)
-    it.giveItem(source, processingTables[entity].type, 1)
-
+    
+    if args.extra == nil then
+        if #(GetEntityCoords(GetPlayerPed(source)) - processingTables[entity].coords) > 10 then return end
+        it.giveItem(source, processingTables[entity].type, 1)
+    end
     SendToWebhook(source, 'table', 'remove', processingTables[entity])
 
     if DoesEntityExist(entity) then

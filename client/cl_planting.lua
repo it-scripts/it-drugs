@@ -394,7 +394,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:destroyPlant', entity)
+        TriggerServerEvent('it-drugs:server:destroyPlant', {entity = entity})
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')

@@ -1,4 +1,5 @@
 local blips = {}
+local adminBlips = {}
 
 local function calculateCenterPoint(coords)
     -- Initialize variables
@@ -19,10 +20,42 @@ local function calculateCenterPoint(coords)
     -- Create and return center point vector2
     return vector2(avgX, avgY)
 end
-  
 
 
-CreateThread(function ()
+
+AddAdminBlip = function(id, coords, lable, type)
+
+    if adminBlips[id] then
+        RemoveBlip(adminBlips[id])
+    end
+
+    local currentBlip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipDisplay(currentBlip, 4)
+    SetBlipScale(currentBlip, 0.5)
+    SetBlipAsShortRange(currentBlip, true)
+
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(lable)
+    EndTextCommandSetBlipName(currentBlip)
+
+    if type == 'plant' then
+        SetBlipSprite(currentBlip, 496)
+        SetBlipColour(currentBlip, 2)
+    elseif type == 'processing' then
+        SetBlipSprite(currentBlip, 514)
+        SetBlipColour(currentBlip, 5)
+    end
+
+    adminBlips[id] = currentBlip
+end
+
+RemoveAdminBlip = function(id)
+    if not adminBlips[id] then return end
+    RemoveBlip(adminBlips[id])
+    adminBlips[id] = nil
+end
+
+CreateThread(function()
     for k, v in pairs(Config.Zones) do
         if v.blip.display then
             local center = calculateCenterPoint(v.coords)
@@ -37,7 +70,7 @@ CreateThread(function ()
             AddTextComponentString(v.blip.displayText)
             EndTextCommandSetBlipName(blip)
             table.insert(blips, blip)
-        end 
+        end
     end
 end)
 
@@ -46,6 +79,10 @@ end)
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
         for k, v in pairs(blips) do
+            RemoveBlip(v)
+        end
+
+        for k, v in pairs(adminBlips) do
             RemoveBlip(v)
         end
     end
