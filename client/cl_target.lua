@@ -25,7 +25,7 @@ CreateThread(function()
                     options = {
                         {
                             label = _U('TARGET__PLANT__LABEL'),
-                            icon = 'fas fa-cannabis',
+                            icon = 'fas fa-eye',
                             action = function (entity)
                                 TriggerEvent('it-drugs:client:checkPlant', {entity = entity})
                             end
@@ -52,7 +52,7 @@ CreateThread(function()
                     {
                         label = _U('TARGET__PLANT__LABEL'),
                         name = 'it-drugs-check-plant',
-                        icon = 'cannabis',
+                        icon = 'eye',
                         onSelect = function(data)
                             TriggerEvent('it-drugs:client:checkPlant', {entity = data.entity})
                         end,
@@ -83,7 +83,7 @@ CreateThread(function()
                 exports['qb-target']:AddTargetModel(v.model, {
                     options = {
                         {
-                            icon = 'fas fa-cannabis',
+                            icon = 'fas fa-eye',
                             label = _U('TARGET__TABLE__LABEL'),
                             action = function (entity)
                                 TriggerEvent('it-drugs:client:useTable', {entity = entity, type = k})
@@ -103,7 +103,7 @@ CreateThread(function()
                     {
                         label = _U('TARGET__TABLE__LABEL'),
                         name = 'it-drugs-use-table',
-                        icon = 'cannabis',
+                        icon = 'eye',
                         onSelect = function(data)
                             TriggerEvent('it-drugs:client:useTable', {entity = data.entity})
                         end,
