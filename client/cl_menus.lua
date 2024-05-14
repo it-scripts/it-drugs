@@ -565,7 +565,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 icon = "map-location-dot",
                 arrow = true,
                 event = "it-drugs:client:addAdminBlip",
-                args = {id = plantData.id, coords = plantData.coords, plantType = plantData.type, type = 'plant'}
+                args = {id = plantData.id, coords = plantData.coords, entityType = plantData.type, type = 'plant'}
             },
             {
                 title = _U('MENU__PLANT__DESTROY'),
@@ -623,7 +623,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 icon = "map-location-dot",
                 arrow = true,
                 event = "it-drugs:client:addAdminBlip",
-                args = {id = tableData.id, coords = tableData.coords, plantType = tableData.type, type = 'table'}
+                args = {id = tableData.id, coords = tableData.coords, entityType = tableData.type, type = 'table'}
             },
             {
                 title = _U('MENU__TABLE__DESTROY'),

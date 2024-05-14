@@ -130,6 +130,9 @@ Locales['en'] = {
     ['NOTIFICATION__PLANT__DESTROYED'] = 'Plant got successfuly destroyed',
     ['NOTIFICATION__TABLE__DESTROYED'] = 'Table got successfuly destroyed',
 
+    ['NOTIFICATION__ADD__BLIP'] = 'Added Blip to Map',
+    ['NOTIFICATION__REMOVE__BLIP'] = 'Removed Blip from Map',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Watering...',
@@ -152,6 +155,9 @@ Locales['en'] = {
     ['TARGET__SELL__LABEL'] = 'Talk',
 
     ['COMMAND__ADMINMENU'] = 'drugadmin',
+    ['COMMAND__GROUNDHASH'] = 'getGroundHash',
+
+    ['COMMAND__GROUNDHASH__HELP'] = 'Get the current ground hash'
 }
 
 function _U(string)
