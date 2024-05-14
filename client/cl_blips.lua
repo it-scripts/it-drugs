@@ -24,7 +24,6 @@ end
 
 
 AddAdminBlip = function(id, coords, lable, type)
-
     if adminBlips[id] then
         RemoveBlip(adminBlips[id])
     end
@@ -34,10 +33,6 @@ AddAdminBlip = function(id, coords, lable, type)
     SetBlipScale(currentBlip, 0.5)
     SetBlipAsShortRange(currentBlip, true)
 
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(lable)
-    EndTextCommandSetBlipName(currentBlip)
-
     if type == 'plant' then
         SetBlipSprite(currentBlip, 496)
         SetBlipColour(currentBlip, 2)
@@ -45,6 +40,10 @@ AddAdminBlip = function(id, coords, lable, type)
         SetBlipSprite(currentBlip, 514)
         SetBlipColour(currentBlip, 5)
     end
+
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(lable)
+    EndTextCommandSetBlipName(currentBlip)
 
     adminBlips[id] = currentBlip
 end
