@@ -93,6 +93,7 @@ local setupPlants = function()
                 water = v.water,
                 growtime = v.growtime,
                 health = v.health,
+                stage = stage
             }
         end
     end
@@ -125,6 +126,7 @@ local updatePlantProp = function(k, stage)
     local plant = CreateObjectNoOffset(modelHash, plants[k].coords.x, plants[k].coords.y, plants[k].coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
     FreezeEntityPosition(plant, true)
     plants[plant] = plants[k]
+    plants[plant].entity = plant
     plants[k] = nil
 end
 
@@ -408,7 +410,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
                 fertilizer = 0.0,
                 health = 100.0,
                 growtime = growTime,
-                entity = plant
+                entity = plant,
+                stage = 1
             }
             SendToWebhook(src, 'plant', 'plant', plants[plant])
         end)
