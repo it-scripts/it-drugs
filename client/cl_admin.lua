@@ -5,7 +5,7 @@ RegisterNetEvent('it-drugs:client:showAdminAlertBox', function(args)
 
     local alert = lib.alertDialog({
         header = 'NO PERMISSION',
-        content = 'Add this your server.cfg file to give permission to this user:  \n add_ace '..userLicense..' it-drugs allow #'..username..' License  \n And restart your server to apply the changes',
+        content = 'Add this your server.cfg file to give permission to this user:  \n add_ace identifier.'..userLicense..' it-drugs allow #'..username..' License  \n And restart your server to apply the changes',
         centered = true,
         size = 'xl',
         cancel = true,
