@@ -42,7 +42,7 @@ it-drugs is a drug script for FiveM, offering a fully immersive and interactive 
 
 </div>
 
-### `🌱` **| Plantig**
+### `🌱` **| Planting**
 Our script offers a unique planting system that allows players to grow unlimited plants *(or a set max amount in the config)*. With the ability to plant seeds, players can cultivate their own plants and harvest them for raw materials. Our planting system makes the complete map a potential farm, allowing players to grow plants in any location they choose (*Soil/Ground check can be enabled in the config*). Optional growth speed zones add a strategic layer to farming, making it a fun and engaging experience.
 
 ### `🧪` **| Processing Tables**
