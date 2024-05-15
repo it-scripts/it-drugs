@@ -29,14 +29,14 @@ RegisterNetEvent('it-drugs:client:addAllAdminBlips', function(args)
         local allPlants = lib.callback.await('it-drugs:server:getPlants', false)
         for _, data in pairs(allPlants) do
             AddAdminBlip(data.id, data.coords, Config.Plants[data.type].label, 'plant')
-            ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
         end
+        ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     elseif type == 'tables' then
         local allTables = lib.callback.await('it-drugs:server:getTables', false)
         for _, data in pairs(allTables) do
             AddAdminBlip(data.id, data.coords, 'Proccessing Table: '..Config.ProcessingTables[data.type].type, 'processing')
-            ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
         end
+        ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     end
 end)
 
