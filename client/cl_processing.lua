@@ -214,7 +214,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
                 TriggerServerEvent('it-drugs:server:processDrugs', entity)
             else
                 proccessing = false
-                ShowNotification(nil, _U('NOTIFICATION_SKILL_ERROR'), 'error')
+                ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
                 ClearPedTasks(ped)
                 RemoveAnimDict('amb@medic@standing@kneel@base')
                 RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')

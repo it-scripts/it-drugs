@@ -104,6 +104,7 @@ Locales['en'] = {
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'You don´t have all ingredients',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'You have processed on drug',
+    ['NOTIFICATION__SKILL__ERROR'] = 'You pressed the wrong key',
     ['NOTIFICATION__PROCESS__FAIL'] = 'You faild to process the drug',
 
     ['NOTIFICATION__CALLING__COPS'] = 'The buyer is calling the police!',

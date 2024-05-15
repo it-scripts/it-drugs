@@ -104,6 +104,8 @@ Locales['de'] = {
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'Du hast nicht alle Zutaten',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast dich mit Drogen beschäftigt',
+    ['NOTIFICATION__SKILL__ERROR'] = 'Du hast die falsche Taste gedrückt',
+    ['NOTIFICATION__PROCESS__FAIL'] = 'Du hast es nicht geschafft die Drogen zu verarbeiten',
 
     ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
     ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist gerade nicht interessiert!',
