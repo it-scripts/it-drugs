@@ -128,6 +128,9 @@ Locales['de'] = {
     ['NOTIFICATION__PLANT__DESTROYED'] = 'Pflanze erfolgreich zerstört',
     ['NOTIFICATION__TABLE__DESTROYED'] = 'Tisch erfolgreich zerstört',
 
+    ['NOTIFICATION__ADD__BLIP'] = 'Blip wurde zur Karte hinzugefügt',
+    ['NOTIFICATION__REMOVE__BLIP'] = 'Blip wurde von der Karte entfernt',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Gießen...',
@@ -150,4 +153,7 @@ Locales['de'] = {
     ['TARGET__SELL__LABEL'] = 'Ansprechen',
 
     ['COMMAND__ADMINMENU'] = 'drugadmin',
+    ['COMMAND__GROUNDHASH'] = 'getGroundHash',
+
+    ['COMMAND__GROUNDHASH__HELP'] = 'Bekomme den aktuellen groundHash'
 }
