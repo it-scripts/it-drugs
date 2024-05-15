@@ -310,7 +310,7 @@ Config.Drugs = { -- Create you own drugs
 -- │                        |___/ │
 -- └──────────────────────────────┘
 
-Config.EnableSelling = true -- Enable selling system (Currently selling is disabled)
+Config.EnableSelling = true -- Enable selling system
 
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
 Config.PoliceJobs = {
