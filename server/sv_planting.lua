@@ -93,6 +93,7 @@ local setupPlants = function()
                 water = v.water,
                 growtime = v.growtime,
                 health = v.health,
+                stage = stage
             }
         end
     end
@@ -125,6 +126,7 @@ local updatePlantProp = function(k, stage)
     local plant = CreateObjectNoOffset(modelHash, plants[k].coords.x, plants[k].coords.y, plants[k].coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
     FreezeEntityPosition(plant, true)
     plants[plant] = plants[k]
+    plants[plant].entity = plant
     plants[k] = nil
 end
 
@@ -210,10 +212,13 @@ end)
 
 --- Events
 
-RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
+RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
+    local entity = args.entity
     if not plants[entity] then return end
-    if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
-
+    
+    if args.extra == nil then
+        if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
+    end
     SendToWebhook(source, 'plant', 'destroy', plants[entity])
 
     if Config.Debug then lib.print.info('Does Entity Exists:', DoesEntityExist(entity)) end
@@ -222,7 +227,7 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(entity)
             ['id'] = plants[entity].id
         })
 
-        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plants[entity].coords)
+        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plants[entity].coords, stage)
         Wait(Config.FireTime / 2)
         DeleteEntity(entity)
 
@@ -405,7 +410,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
                 fertilizer = 0.0,
                 health = 100.0,
                 growtime = growTime,
-                entity = plant
+                entity = plant,
+                stage = 1
             }
             SendToWebhook(src, 'plant', 'plant', plants[plant])
         end)

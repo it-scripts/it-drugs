@@ -43,6 +43,57 @@ Locales['de'] = {
     ['MENU__SELL__REJECT'] = 'Angebot ablehnen',
     ['MENU__SELL__REJECT__DESC'] = 'Lehne das aktuelle Angebot ab',
 
+    ['MENU__ADMIN__PLANT__MAIN'] = 'Pflanzen Management',
+    ['MENU__ADMIN__TABLE__MAIN'] = 'Verarbeitungstisch Management',
+    
+    ['MENU__PLANT__COUNT'] = 'Gesamte Pflanzenanzahl',
+    ['MENU__PLANT__COUNT__DESC'] = 'Es gibt derzeit %g aktive Pflanzen',
+
+    ['MENU__TABLE__COUNT'] = 'Gesamte Tischanzahl',
+    ['MENU__TABLE__COUNT__DESC'] = 'Es gibt derzeit %g aktive Tische',
+
+    ['MENU__LIST__PLANTS'] = 'Pflanzen nach Entfernung anzeigen',
+    ['MENU__LIST__PLANTS__DESC'] = 'Detailinformationen zu jeder Pflanze anzeigen',
+
+    ['MENU__LIST__TABLES'] = 'Tische nach Entfernung anzeigen',
+    ['MENU__LIST__TABLES__DESC'] = 'Detailinformationen zu jedem Tisch anzeigen',
+
+    ['MENU__ADD__BLIPS'] = 'Blips zur Karte hinzufügen',
+    ['MENU__ADD__PLANT__BLIPS__DESC'] = 'Alle Pflanzenstandorte auf der Karte anzeigen',
+    ['MENU__ADD_TABLE__BLIPS__DESC'] = 'Alle Tischstandorte auf der Karte anzeigen',
+
+    ['MENU__REMOVE__BLIPS'] = 'Blips von der Karte entfernen',
+    ['MENU__REMOVE__PLANT__BLIPS__DESC'] = 'Alle Pflanzenstandorte von der Karte entfernen',
+    ['MENU__REMOVE__TABLE__BLIPS__DESC'] = 'Alle Tischstandorte von der Karte entfernen',
+
+    ['MENU__PLANT__LIST'] = 'Alle Pflanzen',
+    ['MENU__TABLE__LIST'] = 'Alle Tische',
+
+    ['MENU__DIST'] = 'Entfernung: %gm',
+
+    ['MENU__PLANT__ID'] = 'Pflanze: %s',
+    ['MENU__TABLE__ID'] = 'Tisch: %s',
+
+    ['MENU__OWNER'] = 'Besitzer',
+    ['MENU__OWNER__META'] = 'Klicken um Besitzer zu kopieren',
+
+    ['MENU__PLANT__LOCATION'] = 'Standort',
+    ['MENU__LOCATION__DESC'] = 'Straße: %s | Koordinaten: (%g, %g, %g)',
+    ['MENU__LOCATION__META'] = 'Klicken um Koordinaten zu kopieren',
+
+    ['MENU__PLANT__TELEPORT'] = 'Zu Pflanze teleportieren',
+    ['MENU__PLANT__TELEPORT__DESC'] = 'Zum Standort der Pflanze Teleportieren',
+
+    ['MENU__TABLE__TELEPORT'] = 'Zu Tisch teleportieren',
+    ['MENU__TABLE__TELEPORT__DESC'] = 'Zum Standort des Tisches Teleportieren',
+
+    ['MENU__ADD__BLIP'] = 'Zur Karte hinzufügen',
+    ['MENU__ADD__PLANT__BLIP__DESC'] = 'Erstelle ein Blip für diese Pflanze',
+    ['MENU__ADD__TABLE__BLIP__DESC'] = 'ERstelle ein Blip für diesen Tisch',
+
+    ['MENU__TABLE__DESTROY'] = 'Tisch zerstören',
+    ['MENU__TABLE__DESTROY__DESC'] = 'Zerstöre diesen Tisch',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich ersteinmal um deinen aktuellen Pflanzen',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
@@ -53,6 +104,8 @@ Locales['de'] = {
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'Du hast nicht alle Zutaten',
     ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast dich mit Drogen beschäftigt',
+    ['NOTIFICATION__SKILL__ERROR'] = 'Du hast die falsche Taste gedrückt',
+    ['NOTIFICATION__PROCESS__FAIL'] = 'Du hast es nicht geschafft die Drogen zu verarbeiten',
 
     ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
     ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist gerade nicht interessiert!',
@@ -66,6 +119,19 @@ Locales['de'] = {
 
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Diese Droge hat keine Effekte!',
     ['NOTIFICATION__DRUG__ALREADY'] = 'Du hast bereits eine Droge eingenommen!',
+
+    ['NOTIFICATION__NO__PERMISSION'] = 'Du hast keine Berechtigung um dies zu machen!',
+    ['NOTIFICATION__ADMINMENU__USAGE'] = 'Bitte nutze: /%s [plants/tables]',
+
+    ['NOTIFICATION__COPY__CLIPBOARD'] = 'Informationen wurden erfolgreich kopiert: %s',
+    
+    ['NOTIFICATION__TELEPORTED'] = 'Du wurdes erfolgreich teleportiert',
+
+    ['NOTIFICATION__PLANT__DESTROYED'] = 'Pflanze erfolgreich zerstört',
+    ['NOTIFICATION__TABLE__DESTROYED'] = 'Tisch erfolgreich zerstört',
+
+    ['NOTIFICATION__ADD__BLIP'] = 'Blip wurde zur Karte hinzugefügt',
+    ['NOTIFICATION__REMOVE__BLIP'] = 'Blip wurde von der Karte entfernt',
 
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',
@@ -86,4 +152,10 @@ Locales['de'] = {
 
     ['TARGET__PLANT__LABEL'] = 'Pflanze prüfen',
     ['TARGET__TABLE__LABEL'] = 'Tisch verwenden',
+    ['TARGET__SELL__LABEL'] = 'Ansprechen',
+
+    ['COMMAND__ADMINMENU'] = 'drugadmin',
+    ['COMMAND__GROUNDHASH'] = 'getGroundHash',
+
+    ['COMMAND__GROUNDHASH__HELP'] = 'Bekomme den aktuellen groundHash'
 }

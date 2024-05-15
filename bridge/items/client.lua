@@ -5,7 +5,10 @@ end
 
 function it.getItemLabel(itemName)
     local itemLabel
-    if it.core == 'qb-core' then
+    if it.inventory == 'ox' then
+        local items = exports.ox_inventory:Items()
+        return items[itemName].label
+    elseif it.core == 'qb-core' then
         itemLabel = CoreObject.Shared.Items[itemName].label
     elseif it.core == 'esx' then
         itemLabel = lib.callback.await('it-lib:getItemLabel', false, itemName)

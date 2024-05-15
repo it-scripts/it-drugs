@@ -7,6 +7,7 @@ local errors = {
     [400] = "Your webhook URL is invalid!",
     [401] = "Your webhook URL is invalid!",
     [404] = "Your webhook URL is invalide!",
+    [405] = "Your webhook URL is invalide!",
     [429] = "You are being rate limited by Discord!",
     [500] = "Discord is having internal server issues!",
     [502] = "Discord is having internal server issues!",
@@ -109,7 +110,7 @@ function SendToWebhook(source, type, action, itemData)
         PerformHttpRequest(webhookUrl, function(err, text, headers) 
             if err == 200 or err == 204 then
             else
-                print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
                 Config.Webhook['active'] = false
             end
         end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
@@ -124,7 +125,7 @@ function SendToWebhook(source, type, action, itemData)
         PerformHttpRequest(webhookUrl, function(err, text, headers) 
             if err == 200 or err == 204 then
             else
-                print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
                 Config.Webhook['active'] = false
             end
         end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
@@ -171,7 +172,7 @@ CreateThread(function()
                 if err == 200 or err == 204 then
                     messagesToSend[k] = nil
                 else
-                    print('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                    lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
                     Config.Webhook['active'] = false
                 end
             end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {v}}), { ['Content-Type'] = 'application/json' })
