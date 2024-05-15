@@ -63,8 +63,8 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-![Drugs Schowcase Banner](https://i.imgur.com/pLhHIeU.png)
-[![Drugs Installation Banner](https://img.youtube.com/vi/4Yjuu1Fptm4/maxresdefault.jpg)](https://www.youtube.com/watch?v=4Yjuu1Fptm4)
+[![Drugs Schowcase Banner](https://i.imgur.com/pLhHIeU.png)(https://www.youtube.com/watch?v=4Yjuu1Fptm4)]
+[![Drugs YouTube Banner](https://img.youtube.com/vi/4Yjuu1Fptm4/maxresdefault.jpg)](https://www.youtube.com/watch?v=4Yjuu1Fptm4)
 
 **[VIEW ON YOUTUBE](https://www.youtube.com/watch?v=4Yjuu1Fptm4)**
 </div>
