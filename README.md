@@ -6,7 +6,7 @@
 
 <div align="center">
 
-[![FiveM](https://img.shields.io/badge/Discord%20-Join%20now-blue?logo=discord)]()
+[![Discord](https://img.shields.io/badge/Discord%20-Join%20now-blue?logo=discord)](https://discord.gg/4KtC77WMPK)
 [![Downloads](https://img.shields.io/github/downloads/inseltreff-net/it-drugs/total?logo=github)]()
 [![Version](https://img.shields.io/github/v/release/inseltreff-net/it-drugs?logo=github)]()
 [![License](https://img.shields.io/github/license/inseltreff-net/it-drugs?logo=github)]()
