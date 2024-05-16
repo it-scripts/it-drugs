@@ -40,9 +40,8 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		if Config.Debug then lib.print.info('Not Enough Cops Online') end
 		return
 	end
-
-	local netId = NetworkGetNetworkIdFromEntity(entity)
-	local isSoldtoPed = HasSoldPed(netId)
+	
+	local isSoldtoPed = HasSoldPed(entity)
 	if isSoldtoPed then
 		ShowNotification(nil, _U('NOTIFICATION__ALLREADY__SPOKE'), 'error')
 		return
@@ -61,7 +60,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		TaskUseMobilePhoneTimed(entity, 8000)
 		SetPedAsNoLongerNeeded(entity)
 		ClearPedTasks(PlayerPedId())
-		AddSoldPed(netId)
+		AddSoldPed(entity)
 
 		local coords = GetEntityCoords(entity)
 		SendPoliceAlert(coords)

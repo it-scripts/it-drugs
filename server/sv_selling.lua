@@ -33,10 +33,9 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 		price = math.floor(price)
 		if it.hasItem(src, cad.item, cad.amount) then
 			if it.removeItem(src, tostring(cad.item), cad.amount) then
-
 				math.randomseed(GetGameTimer())
 				local stealChance = math.random(0, 100)
-				if stealChance > Config.SellSettings['stealChance'] then
+				if stealChance < Config.SellSettings['stealChance'] then
 					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'error')
 				else
 					it.addMoney(src, "cash", price, "Money from Drug Selling")
