@@ -6,6 +6,8 @@ local drugEffects = {
     ['moreStrength'] = false,
     ['healthRegen'] = false,
     ['foodRegen'] = false,
+    ['fullArmor'] = false,
+    ['halfArmor'] = false,
     ['drunkWalk'] = false,
     ['psycoWalk'] = false,
     ['outOfBody'] = false,
@@ -82,6 +84,10 @@ local setDrugEffects = function(effects)
             CreateThread(function()
                 AnimpostfxPlay("FocusIn", 100000, true)
             end)
+        elseif effect == "halfArmor" then
+            SetPedArmour(ped, GetPedArmour(ped) + 50)
+        elseif effect == "fullArmor" then
+            SetPedArmour(ped, 100)
         end
     end
     if Config.Debug then lib.print.info('Drug Effects:', drugEffects) end

@@ -52,9 +52,11 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	TaskTurnPedToFaceEntity(entity, PlayerPedId(), -1)
 	Wait(500)
 
-	local sellChance = math.random(1, 100)
+	-- seed math random
+	math.randomseed(GetGameTimer())
+	local sellChance = math.random(0, 100)
 
-	if sellChance > Config.SellSettings['sellChange'] then
+	if sellChance > Config.SellSettings['sellChance'] then
 		ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'error')
 		TaskUseMobilePhoneTimed(entity, 8000)
 		SetPedAsNoLongerNeeded(entity)
@@ -96,17 +98,6 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		end
 	end)
 end) 
-
--- \ Blacklist Ped Models
-local function isPedBlacklisted(ped)
-	local model = GetEntityModel(ped)
-	for i = 1, #Config.BlacklistPeds do
-		if model == GetHashKey(Config.BlacklistPeds[i]) then
-			return true
-		end
-	end
-	return false
-end
 
 -- \ event handler to server (execute server side)
 RegisterNetEvent('it-drugs:client:salesInitiate', function(cad)

@@ -33,9 +33,15 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 		price = math.floor(price)
 		if it.hasItem(src, cad.item, cad.amount) then
 			if it.removeItem(src, tostring(cad.item), cad.amount) then
-			
-				it.addMoney(src, "cash", price, "Money from Drug Selling")
-				ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'success')
+
+				math.randomseed(GetGameTimer())
+				local stealChance = math.random(0, 100)
+				if stealChance > Config.SellSettings['stealChance'] then
+					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'error')
+				else
+					it.addMoney(src, "cash", price, "Money from Drug Selling")
+					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'success')
+				end
 				local coords = GetEntityCoords(GetPlayerPed(src))
 				SendToWebhook(src, 'sell', nil, ({item = cad.item, amount = cad.amount, price = price, coords = coords}))
 				if Config.Debug then print('You got ' .. cad.amount .. ' ' .. cad.item .. ' for $' .. price) end

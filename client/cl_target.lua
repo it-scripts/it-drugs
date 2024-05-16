@@ -74,46 +74,46 @@ end)
 -- │                                               |___/                 |___/          │
 -- └────────────────────────────────────────────────────────────────────────────────────┘
 -- Proccesing Target
-if not Config.EnableProcessing then return end
-
-CreateThread(function()
-    if Config.Target == 'qb-target' then
-        for k, v in pairs(Config.ProcessingTables) do
-            if v.model ~= nil then
-                exports['qb-target']:AddTargetModel(v.model, {
-                    options = {
+if Config.EnableProcessing then 
+    CreateThread(function()
+        if Config.Target == 'qb-target' then
+            for k, v in pairs(Config.ProcessingTables) do
+                if v.model ~= nil then
+                    exports['qb-target']:AddTargetModel(v.model, {
+                        options = {
+                            {
+                                icon = 'fas fa-eye',
+                                label = _U('TARGET__TABLE__LABEL'),
+                                action = function (entity)
+                                    TriggerEvent('it-drugs:client:useTable', {entity = entity, type = k})
+                                end
+                            }
+                        },
+                        distance = 1.5,
+                    })
+                end
+            end
+        elseif Config.Target == 'ox_target' then
+            -- Check if ox target is running
+            if not exports.ox_target then return end
+            for k, v in pairs(Config.ProcessingTables) do
+                if v.model ~= nil then
+                    exports.ox_target:addModel(v.model, {
                         {
-                            icon = 'fas fa-eye',
                             label = _U('TARGET__TABLE__LABEL'),
-                            action = function (entity)
-                                TriggerEvent('it-drugs:client:useTable', {entity = entity, type = k})
-                            end
+                            name = 'it-drugs-use-table',
+                            icon = 'eye',
+                            onSelect = function(data)
+                                TriggerEvent('it-drugs:client:useTable', {entity = data.entity})
+                            end,
+                            distance = 1.5
                         }
-                    },
-                    distance = 1.5,
-                })
+                    })
+                end
             end
         end
-    elseif Config.Target == 'ox_target' then
-        -- Check if ox target is running
-        if not exports.ox_target then return end
-        for k, v in pairs(Config.ProcessingTables) do
-            if v.model ~= nil then
-                exports.ox_target:addModel(v.model, {
-                    {
-                        label = _U('TARGET__TABLE__LABEL'),
-                        name = 'it-drugs-use-table',
-                        icon = 'eye',
-                        onSelect = function(data)
-                            TriggerEvent('it-drugs:client:useTable', {entity = data.entity})
-                        end,
-                        distance = 1.5
-                    }
-                })
-            end
-        end
-    end
-end)
+    end)
+end
 
 -- ┌─────────────────────────────────────────────────────────────┐
 -- │ ____       _ _ _               _____                    _   │
@@ -134,7 +134,7 @@ local function isPedBlacklisted(ped)
 	return false
 end
 
--- Selling Target
+-- Create the selling Targets
 CreateSellTarget = function()
     if Config.Target == 'qb-target' then
         if not exports['qb-target'] then return end
@@ -210,13 +210,16 @@ AddEventHandler('onResourceStop', function(resource)
         if not exports.ox_target then return end
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
-                exports.ox_target:removeModel(plant[1])
+                exports.ox_target:removeModel(plant[1], 'it-drugs-check-plant')
             end
         end
         for k, v in pairs(Config.ProcessingTables) do
             if v.model ~= nil then
-                exports.ox_target:removeModel(v.model)
+                exports.ox_target:removeModel(v.model, 'it-drugs-use-table')
             end
         end
+    end
+    if Config.EnableSelling then
+        RemoveSellTarget()
     end
 end)

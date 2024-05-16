@@ -256,6 +256,8 @@ Config.ProcessingTables = { -- Create processing table
     moreStrength,
     healthRegen,
     foodRegen,
+    halfArmor,
+    fullArmor,
     drunkWalk,
     psycoWalk,
     outOfBody,
@@ -321,7 +323,8 @@ Config.PoliceJobs = {
 }
 
 Config.SellSettings = {
-    ['sellChange'] = 70, -- Chance to sell drug (in %)
+    ['sellChance'] = 70, -- Chance to sell drug (in %)
+    ['stealChance'] = 20, -- Chance that the ped dont give you money (in %)
     ['sellAmount'] = { -- Amount of drugs you can sell
         min = 1,
         max = 6,

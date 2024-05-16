@@ -117,6 +117,7 @@ Locales['en'] = {
     ['NOTIFICATION__SOLD__DRUG'] = "You recieved $%g",
     ['NOTIFICATION__SELL__FAIL'] = 'You could not sell your %g!',
     ['NOTIFICATION__NO__ITEM__LEFT'] = 'You do not have any %g to sell!',
+    ['NOTIFICATION__STOLEN__DRUG'] = 'You were robbed and don´t get any money',
 
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'This drug has no effect',
     ['NOTIFICATION__DRUG__ALREADY'] = 'You are already under the influence of a drug.',
