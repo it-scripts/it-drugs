@@ -252,10 +252,13 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(entity)
             local amount = math.random(minAmount, maxAmount)
             it.giveItem(src, product, amount)
         end
-        if math.random(0, 100) >= Config.Plants[plants[entity].type].seed.chance then 
+        if math.random(1, 100) <= Config.Plants[plants[entity].type].seed.chance then
             local seed = plants[entity].type
-            local seedAmount = math.random(Config.Plants[seed].seed.min, Config.Plants[seed].seed.max)
-            it.giveItem(src, seed, seedAmount)
+
+            if Config.Plants[plants[entity].type].seed.max > 1 then
+                local seedAmount = math.random(Config.Plants[seed].seed.min, Config.Plants[seed].seed.max)
+                it.giveItem(src, seed, seedAmount)
+            end
         end
     
         DeleteEntity(entity)
