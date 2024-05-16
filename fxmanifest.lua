@@ -3,7 +3,7 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
-version 'v1.2.0'
+version 'v1.2.1'
 
 shared_script 'bridge/init.lua'
 
