@@ -57,7 +57,7 @@ function it.removeItem(source, item, amount, metadata)
             TriggerClientEvent("inventory:client:ItemBox", source, CoreObject.Shared.Items[item], "remove", amount)
             return true
         end
-	elseif it.core == "esx" and it.inventory == 'esx' then
+	elseif it.core == "esx" then
         local Player = CoreObject.GetPlayerFromId(source)
         local removedItem = Player.getInventoryItem(item)
         if removedItem.count >= amount then
@@ -73,11 +73,8 @@ function it.createUsableItem(item, cb)
 	if it.core == "qb-core" then
 		CoreObject.Functions.CreateUseableItem(item, cb)
         ConsumableItems[item] = cb
-	elseif it.core == "esx" and it.inventory == 'esx' then
+	elseif it.core == "esx" then
 		CoreObject.RegisterUsableItem(item, cb)
-        ConsumableItems[item] = cb
-    elseif it.core == "esx" and it.inventory == 'ox' then
-        CoreObject.RegisterUsableItem(item, cb)
         ConsumableItems[item] = cb
     end
 end
