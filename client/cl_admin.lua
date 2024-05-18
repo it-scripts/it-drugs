@@ -17,7 +17,7 @@ RegisterNetEvent('it-drugs:client:showAdminAlertBox', function(args)
 
     if alert == 'confirm' then
         -- copy content to clipboard
-        lib.setClipboard('add_ace '..userLicense..' it-drugs allow #'..username..' License')
+        lib.setClipboard('add_ace identifier.'..userLicense..' it-drugs allow #'..username..' License')
         ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('User License'), "success")
     end
 end)
