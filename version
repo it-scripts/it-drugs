@@ -1,4 +1,4 @@
 {
-    "version": "v1.2.1",
-    "message": "Bug fixes and more features!"
+    "version": "v1.2.2",
+    "message": "Fixes problem with default esx inventors (You only need to update if you are using the default esx inventors)"
 }
