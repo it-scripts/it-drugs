@@ -1,12 +1,8 @@
-lib.print.info('DETECTED CORE', it.core)
-
 for plant, _ in pairs(Config.Plants) do
     -- it.createUsableItem(plant, function(source, item)  
     it.createUsableItem(plant, function(source)
-        lib.print.info('Register Item:', plant)
         local src = source
-
-        lib.print.info('Player has item:', it.hasItem(src, plant, 1))
+        
         if it.hasItem(src, plant, 1) then
             TriggerClientEvent('it-drugs:client:useSeed', src, plant)
         end
