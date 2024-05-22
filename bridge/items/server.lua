@@ -13,7 +13,7 @@ function it.hasItem(source, item, amount)
 		if itemData.amount >= amount then return true end
 	elseif it.core == "esx" then
 		local Player = CoreObject.GetPlayerFromId(source)
-		local esxItem = Player.hasItem(item)
+		local esxItem = Player.getInventoryItem(item)
         if not esxItem then return false end
 		if esxItem.count >= amount then return true end
 	end
