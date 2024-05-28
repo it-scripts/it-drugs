@@ -54,6 +54,19 @@ end
 
 local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
 
+    -- check for near plants
+    local plants = lib.callback.await('it-drugs:server:getPlants', false)
+
+    if plants ~= nil then
+        for k, v in pairs(plants) do
+            if #(vector3(coords.x, coords.y, coords.z) - vector3(v.coords.x, v.coords.y, v.coords.z)) <= Config.PlantDistance then
+                ShowNotification(nil, _U('NOTIFICATION__TO__NEAR'), "error")
+                DeleteObject(plant)
+                return
+            end
+        end
+    end
+
     if Config.OnlyAllowedGrounds then
         local groundHash = GetGroundHash(plant)
         local canplant = false

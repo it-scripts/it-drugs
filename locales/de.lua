@@ -22,7 +22,6 @@ Locales['de'] = {
 
     ['MENU__ITEM_DESC'] = 'Nutze diese Item im dich um deine Pflanze zu kümmern',
 
-    
     ['MENU__PROCESSING'] = 'Verarbeiten',
     ['MENU__RECIPE__DESC'] = 'Verarbeite deine Drogen mit diesem Rezept',
 
@@ -99,6 +98,7 @@ Locales['de'] = {
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich ersteinmal um deinen aktuellen Pflanzen',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
+    ['NOTIFICATION__TO__NEAR'] = 'Du bist zu nah an einer anderen Pflanze!',
     ['NOTIFICATION__CANCELED'] = 'Abgebrochen...',
     ['NOTIFICATION__NO__ITEMS'] = 'Du hast keine Items um die um diese Pflanze zu kümmern',
 

@@ -99,6 +99,7 @@ Locales['en'] = {
 
     ['NOTIFICATION__IN__VEHICLE'] = 'You can´t do this in a Vehicle',
     ['NOTIFICATION__CANT__PLACE'] = 'You can´t do this here',
+    ['NOTIFICATION__TO__NEAR'] = 'You can´t plant this near to another plant',
     ['NOTIFICATION__CANCELED'] = 'Canceled...',
     ['NOTIFICATION__NO__ITEMS'] = 'You have no items to take care of this plant',
 
