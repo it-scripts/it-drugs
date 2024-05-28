@@ -219,25 +219,51 @@ Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
         type = 'weed',
         model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
-        time = 15, -- Time in seconds to process 1 item
-        failChance = 15, -- Chance to fail processing in %
-        ingrediants = {
-            ['paper'] = 1,
-            ['weed_lemonhaze'] = 3
-        },
-        output = 'joint', -- Processed item
+        recipes = {
+            ['joint'] = {
+                label = 'Joint',
+                ingrediants = {
+                    ['weed_lemonhaze'] = 3,
+                    ['paper'] = 1
+                },
+                outputs = {
+                    ['joint'] = 2
+                },
+                processTime = 5,
+                failChance = 15
+            },
+            ['weedbag'] = {
+                label = 'Weed Bag',
+                ingrediants = {
+                    ['weed_lemonhaze'] = 3,
+                    ['plastic'] = 1
+                },
+                outputs = {
+                    ['weedbag'] = 1
+                },
+                processTime = 10,
+                failChance = 15
+            }
+        }
     },
     
     ['cocaine_processing_table'] = {
         type = 'cocaine',
         model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
-        time = 10, -- Time in seconds to process 1 item
-        failChance = 25, -- Chance to fail processing in %
-        ingrediants = {
-            ['coca'] = 3,
-            ['nitrous'] = 1
-        },
-        output = 'cocaine', -- Processed item
+        recipes = {
+            ['cocaine'] = {
+                label = 'Cocaine',
+                ingrediants = {
+                    ['coca'] = 3,
+                    ['nitrous'] = 1
+                },
+                outputs = {
+                    ['cocaine'] = 2
+                },
+                processTime = 10,
+                failChance = 15
+            },
+        }
     },
 }
 

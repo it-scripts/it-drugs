@@ -23,7 +23,9 @@ Locales['en'] = {
     ['MENU__ITEM'] = 'Items',
     ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
 
+    
     ['MENU__PROCESSING'] = 'Proccessing',
+    ['MENU__RECIPE__DESC'] = 'Process your drugs with this recipe',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unknown Ingrediant',
     ['MENU__INGREDIANT__DESC'] = 'You need %g of this ingrediant',

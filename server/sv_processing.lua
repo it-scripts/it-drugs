@@ -50,32 +50,32 @@ AddEventHandler('onResourceStop', function(resource)
     destroyAllTables()
 end)
 
-RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
+RegisterNetEvent('it-drugs:server:processDrugs', function(entity, recipe)
 
     if not processingTables[entity] then return end
     if #(GetEntityCoords(GetPlayerPed(source)) - processingTables[entity].coords) > 10 then return end
 
     local player = it.getPlayer(source)
-    local tableInfos = Config.ProcessingTables[processingTables[entity].type]
+    --local tableInfos = Config.ProcessingTables[processingTables[entity].type]
 
     if not player then return end
     local givenItems = {}
 
     local failChance = math.random(1, 100)
-    if failChance <= tableInfos.failChance then
+    if failChance <= recipe.failChance then
         ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'error')
-        for k,v in pairs(tableInfos.ingrediants) do
+        for k,v in pairs(recipe.ingrediants) do
             it.removeItem(source, k, v)
         end
         return
     end
 
-    for k, v in pairs(tableInfos.ingrediants) do
+    for k, v in pairs(recipe.ingrediants) do
         if not it.removeItem(source, k, v) then
             ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             if #givenItems > 0 then
-                for _, v in pairs(givenItems) do
-                    it.giveItem(source, v.name, v.amount)
+                for _, x in pairs(givenItems) do
+                    it.giveItem(source, x.name, x.amount)
                 end
             end
             return
@@ -84,7 +84,10 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(entity)
         end
     end
     SendToWebhook(source, 'table', 'process', processingTables[entity])
-    it.giveItem(source, tableInfos.output, 1)
+    
+    for k, v in pairs(recipe.outputs) do
+        it.giveItem(source, k, v)
+    end
 end)
 
 

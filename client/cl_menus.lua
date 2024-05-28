@@ -260,13 +260,48 @@ end)
 -- │                                           |___/                           │
 -- └───────────────────────────────────────────────────────────────────────────┘
 -- Processing Menu
+RegisterNetEvent('it-drugs:client:showRecipesMenu', function(data)
+
+    local tableType = Config.ProcessingTables[data.type]
+    local options = {}
+
+    for k, v in pairs(tableType.recipes) do
+        table.insert(options, {
+            title = v.label,
+            description = _U('MENU__RECIPE__DESC'),
+            icon = "flask",
+            arrow = true,
+            event = "it-drugs:client:showProcessingMenu",
+            args = {entity = data.entity, recipe = k, type = data.type}
+        })
+    end
+
+    table.insert(options, {
+        title = _U('MENU__TABLE__REMOVE'),
+        icon = "ban",
+        description = _U('MENU__TABLE__REMOVE__DESC'),
+        arrow = true,
+        event = "it-drugs:client:removeTable",
+        args = {entity = data.entity, type = data.type}
+    })
+
+    lib.registerContext({
+        id = "it-drugs-recipes-menu",
+        title = _U('MENU__PROCESSING'),
+        options = options
+    })
+
+    lib.showContext("it-drugs-recipes-menu")
+end)
+
 RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
 
-    local targetTable = Config.ProcessingTables[data.type]
+    local tableType = data.type
+    local recipe = Config.ProcessingTables[tableType].recipes[data.recipe]
 
     local options = {}
     if not Config.ShowIngrediants then
-        for k, v in pairs(targetTable.ingrediants) do
+        for k, v in pairs(recipe.ingrediants) do
             -- Menu only shows the amount not the name of the item
             table.insert(options, {
                 title = _U('MENU__UNKNOWN__INGREDIANT'),
@@ -275,7 +310,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
             })
         end
     else
-        for k, v in pairs(targetTable.ingrediants) do
+        for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
                 title = it.getItemLabel(k),
                 description = _U('MENU__INGREDIANT__DESC'):format(v), --:replace("{amount}", v),
@@ -290,22 +325,17 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         description = _U('MENU__TABLE__PROCESS__DESC'),
         arrow = true,
         event = "it-drugs:client:processDrugs",
-        args = {entity = data.entity, type = data.type}
-    })
-
-    table.insert(options, {
-        title = _U('MENU__TABLE__REMOVE'),
-        icon = "ban",
-        description = _U('MENU__TABLE__REMOVE__DESC'),
-        arrow = true,
-        event = "it-drugs:client:removeTable",
-        args = {entity = data.entity, type = data.type}
+        args = {entity = data.entity, type = data.type, recipe = data.recipe}
     })
 
     lib.registerContext({
         id = "it-drugs-processing-menu",
-        title = _U('MENU__PROCESSING'),
-        options = options
+        title = recipe.label,
+        options = options,
+        menu = 'it-drugs-recipes-menu',
+        onBack = function()
+            TriggerEvent('it-drugs:client:showRecipesMenu', {type = data.type, entity = data.entity})
+        end,
     })
     lib.showContext("it-drugs-processing-menu")
 end)

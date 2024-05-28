@@ -160,13 +160,14 @@ RegisterNetEvent('it-drugs:client:useTable', function(data)
     local netId = NetworkGetNetworkIdFromEntity(data.entity)
     lib.callback('it-drugs:server:getTableData', false, function(result)
         if not result then return end
-        TriggerEvent('it-drugs:client:showProcessingMenu', result)
+        TriggerEvent('it-drugs:client:showRecipesMenu', result)
     end, netId)
 end)
 
 RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     local entity = args.entity
     local type = args.type
+    local recipe = Config.ProcessingTables[type].recipes[args.recipe]
     if proccessing then return end
 
     local input = lib.inputDialog(_U('INPUT__AMOUNT__HEADER'), {
@@ -179,7 +180,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     end
 
     local amount = tonumber(input[1])
-    for item, itemAmount in pairs(Config.ProcessingTables[type].ingrediants) do
+    for item, itemAmount in pairs(recipe.ingrediants) do
         if not it.hasItem(item, itemAmount * amount) then
             ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             proccessing = false
@@ -187,7 +188,6 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         end
     end
 
-    local netId = NetworkGetNetworkIdFromEntity(entity)
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(200)
@@ -211,7 +211,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
-                TriggerServerEvent('it-drugs:server:processDrugs', entity)
+                TriggerServerEvent('it-drugs:server:processDrugs', entity, recipe)
             else
                 proccessing = false
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
@@ -229,7 +229,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     else
         for i = 1, amount, 1 do
             if lib.progressBar({
-                duration = 5000,
+                duration = recipe.processTime * 1000,
                 label = _U('PROGRESSBAR__PROCESS__DRUG'),
                 useWhileDead = false,
                 canCancel = true,
@@ -239,7 +239,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
                     combat = true,
                 },
             }) then
-                TriggerServerEvent('it-drugs:server:processDrugs', entity)
+                TriggerServerEvent('it-drugs:server:processDrugs', entity, recipe)
             else
                 ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
                 ClearPedTasks(ped)

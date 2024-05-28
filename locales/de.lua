@@ -22,7 +22,9 @@ Locales['de'] = {
 
     ['MENU__ITEM_DESC'] = 'Nutze diese Item im dich um deine Pflanze zu kümmern',
 
+    
     ['MENU__PROCESSING'] = 'Verarbeiten',
+    ['MENU__RECIPE__DESC'] = 'Verarbeite deine Drogen mit diesem Rezept',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unbekannte Zutat',
     ['MENU__INGREDIANT__DESC'] = 'Du benötigen %g dieser Zutat',
