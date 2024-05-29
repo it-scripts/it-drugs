@@ -6,7 +6,7 @@ local getCopsAmount = function()
 		if player then
 			local job = it.getPlayerJob(player)
 			for _, v in pairs(Config.PoliceJobs) do
-				if job.name == v then
+				if job.name == v and job.onduty then
 					copsAmount = copsAmount + 1
 				end
 			end

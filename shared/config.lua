@@ -306,9 +306,7 @@ Config.EnableSelling = true -- Enable selling system
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
 Config.PoliceJobs = {
     'police',
-    'offpolice',
     'sheriff',
-    'offsheriff',
 }
 
 Config.SellSettings = {
