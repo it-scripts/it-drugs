@@ -27,6 +27,8 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 			elseif copsamount >= 3 and copsamount <= 6 then
 				price = price * 1.5
 			elseif copsamount >= 7 and copsamount <= 10 then
+				price = price * 1.7
+			elseif copsamount >= 10 then
 				price = price * 2.0
 			end
 		end

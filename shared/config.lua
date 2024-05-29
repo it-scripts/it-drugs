@@ -16,9 +16,7 @@ Locales = Locales or {}
     if yours is not there, feel free to create it!
 ]]
 Config.Language = 'en'
-
-Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_target or false to disable)
-
+Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
 Config.Webhook = false -- Enable the Discord Webhooks, you can find more information about this in the server/sv_webhooks.lua file.
 
 --- Growing Related Settings
@@ -317,7 +315,7 @@ Config.SellSettings = {
         max = 6,
     },
     ['sellTimeout'] = 20, -- Max time you get to choose your option (secs)
-    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online
+    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
 Config.SellZones = {
