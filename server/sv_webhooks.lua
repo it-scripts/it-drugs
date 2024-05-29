@@ -1,4 +1,13 @@
-local webhookUrl= "https://discord.com/api/webhooks/*******************************************" -- Discord Webhook Link
+--[[
+    If you dont know what a webhook is, you can read more about it here:
+    https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
+]]
+
+local Webhook = {
+    ['name'] = 'it-drugs', -- Name for the webhook
+    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
+    ['url'] = "https://discord.com/api/webhooks/*******************************************", -- Discord Webhook Link
+}
 
 local errors = {
     [200] = "Everything is fine the webhook message was sent successfully!",
@@ -22,9 +31,9 @@ local function buildPlaceHolderEmbed(type, itemData)
     local embed = {
         ["color"] = 4374938,
         ["author"] = {
-            ["name"] = Config.Webhook['name'],
-            ["icon_url"] = Config.Webhook['avatar'],
-            ["url"] = Config.Webhook['avatar'],
+            ["name"] = Webhook['name'],
+            ["icon_url"] = Webhook['avatar'],
+            ["url"] = Webhook['avatar'],
         }
     }
     if type == 'plant' then
@@ -44,7 +53,7 @@ local function buildPlaceHolderEmbed(type, itemData)
         }
         embed["footer"] = {
             ["text"] = os.date("%c"),
-            ["icon_url"] = Config.Webhook['avatar'],
+            ["icon_url"] = Webhook['avatar'],
         }
     elseif type == 'table' then
         embed["title"] = "Table: "..itemData.entity
@@ -60,7 +69,7 @@ local function buildPlaceHolderEmbed(type, itemData)
         }
         embed["footer"] = {
             ["text"] = os.date("%c"),
-            ["icon_url"] = Config.Webhook['avatar'],
+            ["icon_url"] = Webhook['avatar'],
         }
     elseif type == 'sell' then
         embed["title"] = "Drugs Sold"
@@ -77,14 +86,14 @@ local function buildPlaceHolderEmbed(type, itemData)
         }
         embed["footer"] = {
             ["text"] = os.date("%c"),
-            ["icon_url"] = Config.Webhook['avatar'],
+            ["icon_url"] = Webhook['avatar'],
         }
     elseif type == 'message' then
         embed["title"] = "Script Message"
         embed["description"] = itemData
         embed["footer"] = {
             ["text"] = os.date("%c"),
-            ["icon_url"] = Config.Webhook['avatar'],
+            ["icon_url"] = Webhook['avatar'],
         }
     end
     return embed
@@ -102,7 +111,7 @@ local function getPlayerDiscordId(source)
 end
 
 function SendToWebhook(source, type, action, itemData)
-    if not Config.Webhook['active'] then return end
+    if not Config.Webhook then return end
     local entity = itemData.entity
     local embedMessage = nil
     if type == 'message' then
@@ -111,9 +120,9 @@ function SendToWebhook(source, type, action, itemData)
             if err == 200 or err == 204 then
             else
                 lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-                Config.Webhook['active'] = false
+                Config.Webhook = false
             end
-        end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
+        end, 'POST', json.encode({username = Webhook['name'], avatar_url = Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
         return
     end
 
@@ -126,9 +135,9 @@ function SendToWebhook(source, type, action, itemData)
             if err == 200 or err == 204 then
             else
                 lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-                Config.Webhook['active'] = false
+                Config.Webhook = false
             end
-        end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
+        end, 'POST', json.encode({username = Webhook['name'], avatar_url = Webhook['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
         return
     end
 
@@ -163,7 +172,7 @@ end
 
 
 CreateThread(function()
-    if not Config.Webhook['active'] then return end
+    if not Config.Webhook then return end
     while true do
         Wait(1000 * 60) -- Wait 1 minute
         if messagesToSend == nil then return end
@@ -173,9 +182,9 @@ CreateThread(function()
                     messagesToSend[k] = nil
                 else
                     lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-                    Config.Webhook['active'] = false
+                    Config.Webhook = false
                 end
-            end, 'POST', json.encode({username = Config.Webhook['name'], avatar_url = Config.Webhook['avatar'], embeds = {v}}), { ['Content-Type'] = 'application/json' })
+            end, 'POST', json.encode({username = Webhook['name'], avatar_url = Webhook['avatar'], embeds = {v}}), { ['Content-Type'] = 'application/json' })
         end
     end
 end)

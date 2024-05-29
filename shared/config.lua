@@ -16,21 +16,8 @@ Locales = Locales or {}
     if yours is not there, feel free to create it!
 ]]
 Config.Language = 'en'
-
-Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_target or false to disable)
-
---[[
-    Here you set up the discord webhook, you can find more information about
-    this in the server/webhook.lua file.
-    If you dont know what a webhook is, you can read more about it here:
-    https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
-]]
-Config.Webhook = {
-    ['active'] = false, -- Set to true to enable the webhook
-    ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
-    ['name'] = 'it-drugs', -- Name for the webhook
-    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
-}
+Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
+Config.Webhook = false -- Enable the Discord Webhooks, you can find more information about this in the server/sv_webhooks.lua file.
 
 --- Growing Related Settings
 Config.rayCastingDistance = 7.0 -- distance in meters
@@ -345,9 +332,7 @@ Config.EnableSelling = true -- Enable selling system
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
 Config.PoliceJobs = {
     'police',
-    'offpolice',
     'sheriff',
-    'offsheriff',
 }
 
 Config.SellSettings = {
@@ -358,7 +343,7 @@ Config.SellSettings = {
         max = 6,
     },
     ['sellTimeout'] = 20, -- Max time you get to choose your option (secs)
-    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online
+    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
 Config.SellZones = {
