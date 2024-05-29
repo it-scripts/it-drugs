@@ -19,18 +19,7 @@ Config.Language = 'en'
 
 Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_target or false to disable)
 
---[[
-    Here you set up the discord webhook, you can find more information about
-    this in the server/webhook.lua file.
-    If you dont know what a webhook is, you can read more about it here:
-    https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
-]]
-Config.Webhook = {
-    ['active'] = false, -- Set to true to enable the webhook
-    ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
-    ['name'] = 'it-drugs', -- Name for the webhook
-    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
-}
+Config.Webhook = false -- Enable the Discord Webhooks, you can find more information about this in the server/sv_webhooks.lua file.
 
 --- Growing Related Settings
 Config.rayCastingDistance = 7.0 -- distance in meters
