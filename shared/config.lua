@@ -16,8 +16,7 @@ Locales = Locales or {}
     if yours is not there, feel free to create it!
 ]]
 Config.Language = 'en'
-
-Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_target or false to disable)
+Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
 
 --[[
     Here you set up the discord webhook, you can find more information about
@@ -343,6 +342,7 @@ Config.Drugs = { -- Create you own drugs
 Config.EnableSelling = true -- Enable selling system
 
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
+Config.OnlyCopsOnDuty = true -- Check if cops are on-duty (Only QBCore).
 Config.PoliceJobs = {
     'police',
     'offpolice',
@@ -358,7 +358,7 @@ Config.SellSettings = {
         max = 6,
     },
     ['sellTimeout'] = 20, -- Max time you get to choose your option (secs)
-    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online
+    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
 Config.SellZones = {

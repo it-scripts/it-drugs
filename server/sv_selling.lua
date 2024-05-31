@@ -7,6 +7,7 @@ local getCopsAmount = function()
 			local job = it.getPlayerJob(player)
 			for _, v in pairs(Config.PoliceJobs) do
 				if job.name == v then
+					if it.getCoreName() == "qb-core" and Config.OnlyCopsOnDuty and not job.onduty then return end
 					copsAmount = copsAmount + 1
 				end
 			end
@@ -27,6 +28,8 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 			elseif copsamount >= 3 and copsamount <= 6 then
 				price = price * 1.5
 			elseif copsamount >= 7 and copsamount <= 10 then
+				price = price * 1.7
+			elseif copsamount >= 10 then
 				price = price * 2.0
 			end
 		end
