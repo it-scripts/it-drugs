@@ -218,7 +218,7 @@ end)
 CreateThread(function()
     while true do
         if drugEffects['foodRegen'] then
-            if it.getCoreName() == "qbcore" then
+            if it.getCoreName() == "qb-core" then
                 TriggerEvent("QBCore:Server:SetMetaData", "hunger", 40000)
                 TriggerEvent("QBCore:Server:SetMetaData", "thirst", 20000)
                 Wait(4000)
