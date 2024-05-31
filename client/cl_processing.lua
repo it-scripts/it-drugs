@@ -22,7 +22,7 @@ local RayCastCamera = function(dist)
 end
 
 
-local placeProcessingTable = function(ped, tableItem, coords, rotation)
+local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata)
 
 
     RequestAnimDict('amb@medic@standing@kneel@base')
@@ -49,7 +49,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:createNewTable', coords, tableItem, rotation)
+        TriggerServerEvent('it-drugs:server:createNewTable', coords, tableItem, rotation, metadata)
 
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
@@ -62,7 +62,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation)
     end
 end
 
-RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
+RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, metadata)
     local ped = PlayerPedId()
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
         ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
@@ -118,7 +118,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
                 lib.hideTextUI()
 
                 DeleteObject(table)
-                placeProcessingTable(ped, tableItem, dest, rotation)
+                placeProcessingTable(ped, tableItem, dest, rotation, metadata)
                 return
             end
 
@@ -142,7 +142,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem)
                 local coords = GetEntityCoords(table)
                 lib.hideTextUI()
                 DeleteObject(table)
-                placeProcessingTable(ped, tableItem, coords, heading)
+                placeProcessingTable(ped, tableItem, coords, heading, metadata)
                 return
             end
 

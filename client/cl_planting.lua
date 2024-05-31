@@ -52,7 +52,7 @@ local getCurrentZone = function(coords, plantItem)
     return nil
 end
 
-local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
+local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
 
     -- check for near plants
     local plants = lib.callback.await('it-drugs:server:getPlants', false)
@@ -119,7 +119,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:createNewPlant', coords, plantItem, zone)
+        TriggerServerEvent('it-drugs:server:createNewPlant', coords, plantItem, zone, metadata)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -133,7 +133,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords)
 end
 
 -- Events
-RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
+RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
 
     if Config.Debug then lib.print.info('Planting: ', plantItem) end -- DEBUG 
 
@@ -184,7 +184,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
                 planted = true
                 lib.hideTextUI()
 
-                plantSeed(ped, plant, plantInfos, plantItem, dest)
+                plantSeed(ped, plant, plantInfos, plantItem, dest, metadata)
                 return
             end
 
@@ -206,7 +206,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem)
             if IsControlJustPressed(0, 38) then
                 planted = true
                 local coords = GetEntityCoords(plant)
-                plantSeed(ped, plant, plantInfos, plantItem, vector3(coords.x, coords.y, coords.z + (math.abs(customOffset))))
+                plantSeed(ped, plant, plantInfos, plantItem, vector3(coords.x, coords.y, coords.z + (math.abs(customOffset))), metadata)
                 lib.hideTextUI()
                 return
             end

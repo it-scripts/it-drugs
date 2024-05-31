@@ -111,7 +111,7 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
     
 end)
 
-RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotation)
+RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotation, metadata)
     local src = source
     local player = it.getPlayer(src)
     local tableInfos = Config.ProcessingTables[type]
@@ -119,7 +119,7 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
     if not player then if Config.Debug then lib.print.error("No Player") end return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
-    if it.removeItem(src, type, 1) then
+    if it.removeItem(src, type, 1, metadata) then
         local modelHash = GetHashKey(tableInfos.model)
         local table = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z, true, true, false)
         SetEntityHeading(table, rotation)
