@@ -1,15 +1,15 @@
 <div align="center">
 
-[![Drugs Banner](https://i.imgur.com/BdAp0Rw.png)](https://github.com/inseltreff-net/it-drugs?tab=readme-ov-file#it-drugs "Go to repo")
+[![Drugs Banner](https://i.imgur.com/BdAp0Rw.png)](https://github.com/it-scripts/it-drugs?tab=readme-ov-file#it-drugs "Go to repo")
 
 </div>
 
 <div align="center">
 
 [![Discord](https://img.shields.io/badge/Discord%20-Join%20now-blue?logo=discord)](https://discord.gg/4KtC77WMPK)
-[![Downloads](https://img.shields.io/github/downloads/inseltreff-net/it-drugs/total?logo=github)]()
-[![Version](https://img.shields.io/github/v/release/inseltreff-net/it-drugs?logo=github)]()
-[![License](https://img.shields.io/github/license/inseltreff-net/it-drugs?logo=github)]()
+[![Downloads](https://img.shields.io/github/downloads/it-scripts/it-drugs/total?logo=github)]()
+[![Version](https://img.shields.io/github/v/release/it-scripts/it-drugs?logo=github)]()
+[![License](https://img.shields.io/github/license/it-scripts/it-drugs?logo=github)]()
 
 </div>
 
@@ -62,9 +62,9 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-[![Drugs Documentation Banner](https://i.imgur.com/x00BnXb.png)](https://docs.allroundjonu.net/scripts/it-drugs)
+[![Drugs Documentation Banner](https://i.imgur.com/x00BnXb.png)](https://help.it-scripts.com/scripts/it-drugs)
 
-## You can find the install guide in the [documentation](https://docs.allroundjonu.net/scripts/it-drugs)
+## You can find the install guide in the [documentation](https://help.it-scripts.com/scripts/it-drugs)
 <br>
 </div>
 
@@ -82,7 +82,7 @@ Our script is fully configurable, allowing server admins to customize every aspe
 <tr><td>
 it-drugs (it-scripts)
 
-Copyright (C) 2024 [it-scripts](https://github.com/inseltreff-net)
+Copyright (C) 2024 [it-scripts](https://github.com/it-scripts)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
