@@ -352,6 +352,7 @@ Config.PoliceJobs = {
 }
 
 Config.SellSettings = {
+    ['onlyAvailableItems'] = true, -- Only offers with drugs the player has in his inventory
     ['sellChance'] = 70, -- Chance to sell drug (in %)
     ['stealChance'] = 20, -- Chance that the ped dont give you money (in %)
     ['sellAmount'] = { -- Amount of drugs you can sell
