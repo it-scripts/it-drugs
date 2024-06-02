@@ -2,6 +2,7 @@ ConsumableItems = {}
 local ox_inventory = exports.ox_inventory
 
 function it.hasItem(source, item, amount)
+    if not amount then amount = 1 end
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, nil, true)
         if itemData >= amount then return true end
