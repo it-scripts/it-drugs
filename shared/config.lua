@@ -233,7 +233,8 @@ Config.ProcessingTables = { -- Create processing table
                 processTime = 5,
                 failChance = 15
             },
-            ['weedbag'] = {
+            -- Add more recipes here like this
+            --[[ ['weedbag'] = {
                 label = 'Weed Bag',
                 ingrediants = {
                     ['weed_lemonhaze'] = 3,
@@ -244,7 +245,7 @@ Config.ProcessingTables = { -- Create processing table
                 },
                 processTime = 10,
                 failChance = 15
-            }
+            } ]]
         }
     },
     
