@@ -16,8 +16,7 @@ Locales = Locales or {}
     if yours is not there, feel free to create it!
 ]]
 Config.Language = 'en'
-
-Config.Target = 'ox_target' --'qb-target' -- Target script name (qb-target, ox_target or false to disable)
+Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
 
 --[[
     Here you set up the discord webhook, you can find more information about
@@ -93,6 +92,8 @@ Config.Zones = {
 -- │|  __/| | (_| | | | | |_\__ \│
 -- │|_|   |_|\__,_|_| |_|\__|___/│
 -- └─────────────────────────────┘
+
+Config.PlantDistance = 1.5 -- minimum Distance between two plants
 
 Config.OnlyAllowedGrounds = false -- Allow drug growth only on allowed grounds
 Config.AllowedGrounds = {   -- Allowed ground types for planting
@@ -219,25 +220,52 @@ Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
         type = 'weed',
         model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
-        time = 15, -- Time in seconds to process 1 item
-        failChance = 15, -- Chance to fail processing in %
-        ingrediants = {
-            ['paper'] = 1,
-            ['weed_lemonhaze'] = 3
-        },
-        output = 'joint', -- Processed item
+        recipes = {
+            ['joint'] = {
+                label = 'Joint',
+                ingrediants = {
+                    ['weed_lemonhaze'] = 3,
+                    ['paper'] = 1
+                },
+                outputs = {
+                    ['joint'] = 2
+                },
+                processTime = 5,
+                failChance = 15
+            },
+            -- Add more recipes here like this
+            --[[ ['weedbag'] = {
+                label = 'Weed Bag',
+                ingrediants = {
+                    ['weed_lemonhaze'] = 3,
+                    ['plastic'] = 1
+                },
+                outputs = {
+                    ['weedbag'] = 1
+                },
+                processTime = 10,
+                failChance = 15
+            } ]]
+        }
     },
     
     ['cocaine_processing_table'] = {
         type = 'cocaine',
         model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
-        time = 10, -- Time in seconds to process 1 item
-        failChance = 25, -- Chance to fail processing in %
-        ingrediants = {
-            ['coca'] = 3,
-            ['nitrous'] = 1
-        },
-        output = 'cocaine', -- Processed item
+        recipes = {
+            ['cocaine'] = {
+                label = 'Cocaine',
+                ingrediants = {
+                    ['coca'] = 3,
+                    ['nitrous'] = 1
+                },
+                outputs = {
+                    ['cocaine'] = 2
+                },
+                processTime = 10,
+                failChance = 15
+            },
+        }
     },
 }
 
@@ -315,6 +343,7 @@ Config.Drugs = { -- Create you own drugs
 Config.EnableSelling = true -- Enable selling system
 
 Config.MinimumCops = 0 -- Minimum cops required to sell drugs
+Config.OnlyCopsOnDuty = true -- Check if cops are on-duty (Only QBCore).
 Config.PoliceJobs = {
     'police',
     'offpolice',
@@ -323,6 +352,7 @@ Config.PoliceJobs = {
 }
 
 Config.SellSettings = {
+    ['onlyAvailableItems'] = true, -- Only offers with drugs the player has in his inventory
     ['sellChance'] = 70, -- Chance to sell drug (in %)
     ['stealChance'] = 20, -- Chance that the ped dont give you money (in %)
     ['sellAmount'] = { -- Amount of drugs you can sell
@@ -330,7 +360,7 @@ Config.SellSettings = {
         max = 6,
     },
     ['sellTimeout'] = 20, -- Max time you get to choose your option (secs)
-    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online
+    ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
 Config.SellZones = {

@@ -370,7 +370,7 @@ RegisterNetEvent('it-drugs:server:giveFertilizer', function(entity, item)
     end
 end)
 
-RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone)
+RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone, metadata)
     local src = source
     local player = it.getPlayer(src)
     local plantInfos = Config.Plants[plantItem]
@@ -378,7 +378,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
-    if it.removeItem(src, plantItem, 1) then
+    if it.removeItem(src, plantItem, 1, metadata) then
         local modelHash = GetHashKey(Config.PlantTypes[plantInfos.plantType][1][1])
         local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantInfos.plantType][1][2], true, true, false)
         FreezeEntityPosition(plant, true)

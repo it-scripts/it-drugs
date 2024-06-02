@@ -71,13 +71,35 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	local zoneConfig = Config.SellZones[currentZone.name]
 
 	local sellAmount = math.random(Config.SellSettings['sellAmount'].min, Config.SellSettings['sellAmount'].max)
-	local sellItemData = zoneConfig.drugs[math.random(1, #zoneConfig.drugs)]
-	local playerItems = it.getItemCount(sellItemData.item)
+	local sellItemData = nil
+	local playerItems = 0
 
-	if playerItems == 0 then
-		ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
-		SetPedAsNoLongerNeeded(entity)
-		return
+	if Config.SellSettings['onlyAvailableItems'] then
+		local availabeItems = {}
+		for _, itemData in pairs(zoneConfig.drugs) do
+			if it.hasItem(itemData.item)then
+				table.insert(availabeItems, itemData)
+			end
+		end
+
+		if #availabeItems == 0 then
+			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
+			SetPedAsNoLongerNeeded(entity)
+			return
+		end
+
+		-- seed math random
+		math.randomseed(GetGameTimer())
+		sellItemData = availabeItems[math.random(1, #availabeItems)]
+		playerItems = it.getItemCount(sellItemData.item)
+	else
+		sellItemData = zoneConfig.drugs[math.random(1, #zoneConfig.drugs)]
+		playerItems = it.getItemCount(sellItemData.item)
+		if playerItems == 0 then
+			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
+			SetPedAsNoLongerNeeded(entity)
+			return
+		end
 	end
 
 	if playerItems < sellAmount then

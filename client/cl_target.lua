@@ -52,7 +52,7 @@ CreateThread(function()
                     {
                         label = _U('TARGET__PLANT__LABEL'),
                         name = 'it-drugs-check-plant',
-                        icon = 'eye',
+                        icon = 'fas fa-eye',
                         onSelect = function(data)
                             TriggerEvent('it-drugs:client:checkPlant', {entity = data.entity})
                         end,
@@ -102,7 +102,7 @@ if Config.EnableProcessing then
                         {
                             label = _U('TARGET__TABLE__LABEL'),
                             name = 'it-drugs-use-table',
-                            icon = 'eye',
+                            icon = 'fas fa-eye',
                             onSelect = function(data)
                                 TriggerEvent('it-drugs:client:useTable', {entity = data.entity})
                             end,
@@ -164,7 +164,7 @@ CreateSellTarget = function()
             {
                 label = _U('TARGET__SELL__LABEL'),
                 name = 'it-drugs-sell',
-                icon = 'comment',
+                icon = 'fas fa-comment',
                 onSelect = function(data)
                     TriggerEvent('it-drugs:client:checkSellOffer', data.entity)
                 end,

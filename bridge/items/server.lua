@@ -2,6 +2,7 @@ ConsumableItems = {}
 local ox_inventory = exports.ox_inventory
 
 function it.hasItem(source, item, amount)
+    if not amount then amount = 1 end
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, nil, true)
         if itemData >= amount then return true end
@@ -13,7 +14,7 @@ function it.hasItem(source, item, amount)
 		if itemData.amount >= amount then return true end
 	elseif it.core == "esx" then
 		local Player = CoreObject.GetPlayerFromId(source)
-		local esxItem = Player.hasItem(item)
+		local esxItem = Player.getInventoryItem(item)
         if not esxItem then return false end
 		if esxItem.count >= amount then return true end
 	end
@@ -45,9 +46,9 @@ end
 
 function it.removeItem(source, item, amount, metadata)
     if it.inventory == 'ox' then
-        local removedItem = ox_inventory:GetItem(source, item, nil, true)
+        local removedItem = ox_inventory:GetItem(source, item, metadata or nil, true)
         if removedItem >= amount then
-            ox_inventory:RemoveItem(source, item, amount, metadata or {})
+            ox_inventory:RemoveItem(source, item, amount, metadata or nil)
             return true
         end
 	elseif it.core == "qb-core" then
