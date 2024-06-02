@@ -45,9 +45,9 @@ end
 
 function it.removeItem(source, item, amount, metadata)
     if it.inventory == 'ox' then
-        local removedItem = ox_inventory:GetItem(source, item, nil, true)
+        local removedItem = ox_inventory:GetItem(source, item, metadata or nil, true)
         if removedItem >= amount then
-            ox_inventory:RemoveItem(source, item, amount, metadata or {})
+            ox_inventory:RemoveItem(source, item, amount, metadata or nil)
             return true
         end
 	elseif it.core == "qb-core" then
