@@ -1,11 +1,15 @@
 local growZones = {}
 
 for k, v in pairs(Config.Zones) do
-    growZones[k] = PolyZone:Create(v.coords, {
-        name= k,
-        minZ = 0.0,
-        maxZ = 200.0,
-        debugPoly = Config.DebugPoly,
+    local coords = {}
+    for _, point in ipairs(v.points) do
+        table.insert(coords, vector3(point.x, point.y, point.z))
+    end
+
+    growZones[k] = lib.zones.poly({
+        points = coords,
+        thickness = v.thickness,
+        debug = Config.DebugPoly,
     })
 end
 
@@ -38,7 +42,7 @@ end
 
 local getCurrentZone = function(coords, plantItem)
     for k, v in pairs(growZones) do
-        if growZones[k]:isPointInside(vector3(coords.x, coords.y, coords.z)) then
+        if growZones[k]:contains(vector3(coords.x, coords.y, coords.z)) then
             if Config.Debug then lib.print.info('Inside Zone: ', k) end -- DEBUG
             for _, drug in ipairs(Config.Zones[k].exclusive) do
                 if Config.Debug then lib.print.info('Drugs: ', Config.Zones[k].exclusive) end -- DEBUG

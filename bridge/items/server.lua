@@ -5,17 +5,33 @@ function it.hasItem(source, item, amount)
     if not amount then amount = 1 end
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, nil, true)
+        if not itemData then
+            if Config.Debug then
+                print('[it-LIB] The item ' .. item .. ' does not exist in the inventory.')
+                return false
+            end
+        end
         if itemData >= amount then return true end
 	elseif it.core == "qb-core" then
 		local Player = CoreObject.Functions.GetPlayer(source)
 		if not Player then return false end
         local itemData = Player.Functions.GetItemByName(item)
-        if not itemData then return false end
+        if not itemData then
+            if Config.Debug then
+                print('[it-LIB] The item ' .. item .. ' does not exist in the inventory.')
+                return false
+            end
+        end
 		if itemData.amount >= amount then return true end
 	elseif it.core == "esx" then
 		local Player = CoreObject.GetPlayerFromId(source)
 		local esxItem = Player.getInventoryItem(item)
-        if not esxItem then return false end
+        if not esxItem then 
+            if Config.Debug then 
+                print('[it-LIB] The item ' .. item .. ' does not exist in the inventory.')
+                return false 
+            end
+        end
 		if esxItem.count >= amount then return true end
 	end
     return false

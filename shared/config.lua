@@ -50,12 +50,15 @@ Config.GlobalGrowTime = 30 -- Time in minutes for a plant to grow
 
 Config.Zones = {
     ['weed_zone_one'] = { -- Zone id (Musst be unique)
-        coords = {
-            vector2(2058.4727, 4878.3384), -- Zone coords
-            vector2(2005.5208, 4929.1909),
-            vector2(1979.8605, 4903.5918),
-            vector2(2031.4441, 4851.1611),
+        points = {
+            vec3(2031.0, 4853.0, 43.0),
+            vec3(2007.0, 4877.0, 43.0),
+            vec3(1981.0, 4903.0, 43.0),
+            vec3(2006.0, 4929.0, 43.0),
+            vec3(2032.0, 4903.0, 43.0),
+            vec3(2057.0, 4878.0, 43.0),
         },
+        thickness = 4.0,
         growMultiplier = 2, -- GlobalGrowTime / growMultiplier = Time in minutes for a plant to grow in this zone
         
         blip = {
@@ -67,12 +70,15 @@ Config.Zones = {
         exclusive = {'weed_lemonhaze_seed'} -- Types of drugs that will be affected in this are.
     },
     ['weed_zone_two'] = { -- Zone id (Musst be unique)
-        coords = {
-            vector2(2068.0283, 4887.9902), -- Zone coords
-            vector2(2098.0339, 4917.5977),
-            vector2(2045.6102, 4969.4971),
-            vector2(2016.1580, 4940.1895),
+        points = {
+            vec3(2067.0, 4890.0, 41.0),
+            vec3(2043.0, 4914.0, 41.0),
+            vec3(2017.0, 4940.0, 41.0),
+            vec3(2045.0, 4969.0, 41.0),
+            vec3(2069.0, 4946.0, 41.0),
+            vec3(2097.0, 4918.0, 41.0),
         },
+        thickness = 4.0,
         growMultiplier = 2, -- GlobalGrowTime / growMultiplier = Time in minutes for a plant to grow in this zone
         blip = {
             display = true, -- Display blip on map
@@ -366,19 +372,13 @@ Config.SellSettings = {
 Config.SellZones = {
     ['groove'] = {
         points = {
-            vector2(250.90760803223, -1866.3974609375),
-            vector2(146.70475769043, -1990.5447998047),
-            vector2(130.3134765625, -2034.3944091797),
-            vector2(95.291275024414, -2030.4129638672),
-            vector2(88.095336914062, -2009.6634521484),
-            vector2(68.878730773926, -1978.8924560547),
-            vector2(-153.59761047363, -1779.4030761719),
-            vector2(-97.692588806152, -1750.6363525391),
-            vector2(-50.927833557129, -1733.6020507812),
-            vector2(49.590217590332, -1689.9705810547)
+            vec3(-154.0, -1778.0, 30.0),
+            vec3(48.0, -1690.0, 30.0),
+            vec3(250.0, -1860.0, 30.0),
+            vec3(142.0, -1993.0, 30.0),
+            vec3(130.0, -2029.0, 30.0),
         },
-        minZ = 18.035144805908,
-        maxZ = 75.059997558594,
+        thickness = 27,
         drugs = {
             { item = 'cocaine', price = math.random(100, 200)},
             { item = 'joint', price = math.random(50, 100)},
@@ -387,23 +387,38 @@ Config.SellZones = {
     },
     ['vinewood'] = {
         points = {
-            vector2(-663.80639648438, 114.2766418457),
-            vector2(-660.09497070312, 299.65426635742),
-            vector2(-546.58837890625, 275.86111450196),
-            vector2(-542.21002197266, 357.8136291504),
-            vector2(-519.6430053711, 349.90490722656),
-            vector2(-512.67572021484, 276.3483581543),
-            vector2(21.216751098632, 278.6813659668),
-            vector2(49.785594940186, 339.29946899414),
-            vector2(108.84923553466, 399.87518310546),
-            vector2(124.068069458, 384.4684753418),
-            vector2(92.195236206054, 354.55239868164),
-            vector2(170.3550567627, 377.32186889648),
-            vector2(841.11456298828, 199.74020385742),
-            vector2(530.7640991211, -193.10136413574)
+            vec3(685.0, 36.0, 84.0),
+            vec3(647.0, 53.0, 84.0),
+            vec3(575.0, 81.0, 84.0),
+            vec3(529.0, 100.0, 84.0),
+            vec3(52.0, 274.0, 84.0),
+            vec3(-34.0, 42.0, 84.0),
+            vec3(426.0, -125.0, 84.0),
+            vec3(494.0, -140.0, 84.0),
+            vec3(518.0, -101.0, 84.0),
+            vec3(595.0, -60.0, 84.0),
+            vec3(667.0, -9.0, 84.0),
         },
-        minZ = 45.0,
-        maxZ = 125.0,
+        thickness = 59.0,
+        drugs = {
+            { item = 'cocaine', price = math.random(100, 200)},
+            { item = 'joint', price = math.random(50, 100)},
+            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+        }
+    },
+    ['beach'] = {
+        points = {
+            vec3(-1328.0, -1340.0, 5.0),
+            vec3(-1307.0, -1399.0, 5.0),
+            vec3(-1297.0, -1421.0, 5.0),
+            vec3(-1266.0, -1466.0, 5.0),
+            vec3(-1139.0, -1646.0, 5.0),
+            vec3(-1129.0, -1640.0, 5.0),
+            vec3(-1307.0, -1358.0, 5.0),
+            vec3(-1335.0, -1279.0, 5.0),
+            vec3(-1349.0, -1285.0, 5.0),
+        },
+        thickness = 4.0,
         drugs = {
             { item = 'cocaine', price = math.random(100, 200)},
             { item = 'joint', price = math.random(50, 100)},
@@ -435,7 +450,6 @@ end
 function ShowNotification(source, message, type)
     -- Bridge.Functions.Notify(message, type) are the default Framework notifications
     -- You can change this to your own notification systems
-
     if source ~= nil then -- Server Messages
         if type == 'error' then
             it.notify(source, message, "error")

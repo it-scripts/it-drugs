@@ -5,18 +5,32 @@ local currentZone = nil
 
 -- \ Create Zones for the drug sales
 for k, v in pairs(Config.SellZones) do
-    SellZone[k] = PolyZone:Create(v.points, {
-        name= k,
-        minZ = v.minZ,
-        maxZ = v.maxZ,
-        debugPoly = Config.DebugPoly,
+    local coords = {}
+    for _, point in ipairs(v.points) do
+        table.insert(coords, vector3(point.x, point.y, point.z))
+    end
+
+	lib.zones.poly({
+        points = coords,
+        thickness = v.thickness,
+        debug = Config.DebugPoly,
+		onEnter = function(self)
+			CreateSellTarget()
+			currentZone = k
+			if Config.Debug then print("Entered Zone ["..k.."]") end
+		end,
+		onExit = function(self)
+			currentZone = nil
+			RemoveSellTarget()
+			if Config.Debug then print("Exited Zone ["..k.."]") end
+		end
     })
 end
+
 -- \ Play five animation for both player and ped
 local function PlayGiveAnim(tped)
 	local pid = PlayerPedId()
 	FreezeEntityPosition(pid, true)
-	-- QBCore.Functions.RequestAnimDict('mp_common')
 	TaskPlayAnim(pid, "mp_common", "givetake2_a", 8.0, -8, 2000, 0, 1, 0,0,0)
 	TaskPlayAnim(tped, "mp_common", "givetake2_a", 8.0, -8, 2000, 0, 1, 0,0,0)
 	FreezeEntityPosition(pid, false)
@@ -68,7 +82,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	end
 
 	if not currentZone then return end
-	local zoneConfig = Config.SellZones[currentZone.name]
+	local zoneConfig = Config.SellZones[currentZone]
 
 	local sellAmount = math.random(Config.SellSettings['sellAmount'].min, Config.SellSettings['sellAmount'].max)
 	local sellItemData = nil
@@ -130,38 +144,5 @@ RegisterNetEvent('it-drugs:client:salesInitiate', function(cad)
 		PlayGiveAnim(cad.tped)
 		TriggerServerEvent('it-drugs:server:initiatedrug', cad)
 		SetPedAsNoLongerNeeded(cad.tped)
-	end
-end)
-
-
--- \ Check if inside sellzone
-CreateThread(function()
-	while true do
-		if SellZone and next(SellZone) then
-			local ped = PlayerPedId()
-			local coord = GetEntityCoords(ped)
-			for k, _ in pairs(SellZone) do
-				if SellZone[k] then
-					if SellZone[k]:isPointInside(coord) then
-						SellZone[k].inside = true
-                        currentZone = SellZone[k]
-						if not SellZone[k].target then
-							SellZone[k].target = true
-							CreateSellTarget()
-							if Config.Debug then print("Target Added ["..currentZone.name.."]") end
-						end
-						if Config.Debug then print(json.encode(currentZone)) end
-					else
-						SellZone[k].inside = false
-						if SellZone[k].target then
-							SellZone[k].target = false
-							RemoveSellTarget()
-							if Config.Debug then print("Target Removed ["..SellZone[k].name.."]") end
-						end
-					end
-				end
-			end
-		end
-		Wait(1000)
 	end
 end)

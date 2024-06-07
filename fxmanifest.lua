@@ -17,10 +17,10 @@ shared_scripts {
 }
 
 client_scripts {
-    '@PolyZone/client.lua',
-    '@PolyZone/CircleZone.lua',
 
     'bridge/**/client.lua',
+
+    'client/cl_notarget.lua',
 
     'client/cl_admin.lua',
     'client/cl_menus.lua',
@@ -53,7 +53,6 @@ files = {
 }
 
 dependencies {
-    'PolyZone',
     'ox_lib',
     'oxmysql'
 }

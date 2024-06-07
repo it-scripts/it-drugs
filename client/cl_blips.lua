@@ -57,9 +57,9 @@ end
 CreateThread(function()
     for k, v in pairs(Config.Zones) do
         if v.blip.display then
-            local center = calculateCenterPoint(v.coords)
+            local center = calculateCenterPoint(v.points)
 
-            local blip = AddBlipForCoord(center.x, center.y, 200.0)
+            local blip = AddBlipForCoord(center.x, center.y, 200)
             SetBlipSprite(blip, v.blip.sprite)
             SetBlipDisplay(blip, 4)
             SetBlipScale(blip, 0.8)
@@ -77,11 +77,11 @@ end)
 -- Remove Blips on Resource Stop
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
-        for k, v in pairs(blips) do
+        for _, v in pairs(blips) do
             RemoveBlip(v)
         end
 
-        for k, v in pairs(adminBlips) do
+        for _, v in pairs(adminBlips) do
             RemoveBlip(v)
         end
     end
