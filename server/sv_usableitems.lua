@@ -42,14 +42,22 @@ if Config.EnableDrugs then
                 local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
                 if Config.Debug then lib.print.info('currentDrug', currentDrug) end
                 if not currentDrug then
+
+                    local isDrugOnCooldown = lib.callback.await('it-drugs:client:isDrugOnCooldown', src, drug)
+                    if isDrugOnCooldown then
+                        ShowNotification(src, _U('NOTIFICATION__DRUG__COOLDOWN'), "info")
+                        return
+                    end
+
                     local metadata = getMetadata(data)
                     if it.removeItem(src, drug, 1, metadata) then
                         TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
                     else
                         if Config.Debug then lib.print.error('Failed to remove item') end
                     end
+                else
+                    ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
                 end
-                ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
             end
         end)
     end

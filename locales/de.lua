@@ -1,4 +1,8 @@
 Locales['de'] = {
+
+    ['MENU__DEALER'] = 'Dealer: %s',
+    ['MENU__DEALER__DESC'] = 'Kauf dies für $%g pro Stück.',
+
     ['MENU__PLANT'] = '%s',
     ['MENU__DEAD__PLANT'] = 'Abgestorbene Pflanze',
 
@@ -95,6 +99,9 @@ Locales['de'] = {
     ['MENU__TABLE__DESTROY'] = 'Tisch zerstören',
     ['MENU__TABLE__DESTROY__DESC'] = 'Zerstöre diesen Tisch',
 
+    ['NOTIFICATION__NO__MONEY'] = 'Du hast nicht genug Geld dabei!',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'Du hast erfolgreich etwas %s gekauft.',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich ersteinmal um deinen aktuellen Pflanzen',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
@@ -122,6 +129,7 @@ Locales['de'] = {
 
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Diese Droge hat keine Effekte!',
     ['NOTIFICATION__DRUG__ALREADY'] = 'Du hast bereits eine Droge eingenommen!',
+    ['NOTIFICATION__DRUG__COOLDOWN'] = 'Du musst noch warten bis du diese Droge wieder nehmen kannst!',
 
     ['NOTIFICATION__NO__PERMISSION'] = 'Du hast keine Berechtigung um dies zu machen!',
     ['NOTIFICATION__ADMINMENU__USAGE'] = 'Bitte nutze: /%s [plants/tables]',
@@ -148,6 +156,10 @@ Locales['de'] = {
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Pflanze platzieren / [G] - Abbrechen',
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagieren',
+
+    ['INPUT__BUY__HEADER'] = 'Kaufen',
+    ['INPUT__BUY__TEXT'] = 'Anzahl',
+    ['INPUT__BUY__DESCRIPTION'] = 'Wie viel %s möchtest du Kaufen?',
 
     ['INPUT__AMOUNT__HEADER'] = 'Verarbeiten',
     ['INPUT__AMOUNT__TEXT'] = 'Menge',

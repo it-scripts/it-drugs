@@ -31,6 +31,31 @@ Config.Webhook = {
     ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
 }
 
+-- The Drug Dealer system is a system that allows you to buy seed from a dealer
+Config.EnableDealers = true -- Enable drug dealer system
+
+Config.DrugDealers = {
+    ['seed_dealer'] = { -- Dealer id (Musst be unique)
+        label = 'Seed Dealer', -- Dealer name
+        locations = { -- Dealer will spawn at one of these locations
+            vector4(-462.8489, 1101.5592, 326.6819, 166.9773),
+            vector4(-49.4244, 1903.6714, 194.3613, 95.7213),
+            vector4(2414.2463, 5003.8462, 45.6655, 40.8932),
+        },
+        ped = 's_m_y_dealer_01', -- Ped model
+        blip = {
+            display = false, -- Display blip on map
+            sprite = 140, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            displayText = 'Seed Dealer',
+        },
+        items = { -- Items the dealer is selling
+            ['weed_lemonhaze_seed'] = {min = 100, max = 200}, -- min/max price
+            ['coca_seed'] = {min = 100, max = 300},
+        }
+    },
+}
+
 --- Growing Related Settings
 Config.rayCastingDistance = 7.0 -- distance in meters
 Config.FireTime = 10000 -- in ms
@@ -158,7 +183,7 @@ Config.PlantTypes = {
         [3] = {"bkr_prop_weed_lrg_01b", -0.5},
     },
     ["small_plant"] = {
-        [1] = {"bkr_prop_weed_bud_02b", 0},
+        [1] = {"bkr_prop_weed_bud_pruned_01a", 0},
         [2] = {"bkr_prop_weed_bud_02b", 0},
         [3] = {"bkr_prop_weed_bud_02a", 0},
     },
@@ -237,7 +262,11 @@ Config.ProcessingTables = { -- Create processing table
                     ['joint'] = 2
                 },
                 processTime = 5,
-                failChance = 15
+                failChance = 15,
+                animation = {
+                    dict = 'anim@gangops@facility@servers@bodysearch@',
+                    anim = 'player_search',
+                }
             },
             -- Add more recipes here like this
             --[[ ['weedbag'] = {
@@ -317,7 +346,8 @@ Config.Drugs = { -- Create you own drugs
             'healthRegen',
             'moreStrength',
             'drunkWalk'
-        }
+        },
+        cooldown = 360, -- Cooldown in seconds until you can use this drug again
     },
     ['cocaine'] = {
         label = 'Cocaine',
@@ -328,7 +358,8 @@ Config.Drugs = { -- Create you own drugs
             'infinateStamina',
             'fogEffect',
             'psycoWalk'
-        }
+        },
+        cooldown = 480, -- Cooldown in seconds until you can use this drug again
     },
 }
 
@@ -475,5 +506,5 @@ end
 ]]
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = false -- Set to true to enable debug mode
+Config.Debug = true -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

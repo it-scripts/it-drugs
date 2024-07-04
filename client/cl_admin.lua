@@ -1,5 +1,4 @@
 RegisterNetEvent('it-drugs:client:showAdminAlertBox', function(args)
-
     local userLicense = args.userLicense
     local username = args.username
 

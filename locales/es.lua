@@ -1,4 +1,8 @@
 Locales['es'] = {
+    
+    ['MENU__DEALER'] = 'Dealer: %s',
+    ['MENU__DEALER__DESC'] = 'Cómpralo por $%g la pieza',
+    
     ['MENU__PLANT'] = '%s',
     ['MENU__DEAD__PLANT'] = 'Planta Muerta',
 
@@ -96,6 +100,9 @@ Locales['es'] = {
     ['MENU__TABLE__DESTROY'] = 'Destruir Mesa',
     ['MENU__TABLE__DESTROY__DESC'] = 'Destruir esta mesa',
 
+    ['NOTIFICATION__NO__MONEY'] = 'No tienes suficiente dinero.',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'Has comprado con éxito algunos %s',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'No puedes hacer esto en un vehículo.',
     ['NOTIFICATION__CANT__PLACE'] = 'No puedes hacer esto aquí.',
     ['NOTIFICATION__TO__NEAR'] = 'No puedes plantar esto cerca de otra planta.',
@@ -123,6 +130,7 @@ Locales['es'] = {
 
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Esta droga no tiene efecto.',
     ['NOTIFICATION__DRUG__ALREADY'] = 'Ya estás bajo la influencia de estupefacientes.',
+    ['NOTIFICATION__DRUG__COOLDOWN'] = 'Tienes que esperar antes de volver a tomar esta influencia de estupefacientes',
 
     ['NOTIFICATION__NO__PERMISSION'] = 'No tienes permiso para hacer esto.',
     ['NOTIFICATION__ADMINMENU__USAGE'] = 'Por favor usa: /%s [plants/tables].',
@@ -153,6 +161,10 @@ Locales['es'] = {
     ['INPUT__AMOUNT__HEADER'] = 'Procesando',
     ['INPUT__AMOUNT__TEXT'] = 'Cantidad',
     ['INPUT__AMOUNT__DESCRIPTION'] = '¿Cuántos quieres procesar?',
+
+    ['INPUT__BUY__HEADER'] = 'Compra',
+    ['INPUT__BUY__TEXT'] = 'Cantidad',
+    ['INPUT__BUY__DESCRIPTION'] = '¿Cuántos %s quieres comprar?',
 
     ['TARGET__PLANT__LABEL'] = 'Ver Planta',
     ['TARGET__TABLE__LABEL'] = 'Usar Mesa',

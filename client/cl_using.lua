@@ -1,4 +1,5 @@
 local currentDrug = nil
+local cooldowns = {}
 
 local drugEffects = {
     ['runningSpeedIncrease'] = false,
@@ -260,6 +261,16 @@ RegisterNetEvent('it-drugs:client:takeDrug', function(drugItem)
     local drugData = Config.Drugs[drugItem]
     local ped = PlayerPedId()
 
+    if cooldowns[drugItem] ~= nil then
+        local time = GetGameTimer()
+        if time > cooldowns[drugItem] then
+            cooldowns[drugItem] = time + drugData.cooldown * 1000 + drugData.time * 1000
+        end
+    else
+        cooldowns[drugItem] = GetGameTimer() + (drugData.cooldown * 1000 + (drugData.time * 1000))
+        lib.print.info('Cooldowns:', cooldowns)
+    end
+
     if drugData == nil then
         ShowNotification(nil, _U('NOTIFICATION__DRUG__NO__EFFECT'), "error")
         return
@@ -286,6 +297,20 @@ AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     if currentDrug == nil then return end
     clearDrugEffects()
+end)
+
+lib.callback.register('it-drugs:client:isDrugOnCooldown', function(drugItem)
+    local cooldown = cooldowns[drugItem]
+    if not cooldown then
+        return false
+    else
+        local time = GetGameTimer()
+        if time < cooldown then
+            return true
+        else
+            return false
+        end
+    end
 end)
 
 lib.callback.register('it-drugs:client:getCurrentDrugEffect', function()

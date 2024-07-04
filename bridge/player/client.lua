@@ -7,7 +7,7 @@ function it.getPlayerData()
 end
 
 function it.getCitizenId()
-    local citizenId = lib.callback.await('it-lib:getCitizenId', false)
+    local citizenId = lib.callback.await('it-drugs:getCitizenId', false)
     return citizenId
 end
 
@@ -76,7 +76,11 @@ function it.getPlayerMoney(type)
         local types = { ['cash'] = 'money', ['bank'] = 'bank', ['black'] = 'black_money' }
 
         if types[type] then
-            return playerData.accounts[types[type]]
+            for _, data in pairs(playerData.accounts) do
+                if data.name == types[type] then
+                    return data.money
+                end
+            end
         end
         return false
     end
@@ -87,16 +91,16 @@ function it.getPlayerName()
     if it.core == 'qb-core' then
         return playerData.charinfo.firstname .. ' ' .. playerData.charinfo.lastname
     elseif it.core == 'esx' then
-        return lib.callback.await('it-lib:getPlayerName', false)
+        return lib.callback.await('it-drugs:getPlayerName', false)
     end
 end
 
 function it.getLicences()
-    local licences = lib.callback.await('it-lib:getLicences', false)
+    local licences = lib.callback.await('it-drugs:getLicences', false)
     return licences
 end
 
 function it.getLicence(licenseType)
-    local licence = lib.callback.await('it-lib:getLicence', false, licenseType)
+    local licence = lib.callback.await('it-drugs:getLicence', false, licenseType)
     return licence
 end

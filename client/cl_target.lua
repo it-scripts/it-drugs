@@ -1,3 +1,5 @@
+if Config.Debug and Config.Target then lib.print.info('Setting up Target System') end
+
 -- ┌────────────────────────────────────────────────────────┐
 -- │ ____  _             _     _____                    _   │
 -- │|  _ \| | __ _ _ __ | |_  |_   _|_ _ _ __ __ _  ___| |_ │
@@ -7,7 +9,6 @@
 -- │                                         |___/          │
 -- └────────────────────────────────────────────────────────┘
 -- Plant Target
-if Config.Debug and Config.Target then lib.print.info('Setting up Target System') end
 CreateThread(function()
     if Config.Target == 'qb-target' then
         if Config.Debug then lib.print.info('Detected Target System: qb-target') end -- DEBUG
@@ -64,6 +65,48 @@ CreateThread(function()
     end
     if Config.Debug then lib.print.info('Registerd all Plant Targets') end -- DEBUG
 end)
+
+
+if Config.EnableDealers then
+    CreateThread(function()
+        if Config.Target == 'qb-target' then
+            for k, v in pairs(Config.DrugDealers) do
+                if v.ped ~= nil then
+                    exports['qb-target']:AddTargetModel(v.ped, {
+                        options = {
+                            {
+                                icon = 'fas fa-eye',
+                                label = _U('TARGET__DEALER__LABLE'),
+                                action = function (entity)
+                                    TriggerEvent('it-drugs:client:showDealerMenu', k)
+                                end
+                            }
+                        },
+                        distance = 1.5,
+                    })
+                end
+            end
+        elseif Config.Target == 'ox_target' then
+            -- Check if ox target is running
+            if not exports.ox_target then return end
+            for k, v in pairs(Config.DrugDealers) do
+                if v.ped ~= nil then
+                    exports.ox_target:addModel(v.ped, {
+                        {
+                            label = _U('TARGET__DEALER__LABLE'),
+                            name = 'it-drugs-talk-dealer',
+                            icon = 'fas fa-eye',
+                            onSelect = function(data)
+                                TriggerEvent('it-drugs:client:showDealerMenu', k)
+                            end,
+                            distance = 1.5
+                        }
+                    })
+                end
+            end
+        end
+    end)
+end
 
 -- ┌────────────────────────────────────────────────────────────────────────────────────┐
 -- │ ____                                  _               _____                    _   │

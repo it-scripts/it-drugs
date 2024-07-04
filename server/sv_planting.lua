@@ -161,10 +161,28 @@ updatePlantNeeds = function ()
             })
         end
 
-        local stage = calcStage(calcGrowth(k))
-        if stage ~= v.stage then
-            plants[k].stage = stage
-            updatePlantProp(k, stage)
+        if not DoesEntityExist(k) then
+            lib.print.info('Plant ID: '.. v.id ..' does not exist, respawning it coords:', v.coords.x)
+            -- Respawn the plant
+            local modelHash = Config.PlantTypes[Config.Plants[v.type].plantType][v.stage][1]
+            local plant = CreateObjectNoOffset(modelHash, v.coords.x, v.coords.y, v.coords.z + Config.PlantTypes[Config.Plants[v.type].plantType][v.stage][2], true, true, false)
+            FreezeEntityPosition(plant, true)
+            plants[plant] = plants[k]
+            plants[plant].entity = plant
+            plants[k] = nil
+            v = plants[plant]
+
+            local stage = calcStage(calcGrowth(plant))
+            if stage ~= v.stage then
+                plants[plant].stage = stage
+                updatePlantProp(plant, stage)
+            end
+        else
+            local stage = calcStage(calcGrowth(k))
+            if stage ~= v.stage then
+                plants[k].stage = stage
+                updatePlantProp(k, stage)
+            end
         end
     end
 
@@ -191,7 +209,7 @@ AddEventHandler('onResourceStart', function(resource)
             end
         end
     end
-
+    TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     SendToWebhook(0, 'message', nil, 'Started '..GetCurrentResourceName()..' logger')
 
 end)
@@ -232,6 +250,7 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
         DeleteEntity(entity)
 
         plants[entity] = nil
+        TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     end
 end)
 
@@ -268,6 +287,7 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(entity)
             ['id'] = plants[entity].id
         })
         plants[entity] = nil
+        TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     end
 end)
 
@@ -416,6 +436,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
                 entity = plant,
                 stage = 1
             }
+            TriggerClientEvent('it-drugs:client:syncPlantList', -1)
             SendToWebhook(src, 'plant', 'plant', plants[plant])
         end)
     end
@@ -441,6 +462,30 @@ lib.callback.register('it-drugs:server:getPlantData', function(source, netId)
     }
     if Config.Debug then lib.print.info('Plant Data', temp) end
     return temp
+end)
+
+lib.callback.register('it-drugs:server:getPlantDataWithId', function(source, plantId)
+    lib.print.info('Plant ID:', plantId)
+    for k, v in pairs(plants) do
+        if v.id == plantId then
+            local entity = k
+            local temp = {
+                id = v.id,
+                owner = v.owner,
+                coords = v.coords,
+                time = v.time,
+                type = v.type,
+                fertilizer = v.fertilizer,
+                water = v.water,
+                stage = calcStage(calcGrowth(entity)),
+                health = v.health,
+                growth = calcGrowth(entity),
+                entity = entity
+            }
+            if Config.Debug then lib.print.info('Plant Data', temp) end
+            return temp
+        end
+    end
 end)
 
 lib.callback.register('it-drugs:server:getPlantsOwned', function(source)

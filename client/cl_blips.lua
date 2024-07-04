@@ -1,4 +1,5 @@
 local blips = {}
+local dealerBlips = {}
 local adminBlips = {}
 
 local function calculateCenterPoint(coords)
@@ -20,8 +21,6 @@ local function calculateCenterPoint(coords)
     -- Create and return center point vector2
     return vector2(avgX, avgY)
 end
-
-
 
 AddAdminBlip = function(id, coords, lable, type)
     if adminBlips[id] then
@@ -54,6 +53,37 @@ RemoveAdminBlip = function(id)
     adminBlips[id] = nil
 end
 
+AddDealerBlip = function(coords, sprite, color, text)
+    local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(blip, sprite)
+    SetBlipDisplay(blip, 4)
+    SetBlipScale(blip, 0.8)
+    SetBlipColour(blip, color)
+    SetBlipAsShortRange(blip, true)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(text)
+    EndTextCommandSetBlipName(blip)
+    table.insert(dealerBlips, blip)
+end
+
+RemoveDealerBlip = function(coords)
+    for i, v in ipairs(dealerBlips) do
+        local blipCoords = GetBlipInfoIdCoord(v)
+        if blipCoords.x == coords.x and blipCoords.y == coords.y then
+            RemoveBlip(v)
+            table.remove(dealerBlips, i)
+            break
+        end
+    end
+end
+
+RemoveDealerBlips = function()
+    for _, v in ipairs(dealerBlips) do
+        RemoveBlip(v)
+    end
+    dealerBlips = {}
+end
+
 CreateThread(function()
     for k, v in pairs(Config.Zones) do
         if v.blip.display then
@@ -82,6 +112,10 @@ AddEventHandler('onResourceStop', function(resource)
         end
 
         for _, v in pairs(adminBlips) do
+            RemoveBlip(v)
+        end
+
+        for _, v in pairs(dealerBlips) do
             RemoveBlip(v)
         end
     end
