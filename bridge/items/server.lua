@@ -5,17 +5,33 @@ function it.hasItem(source, item, amount)
     if not amount then amount = 1 end
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, nil, true)
+        if not itemData then
+            if Config.Debug then
+                print('[it-drugs] The item ' .. item .. ' does not exist in the inventory.')
+                return false
+            end
+        end
         if itemData >= amount then return true end
 	elseif it.core == "qb-core" then
 		local Player = CoreObject.Functions.GetPlayer(source)
 		if not Player then return false end
         local itemData = Player.Functions.GetItemByName(item)
-        if not itemData then return false end
+        if not itemData then
+            if Config.Debug then
+                print('[it-drugs] The item ' .. item .. ' does not exist in the inventory.')
+                return false
+            end
+        end
 		if itemData.amount >= amount then return true end
 	elseif it.core == "esx" then
 		local Player = CoreObject.GetPlayerFromId(source)
 		local esxItem = Player.getInventoryItem(item)
-        if not esxItem then return false end
+        if not esxItem then 
+            if Config.Debug then 
+                print('[it-drugs] The item ' .. item .. ' does not exist in the inventory.')
+                return false 
+            end
+        end
 		if esxItem.count >= amount then return true end
 	end
     return false
@@ -70,7 +86,7 @@ function it.removeItem(source, item, amount, metadata)
 end
 
 function it.createUsableItem(item, cb)
-    if ConsumableItems[item] then print('[it-LIB] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
+    if ConsumableItems[item] then print('[it-drugs] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
 	if it.core == "qb-core" then
 		CoreObject.Functions.CreateUseableItem(item, cb)
         ConsumableItems[item] = cb
@@ -105,23 +121,35 @@ function it.getItemCount(source, item)
     return 0
 end
 
-lib.callback.register('it-lib:hasItem', function(source, item, amount)
+function it.getItemLabel(source, itemName)
+    local itemLabel
+    if it.inventory == 'ox' then
+        itemLabel = lib.callback.await('it-drugs:client:getItemLabel', source, itemName)
+    elseif it.core == 'qb-core' then
+        itemLabel = CoreObject.Shared.Items[itemName].label
+    elseif it.core == 'esx' then
+        itemLabel = CoreObject.GetItemLabel(itemName)
+    end
+    return itemLabel
+end
+
+lib.callback.register('it-drugs:hasItem', function(source, item, amount)
     local hasItem = it.hasItem(source, item, amount)
     --lib.print.info('The player has the item ' .. item .. ' with the amount of ' .. amount .. ': ' .. tostring(hasItem))
     return hasItem
 end)
 
-lib.callback.register('it-lib:getItemCount', function(source, item)
+lib.callback.register('it-drugs:getItemCount', function(source, item)
     local itemCount = it.getItemCount(source, item)
     return itemCount
 end)
 
-lib.callback.register('it-lib:getItemLabel', function(source, itemName)
+lib.callback.register('it-drugs:server:getItemLabel', function(source, itemName)
     local itemLabel = CoreObject.GetItemLabel(itemName)
     return itemLabel
 end)
 
-RegisterNetEvent('it-lib:toggleItem', function(toggle, name, amount, metadata)
+RegisterNetEvent('it-drugs:toggleItem', function(toggle, name, amount, metadata)
     local source = source
     it.toggleItem(source, toggle, name, amount, metadata)
 end)

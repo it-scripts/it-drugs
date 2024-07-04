@@ -98,7 +98,7 @@ function it.removeMoney(source, moneyType, amount, reason)
         removedMoney = Player.Functions.RemoveMoney(moneyType, amount, reason)
     elseif it.core == 'esx' then
         moneyType = types[moneyType]['esx']
-        local currentMoney = Player.getAccount(moneyType)
+        local currentMoney = Player.getAccount(moneyType).money
         Player.removeAccountMoney(moneyType, amount)
         if currentMoney - amount == currentMoney then
             removedMoney = false
@@ -131,7 +131,7 @@ function it.getMoney(source, moneyType)
         return Player.Functions.GetMoney(moneyType)
     elseif it.core == 'esx' then
         moneyType = types[moneyType]['esx']
-       return Player.getAccount(moneyType)
+       return Player.getAccount(moneyType).money
     end
     return false
 end
@@ -244,18 +244,18 @@ function it.getPlayerName(source)
 end
 
 -- OX Callbacks
-lib.callback.register('it-lib:getPlayerName', function(source)
+lib.callback.register('it-drugs:getPlayerName', function(source)
     return it.getPlayerName(source)
 end)
 
-lib.callback.register('it-lib:getCitizenId', function(source)
+lib.callback.register('it-drugs:getCitizenId', function(source)
     return it.getCitizenId(source)
 end)
 
-lib.callback.register('it-lib:getLicences', function(source)
+lib.callback.register('it-drugs:getLicences', function(source)
     return it.getLicences(source)
 end)
 
-lib.callback.register('it-lib:getLicence', function(source, licenseType)
+lib.callback.register('it-drugs:getLicence', function(source, licenseType)
     return it.getLicence(source, licenseType)
 end)

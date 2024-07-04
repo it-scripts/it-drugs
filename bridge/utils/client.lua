@@ -6,6 +6,6 @@ function it.notify(message, type, length)
     end
 end
 
-RegisterNetEvent('it-lib:client:Notify', function(message, type, length)
+RegisterNetEvent('it-drugs:client:Notify', function(message, type, length)
     it.notify(message, type, length)
 end)

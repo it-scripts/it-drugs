@@ -5,7 +5,6 @@ if it.getCoreName() == 'esx' then
     ESX.RegisterCommand({_U('COMMAND__ADMINMENU')}, 'user', function(xPlayer, args, showError)
         local src = xPlayer.source
         if IsPlayerAceAllowed(src, 'it-drugs') then
-    
             if args[1] == nil then
                 ShowNotification(src, _U('NOTIFICATION__ADMINMENU__USAGE'):format(_U('COMMAND__ADMINMENU')), "info")
                 return

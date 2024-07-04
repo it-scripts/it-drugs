@@ -194,18 +194,11 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
 
     proccessing = true
 
-    RequestAnimDict('amb@medic@standing@kneel@base')
-    RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
-    while 
-        not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
-        not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
-    do 
-        Wait(0) 
+    RequestAnimDict(recipe.animation.dict)
+    while not HasAnimDictLoaded(recipe.animation.dict) do 
+        Wait(0)
     end
-    TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
-
-
+    TaskPlayAnim(ped, recipe.animation.dict, recipe.animation.anim, 8.0, 8.0, -1, 1, 0, false, false, false)
     if Config.ProcessingSkillCheck then
         for i = 1, amount, 1 do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
@@ -216,16 +209,14 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
                 proccessing = false
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
                 ClearPedTasks(ped)
-                RemoveAnimDict('amb@medic@standing@kneel@base')
-                RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+                RemoveAnimDict(recipe.animation.dict)
                 return
             end
             Wait(1000)
         end
         proccessing = false
         ClearPedTasks(ped)
-        RemoveAnimDict('amb@medic@standing@kneel@base')
-        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+        RemoveAnimDict(recipe.animation.dict)
     else
         for i = 1, amount, 1 do
             if lib.progressBar({
@@ -243,15 +234,13 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
             else
                 ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
                 ClearPedTasks(ped)
-                RemoveAnimDict('amb@medic@standing@kneel@base')
-                RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+                RemoveAnimDict(recipe.animation.dict)
             end
             Wait(1000)
         end
         proccessing = false
         ClearPedTasks(ped)
-        RemoveAnimDict('amb@medic@standing@kneel@base')
-        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+        RemoveAnimDict(recipe.animation.dict)
     end
 end)
 

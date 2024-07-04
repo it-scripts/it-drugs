@@ -1,3 +1,32 @@
+RegisterNetEvent("it-drugs:client:showDealerMenu", function(dealerId)
+    local options = {}
+
+    local dealerData = Config.DrugDealers[dealerId]
+    local dealerName = dealerData.label
+
+    for k, v in pairs(dealerData.items) do
+
+        local itemData = lib.callback.await('it-drugs:server:getDealerItemData', false, dealerId, k)
+
+        table.insert(options, {
+            title = it.getItemLabel(k),
+            description = _U('MENU__DEALER__DESC'):format(itemData.price),
+            icon = "coins",
+            arrow = true,
+            event = "it-drugs:client:handelBuyInteraction",
+            args = {item = k, price = itemData.price, dealerId = dealerId}
+        })
+    end
+
+    lib.registerContext({
+        id = "it-drugs-dealer-menu",
+        title = _U('MENU__DEALER'):format(dealerName),
+        options = options
+    })
+
+    lib.showContext("it-drugs-dealer-menu")
+end)
+
 -- ┌───────────────────────────────────────────────────┐
 -- │ ____  _             _     __  __                  │
 -- │|  _ \| | __ _ _ __ | |_  |  \/  | ___ _ __  _   _ │

@@ -1,5 +1,5 @@
 it = setmetatable({
-    name = "it-lib",
+    name = "it-drugs",
     context = IsDuplicityVersion() and "server" or "client",
 }, {
     __nexindex = function(self, name, fn)
