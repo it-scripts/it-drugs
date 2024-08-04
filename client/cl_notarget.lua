@@ -337,6 +337,7 @@ if Config.EnableProcessing then
     end)
 end
 
+
 -- ┌─────────────────────────────────────────────────────────────┐
 -- │ ____       _ _ _               _____                    _   │
 -- │/ ___|  ___| | (_)_ __   __ _  |_   _|_ _ _ __ __ _  ___| |_ │
@@ -357,116 +358,58 @@ local function isPedBlacklisted(ped)
 end
 
 -- Create the selling Targets
-
-
 CreateSellTarget = function()
-    print("CreateSellTarget function called") 
-    local inZone = false
-    local zonaActual = nil
-
-    while currentZone do
-        local playerPed = PlayerPedId()
-        local playerCoords = GetEntityCoords(playerPed)
-        local isNearAnyNPC = false
-        local nearbyNPC = nil
-
-        for ped in EnumeratePeds() do
-            if not IsPedAPlayer(ped) and not IsPedDeadOrDying(ped, false) and not IsPedInAnyVehicle(ped, false) and GetPedType(ped) ~= 28 and not isPedBlacklisted(ped) then
-                local pedCoords = GetEntityCoords(ped)
-                local distance = #(playerCoords - pedCoords)
-                print("Coordenadas del jugador:", playerCoords)
-                print("Coordenadas del NPC:", pedCoords)
-                print("Distancia al NPC:", distance)
-                if distance < 4.0 then
-                    isNearAnyNPC = true
-                    nearbyNPC = ped
-                    print("NPC cercano detectado:", ped)
-                    break
-                end
-            end
-        end
-
-        if isNearAnyNPC then
-            print("NPC dentro de la zona.")
-            while isNearAnyNPC do
-                playerCoords = GetEntityCoords(playerPed)
-                local dentroDeZona = false
-
-                for ped in EnumeratePeds() do
-                    if not IsPedAPlayer(ped) and not IsPedDeadOrDying(ped, false) and not IsPedInAnyVehicle(ped, false) and GetPedType(ped) ~= 28 and not isPedBlacklisted(ped) then
-                        local pedCoords = GetEntityCoords(ped)
-                        local distance = #(playerCoords - pedCoords)
-                        print("Coordenadas del jugador (en bucle):", playerCoords)
-                        print("Coordenadas del NPC (en bucle):", pedCoords)
-                        print("Distancia al NPC (en bucle):", distance)
-                        if distance < 4.0 then
-                            dentroDeZona = true
-                            nearbyNPC = ped
-
-                            if not inZone or zonaActual ~= ped then
-                                exports['qb-core']:DrawText('[E] ' .. _U('TARGET__SELL__LABEL'), 'right')
-                                print("Texto de inspección de venta mostrado.")
-                                inZone = true
-                                zonaActual = ped
-                            end
-                            break
+    if Config.Target == false then
+        if not exports['qb-target'] then return end
+        exports['qb-target']:AddGlobalPed({
+            options = {
+                {
+                    label = _U('TARGET__SELL__LABEL'),
+                    icon = 'fas fa-comment',
+                    action = function(entity)
+                        TriggerEvent('it-drugs:client:checkSellOffer', entity)
+                    end,
+                    canInteract = function(entity)
+                        if not IsPedDeadOrDying(entity, false) and not IsPedInAnyVehicle(entity, false) and (GetPedType(entity)~=28) and (not IsPedAPlayer(entity)) and (not isPedBlacklisted(entity)) and not IsPedInAnyVehicle(PlayerPedId(), false) then
+                            return true
                         end
+                        return false
+                    end,
+                }
+            },
+            distance = 4,
+        })
+
+    elseif Config.Target == 'ox_target' then
+        -- Check if ox target is running
+        if not exports.ox_target then return end
+        exports.ox_target:addGlobalPed({
+            {
+                label = _U('TARGET__SELL__LABEL'),
+                name = 'it-drugs-sell',
+                icon = 'fas fa-comment',
+                onSelect = function(data)
+                    TriggerEvent('it-drugs:client:checkSellOffer', data.entity)
+                end,
+                canInteract = function(entity, _, _, _, _)
+                    if not IsPedDeadOrDying(entity, false) and not IsPedInAnyVehicle(entity, false) and (GetPedType(entity)~=28) and (not IsPedAPlayer(entity)) and (not isPedBlacklisted(entity)) and not IsPedInAnyVehicle(PlayerPedId(), false) then
+                        return true
                     end
-                end
-
-                if dentroDeZona and IsControlJustReleased(0, 38) then -- E key
-                    exports['qb-core']:KeyPressed()
-                    TriggerEvent('it-drugs:client:checkSellOffer', nearbyNPC)
-                    print("Evento de oferta de venta disparado.")
-                end
-
-                if not dentroDeZona and inZone then
-                    exports['qb-core']:HideText()
-                    inZone = false
-                    zonaActual = nil
-                    print("Texto de inspección de venta oculto.")
-                end
-
-                Wait(0) 
-
-                isNearAnyNPC = false
-                for ped in EnumeratePeds() do
-                    if not IsPedAPlayer(ped) and not IsPedDeadOrDying(ped, false) and not IsPedInAnyVehicle(ped, false) and GetPedType(ped) ~= 28 and not isPedBlacklisted(ped) then
-                        local pedCoords = GetEntityCoords(ped)
-                        local distance = #(playerCoords - pedCoords)
-                        if distance < 4.0 then
-                            isNearAnyNPC = true
-                            break
-                        end
-                    end
-                end
-
-                if not isNearAnyNPC then
-                    print("Ningún NPC cercano detectado.")
-                end
-            end
-        else
-            if inZone then
-                exports['qb-core']:HideText()
-                inZone = false
-                zonaActual = nil
-                print("Texto de inspección de venta oculto porque no hay NPC cerca.")
-            end
-        end
-
-        Wait(1000) 
+                    return false
+                end,
+                distance = 4
+            }
+        })
     end
 end
-
-
-
 
 RemoveSellTarget = function()
-    if inZone then
-        exports['qb-core']:HideText()
-        inZone = false
-        zonaActual = nil
+    if Config.Target == 'qb-target' then
+        if not exports['qb-target'] then return end
+        exports['qb-target']:RemoveGlobalPed({_U('TARGET__SELL__LABEL')})
+    elseif Config.Target == 'ox_target' then
+        -- Check if ox target is running
+        if not exports.ox_target then return end
+        exports.ox_target:removeGlobalPed('it-drugs-sell')
     end
 end
-
--- Remove all Targets
