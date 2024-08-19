@@ -8,12 +8,22 @@ function it.getItemLabel(itemName)
     if it.inventory == 'ox' then
         local items = exports.ox_inventory:Items()
         return items[itemName].label
-    elseif it.core == 'qb-core' then
+    end
+
+    if it.inventory == 'origen' or it.inventory == 'codem' then
+        return lib.callback.await('it-drugs:server:getItemLabel', false, itemName)
+    end
+    if it.core == 'qb-core' then
         itemLabel = CoreObject.Shared.Items[itemName].label
-    elseif it.core == 'esx' then
+    end
+    if it.core == 'esx' then
         itemLabel = lib.callback.await('it-drugs:server:getItemLabel', false, itemName)
     end
-    return itemLabel
+    if not itemLabel then
+        lib.print.error('[bridge | getItemLabel] Unable to find item labe for the item: ' .. itemName)
+        lib.print.error('[bridge | getItemLabel] Please make sure that the item exists in the inventory.')
+    end
+    return itemLabel or itemName
 end
 
 lib.callback.register('it-drugs:client:getItemLabel', function(itemName)

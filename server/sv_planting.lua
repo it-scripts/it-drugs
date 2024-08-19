@@ -1,15 +1,178 @@
+---@type table: List of all the plants
 local plants = {}
 
--- Method to calculate the health percentage for a given WeedPlants index
---- @param k number - WeedPlants table index
---- @return health number - health index [0-100]
-local calcHealth = function(k)
-    if not plants[k] then return 0 end
-    local health = plants[k].health
 
-    -- fertilizer at interval_time amount:
-    local fertilizer_amount = plants[k].fertilizer
-    local water_amount = plants[k].water
+---@section Plant Class
+-- Class to handle the plant object and its methods
+
+--- @class Plant : OxClass
+--- @field id string
+Plant = lib.class('Plant')
+
+--- Plant constructor
+---@param id string
+---@param plantData table
+function Plant:constructor(id, plantData)
+
+    if Config.Debug then lib.print.info('[Plant:constructor] - Start constructing plant with ID:', id) end
+
+    ---@type string: the plant ID
+    self.id = id
+    ---@type number: the plant entity
+    self.entity = plantData.entity
+    ---@type vector3: the plant coords
+    self.coords = plantData.coords
+    ---@type string: the plant owner
+    self.owner = plantData.owner
+    ---@type number: the plant time
+    self.plantTime = plantData.plantTime
+    ---@type string: the plant type
+    self.plantType = plantData.type
+    ---@type number: the plant fertilizer
+    self.fertilizer = plantData.fertilizer
+    ---@type number: the plant water
+    self.water = plantData.water
+    ---@type number: the plant health
+    self.health = plantData.health
+
+    self.growtime = plantData.growtime
+    self.stage = self:calcStage()
+
+    --self.metadata = plantData.metadata -- Experimental feature / can only used with ox_inventory
+
+    if Config.Debug then lib.print.info('[Plant:constructor] - Plant constructed with ID:', id) end
+end
+
+--- Method to delete the plant object
+---@return nil
+function Plant:delete()
+    self:destroyProp()
+    plants[self.id] = nil
+end
+
+--- Method to update the plant prop on the map
+---@return nil
+function Plant:spawn()
+
+    if Config.Debug then lib.print.info('[Plant:spawn] - Try to spawning plant with ID:', self.id) end
+
+    ---@type number: the plant stage
+    local stage = self:calcStage()
+    ---@type string: the plant type
+    local plantType = self.plantType
+
+    ---@type string: the plant model hash
+    local modelHash = Config.PlantTypes[plantType][stage][1]
+
+    ---@type number: the plant z offset
+    local zOffest = Config.PlantTypes[plantType][stage][2]
+
+    ---@type number: the plant entity
+    local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
+    FreezeEntityPosition(plantEntity, true)
+
+    self.entity = plantEntity
+    plants[self.id] = self
+
+    if Config.Debug then lib.print.info('[Plant:spawn] - Plant spawned with ID:', self.id) end
+end
+
+--- Method to destroy the plant prop on the map
+---@return nil
+function Plant:destroyProp()
+    if not DoesEntityExist(self.entity) then return end
+    DeleteEntity(self.entity)
+    plants[self.id].entity = nil
+end
+
+--- Method to update the plant prop on the map
+---@return nil
+function Plant:updateProps()
+    local stage = self:calcStage()
+    local plantType = self.plantType
+
+    local modelHash = Config.PlantTypes[plantType][stage][1]
+
+    local zOffest = Config.PlantTypes[plantType][stage][2]
+
+    DeleteEntity(self.entity)
+    local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
+    FreezeEntityPosition(plantEntity, true)
+
+    self.entity = plantEntity
+    plants[self.id] = self
+end
+
+--- Method to update the plant entity
+---@param entity number
+---@return nil
+function Plant:updateEntity(entity)
+    self.entity = entity
+
+    -- Update the plant entity in the plants table
+    plants[self.id] = self
+end
+
+--- Method to update the plant fertilizer
+---@param fertilizer number
+---@return nil
+function Plant:updateFertilizer(fertilizer)
+    self.fertilizer = fertilizer
+
+    -- Update the plant fertilizer in the plants table
+    plants[self.id].fertilizer = fertilizer
+end
+
+--- Method to update the plant water
+---@param water number
+---@return nil
+function Plant:updateWater(water)
+    self.water = water
+
+    -- Update the plant water in the plants table
+    plants[self.id].water = water
+end
+
+--- Method to update the plant health
+---@param health number
+---@return nil
+function Plant:updateHealth(health)
+    self.health = health
+
+    -- Update the plant health in the plants table
+    plants[self.id].health = health
+end
+
+--- Method to get the plant data
+---@return table
+function Plant:getData()
+    return {
+        id = self.id,
+        entity = self.entity,
+        coords = self.coords,
+        owner = self.owner,
+        plantType = self.plantType,
+        fertilizer = self.fertilizer,
+        water = self.water,
+        health = self.health,
+        growtime = self.growtime,
+        stage = self.stage
+    }
+end
+
+-- Method to calculate the health percentage for a given WeedPlants index
+---@return integer: health percentage
+function Plant:calcHealth()
+
+    if not plants[self.entity] then return 0 end
+
+    -- Getting plant data to calculate current plant health
+    ---@type number
+    local health = self.health
+    ---@type number
+    local fertilizer_amount = self.fertilizer
+    ---@type number
+    local water_amount = self.water
 
     if fertilizer_amount == 0 and water_amount == 0 then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
@@ -23,32 +186,122 @@ local calcHealth = function(k)
          health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
-    plants[k].health = math.max(health, 0.0)
     return math.max(health, 0.0)
 end
 
 --- Method to calculate the growth percentage for a given WeedPlants index
---- @param k number - WeedPlants table index
---- @return retval number - growth index [0-100]
-local calcGrowth = function(k)
-    if not plants[k] then return false end
+---@return integer: growth percentage
+function Plant:calcGrowth()
+    if not plants[self.entity] then return 0 end
     -- If the plant is dead the growth doesnt change anymore
-    if plants[k].health <= 0 then return 0 end
+    if self.health <= 0 then return 0 end
     local current_time = os.time()
-    local growTime = plants[k].growtime * 60
-    local progress = os.difftime(current_time, plants[k].time)
+    local growTime = self.growtime * 60
+    local progress = os.difftime(current_time, self.plantTime)
     local growth = it.round(progress * 100 / growTime, 2)
     local retval = math.min(growth, 100.00)
     return retval
 end
 
---- Method to calculate the growth stage of a weedplant for a given growth index
---- @param growth number - growth index [0-99]
---- @return stage number - growth stage number [1-3]
-local calcStage = function(growth)
+--- Method to calculate the growth stage for a given WeedPlants index
+---@return integer: growth stage
+function Plant:calcStage()
+    local growth = self:calcGrowth()
     local stage = math.floor(growth / 33) + 1
     if stage > 3 then stage = 3 end
     return stage
+end
+
+
+--- Callback to get the plant data by ID
+---@param source number | nil: the source player
+---@param plantId string: the plant ID
+---@return Plant | nil: the plant object
+lib.callback.register('it-drugs:server:getPlantById', function(source, plantId)
+
+    if Config.Debug then lib.print.info('[getPlantById] - Try to get plant with ID:', plantId) end
+
+    if not plants[plantId] then 
+        lib.print.error('[getPlantById] - Plant with ID:', plantId, 'does not exist')
+        return nil
+    end
+
+    if Config.Debug then lib.print.info('[getPlantById] - Successfully get Plant with ID:', plantId) end
+    return Plant:getData()
+end)
+
+--- Callback to get the plant data by entity
+---@param source number | nil: the source player
+---@param entity number: the entity of the plant
+---@return Plant | nil: the plant object
+lib.callback.register('it-drugs:server:getPlantByEntity', function(source, entity)
+
+    if Config.Debug then lib.print.info('[getPlantByEntity] - Try to get plant with entity:', entity) end
+   
+    for _, v in pairs(plants) do
+        if v.entity == entity then
+            if Config.Debug then lib.print.info('[getPlantByEntity] - Successfully get Plant with entity:', entity) end
+            return Plant:getData()
+        end
+    end
+
+    lib.print.error('[getPlantByEntity] - Plant with entity:', entity, 'does not exist')
+    return nil
+end)
+
+--- Callback to get all plants owned by a player
+---@param source number: the source player
+---@return table | nil: the list of plants
+lib.callback.register('it-drugs:server:getPlantsOwned', function(source)
+
+    if Config.Debug then lib.print.info('[getPlantsOwned] - Try to get all plants owned by player:', source) end
+
+    ---@type number: the player citizen ID
+    local src = source
+    ---@type number | boolean: the player citizen ID 
+    -- TODO: Check why this is a boolean
+    local citId = it.getCitizenId(src)
+    ---@type table: the temporary table to store the plants
+    local temp = {}
+
+    -- Loop through all the plants and check if the player owns them
+    for k, v in pairs(plants) do
+        if v.owner == citId then
+            table.insert(temp, v)
+        end
+    end
+    
+    -- If the player does not own any plants, return nil
+    if #temp == 0 then
+        if Config.Debug then lib.print.info('[getPlantsOwned] - Player:', src, 'does not own any plants') end
+        return nil
+    end
+
+    if Config.Debug then lib.print.info('[getPlantsOwned] - Successfully get all plants owned by player:', src) end
+    return temp
+
+end)
+
+--- Callback to get all plants
+---@param source number: the source player
+---@return table | nil: the list of plants
+lib.callback.register('it-drugs:server:getPlants', function(source)
+    return plants
+end)
+
+--------------------------------------------------
+--- @section local functions
+
+--- Function to generate a random plant ID
+---@return string
+local function generatePlantId()
+    ---@type string: the generated UUID
+    local longId = it.generateUUID()
+
+    ---@type string: the short ID
+    local shortId = string.sub(longId, 1, 8)
+
+    return shortId
 end
 
 --- Method to setup all the weedplants, fetched from the database
@@ -101,7 +354,7 @@ end
 
 --- Method to delete all cached weed plants and their entities
 --- @return nil
-local destroyAllPlants = function()    
+local destroyAllPlants = function()
     for k, v in pairs(plants) do
         if DoesEntityExist(k) then
             DeleteEntity(k)
@@ -442,68 +695,6 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     end
 end)
 
--- Callbacks
-lib.callback.register('it-drugs:server:getPlantData', function(source, netId)
-    local entity = NetworkGetEntityFromNetworkId(netId)
-    if not plants[entity] then return nil end
-    if Config.Debug then lib.print.info('Get Plant Data:', entity) end
-    local temp = {
-        id = plants[entity].id,
-        owner = plants[entity].owner,
-        coords = plants[entity].coords,
-        time = plants[entity].time,
-        type = plants[entity].type,
-        fertilizer = plants[entity].fertilizer,
-        water = plants[entity].water,
-        stage = calcStage(calcGrowth(entity)),
-        health = plants[entity].health,
-        growth = calcGrowth(entity),
-        entity = entity
-    }
-    if Config.Debug then lib.print.info('Plant Data', temp) end
-    return temp
-end)
-
-lib.callback.register('it-drugs:server:getPlantDataWithId', function(source, plantId)
-    lib.print.info('Plant ID:', plantId)
-    for k, v in pairs(plants) do
-        if v.id == plantId then
-            local entity = k
-            local temp = {
-                id = v.id,
-                owner = v.owner,
-                coords = v.coords,
-                time = v.time,
-                type = v.type,
-                fertilizer = v.fertilizer,
-                water = v.water,
-                stage = calcStage(calcGrowth(entity)),
-                health = v.health,
-                growth = calcGrowth(entity),
-                entity = entity
-            }
-            if Config.Debug then lib.print.info('Plant Data', temp) end
-            return temp
-        end
-    end
-end)
-
-lib.callback.register('it-drugs:server:getPlantsOwned', function(source)
-    local src = source
-    local citId = it.getCitizenId(src)
-    local temp = {}
-    for k, v in pairs(plants) do
-        if v.owner == citId then
-            table.insert(temp, {
-                id = v.id,
-                owner = v.owner,
-            })
-        end
-    end
-    if Config.Debug then lib.print.info('Plants Owned:', temp) end
-    if #temp == 0 then return nil end
-    return temp
-end)
 
 lib.callback.register('it-drugs:server:getPlants', function(source)
     return plants

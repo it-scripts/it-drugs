@@ -15,6 +15,10 @@ Locales = Locales or {}
     between the default languages that you will find within locales/*,
     if yours is not there, feel free to create it!
 ]]
+
+Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'esx')
+Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory')
+
 Config.Language = 'en'
 Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
 

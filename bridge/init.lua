@@ -4,31 +4,208 @@ it = setmetatable({
 }, {
     __nexindex = function(self, name, fn)
         rawset(self, name, fn)
-    end    
+    end
 })
 
 cache = {
     resource = it.name,
     game = GetGameName();
+    version = GetResourceMetadata(it.name, 'version', 0),
+    supportedFrameworks = {
+        'qb-core',
+        'es_extended'
+    },
+    supportedInventories = {
+        'ox_inventory',
+        'qb-core',
+        'es_extended',
+        'origen_inventory',
+        'codem-inventory'
+    },
 }
 
--- Get Core Object
-if GetResourceState('qb-core') == 'started' then --qbcore
-    it.core = 'qb-core'
-    CoreObject = exports['qb-core']:GetCoreObject()
-    RegisterNetEvent('QBCore:Client:UpdateObject', function ()
-        CoreObject = exports['qb-core']:GetCoreObject()
-    end)
-elseif GetResourceState('es_extended') == 'started' then --esx
-    it.core = 'esx'
-    CoreObject = exports['es_extended']:getSharedObject()
+--- Check of ox_lib is installed and enabled
+if GetResourceState('ox_lib') ~= 'started' then
+    error('[it-drugs] To use this script you need to have ox_lib installed and started bevor this script!')
+    return
 end
 
--- Get Inventory Object
-if GetResourceState('ox_inventory') == 'started' then
-    it.inventory = 'ox'
-elseif GetResourceState('qb-inventory') == 'started' then
-    it.inventory = 'qb'
+
+-- Function do get the farmework and core object of the server
+
+--- Detect the framework of the server
+---@param framework string | 'autodetect' | 'qb-core' | 'es_extended'
+---@return table | nil
+local function detectFramwork(framework)
+
+    local function detectQbCore()
+        if GetResourceState('qb-core') == 'started' then
+            return exports['qb-core']:GetFramework()
+        end
+    end
+
+    local function detectEsx()
+        if GetResourceState('es_extended') == 'started' then
+            return exports['es_extended']:getSharedObject()
+        end
+    end
+
+    if framework == 'autodetect' then
+        local qbcore = detectQbCore()
+        if qbcore then
+            it.core = 'qb-core'
+            return qbcore
+        end
+
+        local esx = detectEsx()
+        if esx then
+            it.core = 'esx'
+            return esx
+        end
+        return nil
+
+
+    else
+        if not lib.table.contains(cache.supportedFrameworks, framework) then
+            lib.print.error('[it-drugs] The selected framework is not supported: ' .. framework)
+        else
+            if framework == 'qb-core' then
+                return detectQbCore()
+            elseif framework == 'es_extended' then
+                return detectEsx()
+            end
+        
+        end
+    end
 end
 
-function it.hasLoaded() return true end
+--- Detect the inventory of the server
+---@param inventory string | 'autodetect' | 'ox_inventory' | 'qb-inventory' | 'es_extended' | 'origen_inventory' | 'mInventory'
+---@return boolean
+local function detectInventory(inventory)
+    local function detectOxInventory()
+        if GetResourceState('ox_inventory') == 'started' then
+            return true
+        end
+    end
+
+    local function detectQbInventory()
+        if GetResourceState('qb-inventory') == 'started' then
+            return true
+        end
+    end
+
+    local function detectESXInventory()
+        if GetResourceState('es_extended') == 'started' then
+            return true
+        end
+    end
+
+    local function detectOriginsInventory()
+        if GetResourceState('origen_inventory') == 'started' then
+            return true
+        end
+    end
+
+    local function detectCodemInventory()
+        if GetResourceState('codem-inventory') == 'started' then
+            return true
+        end
+    end
+
+    if inventory == 'autodetect' then
+        local ox = detectOxInventory()
+        if ox then
+            it.inventory = 'ox'
+            return ox
+        end
+
+        local qb = detectQbInventory()
+        if qb then
+            it.inventory = 'qb'
+            return qb
+        end
+        
+        local esx = detectESXInventory()
+        if esx then
+            it.inventory = 'esx'
+            return esx
+        end
+
+        local origen = detectOriginsInventory()
+        if origen then
+            it.inventory = 'origen'
+            return origen
+        end
+
+        local codem = detectCodemInventory()
+        if codem then
+            it.inventory = 'codem'
+            return codem
+        end
+        return false
+    else
+        if not lib.table.contains(cache.supportedInventories, inventory) then
+            lib.print.error('[it-drugs] The selected inventory is not supported: ' .. inventory)
+            return false
+        else
+            if inventory == 'ox_inventory' then
+                return detectOxInventory()
+            elseif inventory == 'qb-inventory' then
+                return detectQbInventory()
+            elseif inventory == 'es_extended' then
+                return detectESXInventory()
+            elseif inventory == 'origen_inventory' then
+                return detectOriginsInventory()
+            elseif inventory == 'codem-inventory' then
+                return detectCodemInventory()
+            else
+                return false
+            end
+        end
+    end
+end
+
+
+if Config.Framework == 'autodetect' then
+    CoreObject = detectFramwork('autodetect')
+    if not CoreObject then
+        lib.print.error('[it-drugs] No supported framework detected! Did you rename your core resource?')
+    else
+        lib.print.info('[it-drugs] Detected framework: ' .. it.core)
+    end
+else
+    local framework = Config.Framework
+    CoreObject = detectFramwork(framework)
+    if not CoreObject then
+        lib.print.error('[it-drugs] Cannot find the resource for the selcted framework: ', framework)
+    else
+        lib.info.print('[it-drugs] Detected framework: ', it.core)
+    end
+end
+
+if Config.Inventory == 'autodetect' then
+    local inventory = detectInventory('autodetect')
+    if not inventory then
+        lib.print.error('[it-drugs] No supported inventory detected! Did you rename your inventory resource?')
+    else
+        lib.print.info('[it-drugs] Detected inventory: ' .. it.inventory)
+    end
+else
+    local inventory = Config.Inventory
+    local result = detectInventory(inventory)
+    if not result then
+        lib.print.info('[it-drugs] Cannot find the resource for the selected inventory: ' .. inventory)
+    else
+        lib.print.info('[it-drugs] Detected inventory: ' .. it.inventory)
+    end
+end
+
+
+function it.hasLoaded()
+    if CoreObject and it.inventory then
+        return true
+    end
+
+    return false
+end
