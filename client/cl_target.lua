@@ -1,5 +1,4 @@
-if Config.Debug and Config.Target then lib.print.info('Setting up Target System') end
-
+if not Config.Target then return end
 -- ┌────────────────────────────────────────────────────────┐
 -- │ ____  _             _     _____                    _   │
 -- │|  _ \| | __ _ _ __ | |_  |_   _|_ _ _ __ __ _  ___| |_ │
@@ -8,18 +7,10 @@ if Config.Debug and Config.Target then lib.print.info('Setting up Target System'
 -- │|_|   |_|\__,_|_| |_|\__|   |_|\__,_|_|  \__, |\___|\__|│
 -- │                                         |___/          │
 -- └────────────────────────────────────────────────────────┘
--- Plant Target
-CreateThread(function()
-    if Config.Target == 'qb-target' then
-        if Config.Debug then lib.print.info('Detected Target System: qb-target') end -- DEBUG
-        
-        if not exports['qb-target'] then 
-            if Config.Debug then lib.print.info('Target System Running: false') end -- DEBUG
-        else 
-            if Config.Debug then lib.print.info('Target System Running: true') end -- DEBUG
-        end
-        -- Check if qb-target is running
-        if not exports['qb-target'] then return end
+
+local function createPlantTargets(targetSystem)
+
+    if targetSystem == 'qb-target' then
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
                 exports['qb-target']:AddTargetModel(plant[1], {
@@ -28,7 +19,17 @@ CreateThread(function()
                             label = _U('TARGET__PLANT__LABEL'),
                             icon = 'fas fa-eye',
                             action = function (entity)
-                                TriggerEvent('it-drugs:client:checkPlant', {entity = entity})
+                                local networkId = NetworkGetNetworkIdFromEntity(entity)
+                                lib.callback("it-drugs:server:getPlantByNetId", false, function(plantData)
+                                    if not plantData then
+                                        lib.print.error('[it-drugs] Unable to get plant data by network id')
+                                    else
+                                        if Config.Debug then
+                                            lib.print.info('[plantSelect] Current plant data: ', plantData)
+                                        end
+                                        TriggerEvent('it-drugs:client:showPlantMenu', plantData)
+                                    end
+                                end, networkId)
                             end
                         }
                     },
@@ -36,17 +37,7 @@ CreateThread(function()
                 })
             end
         end
-        if Config.Debug then lib.print.info('Registerd all Plant Targets') end -- DEBUG
-    elseif Config.Target == 'ox_target' then
-        if Config.Debug then lib.print.info('Detected Target System: ox_target') end -- DEBUG
-
-        if not exports.ox_target then 
-            if Config.Debug then lib.print.info('Target System Running: false') end -- DEBUG
-        else 
-            if Config.Debug then lib.print.info('Target System Running: true') end -- DEBUG
-        end
-        -- Check if ox target is running
-        if not exports.ox_target then return end
+    elseif targetSystem == 'ox_target' then
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
                 exports.ox_target:addModel(plant[1], {
@@ -55,7 +46,17 @@ CreateThread(function()
                         name = 'it-drugs-check-plant',
                         icon = 'fas fa-eye',
                         onSelect = function(data)
-                            TriggerEvent('it-drugs:client:checkPlant', {entity = data.entity})
+                            local networkId = NetworkGetNetworkIdFromEntity(data.entity)
+                            lib.callback("it-drugs:server:getPlantByNetId", false, function(plantData)
+                                if not plantData then
+                                    lib.print.error('[it-drugs] Unable to get plant data by network id')
+                                else
+                                    if Config.Debug then
+                                        lib.print.info('[plantSelect] Current plant data: ', plantData)
+                                    end
+                                    TriggerEvent('it-drugs:client:showPlantMenu', plantData)
+                                end
+                            end, networkId)
                         end,
                         distance = 1.5
                     }
@@ -63,49 +64,43 @@ CreateThread(function()
             end
         end
     end
-    if Config.Debug then lib.print.info('Registerd all Plant Targets') end -- DEBUG
-end)
+end
 
-
-if Config.EnableDealers then
-    CreateThread(function()
-        if Config.Target == 'qb-target' then
-            for k, v in pairs(Config.DrugDealers) do
-                if v.ped ~= nil then
-                    exports['qb-target']:AddTargetModel(v.ped, {
-                        options = {
-                            {
-                                icon = 'fas fa-eye',
-                                label = _U('TARGET__DEALER__LABLE'),
-                                action = function (entity)
-                                    TriggerEvent('it-drugs:client:showDealerMenu', k)
-                                end
-                            }
-                        },
-                        distance = 1.5,
-                    })
-                end
-            end
-        elseif Config.Target == 'ox_target' then
-            -- Check if ox target is running
-            if not exports.ox_target then return end
-            for k, v in pairs(Config.DrugDealers) do
-                if v.ped ~= nil then
-                    exports.ox_target:addModel(v.ped, {
+local function createDealerTargets(targetSystem)
+    if targetSystem == 'qb-target' then
+        for k, v in pairs(Config.DrugDealers) do
+            if v.ped ~= nil then
+                exports['qb-target']:AddTargetModel(v.ped, {
+                    options = {
                         {
-                            label = _U('TARGET__DEALER__LABLE'),
-                            name = 'it-drugs-talk-dealer',
                             icon = 'fas fa-eye',
-                            onSelect = function(data)
+                            label = _U('TARGET__DEALER__LABLE'),
+                            action = function (entity)
                                 TriggerEvent('it-drugs:client:showDealerMenu', k)
-                            end,
-                            distance = 1.5
+                            end
                         }
-                    })
-                end
+                    },
+                    distance = 1.5,
+                })
             end
         end
-    end)
+    elseif targetSystem == 'ox_target' then
+        for k, v in pairs(Config.DrugDealers) do
+            if v.ped ~= nil then
+                exports.ox_target:addModel(v.ped, {
+                    {
+                        label = _U('TARGET__DEALER__LABLE'),
+                        name = 'it-drugs-talk-dealer',
+                        icon = 'fas fa-eye',
+                        onSelect = function(data)
+                            TriggerEvent('it-drugs:client:showDealerMenu', k)
+                        end,
+                        distance = 1.5
+                    }
+                })
+            end
+        end
+    end
 end
 
 -- ┌────────────────────────────────────────────────────────────────────────────────────┐
@@ -117,45 +112,61 @@ end
 -- │                                               |___/                 |___/          │
 -- └────────────────────────────────────────────────────────────────────────────────────┘
 -- Proccesing Target
-if Config.EnableProcessing then 
-    CreateThread(function()
-        if Config.Target == 'qb-target' then
-            for k, v in pairs(Config.ProcessingTables) do
-                if v.model ~= nil then
-                    exports['qb-target']:AddTargetModel(v.model, {
-                        options = {
-                            {
-                                icon = 'fas fa-eye',
-                                label = _U('TARGET__TABLE__LABEL'),
-                                action = function (entity)
-                                    TriggerEvent('it-drugs:client:useTable', {entity = entity, type = k})
-                                end
-                            }
-                        },
-                        distance = 1.5,
-                    })
-                end
-            end
-        elseif Config.Target == 'ox_target' then
-            -- Check if ox target is running
-            if not exports.ox_target then return end
-            for k, v in pairs(Config.ProcessingTables) do
-                if v.model ~= nil then
-                    exports.ox_target:addModel(v.model, {
+local function createProccessingTargets(targetSystem)
+    if targetSystem == 'qb-target' then
+        for k, v in pairs(Config.ProcessingTables) do
+            if v.model ~= nil then
+                exports['qb-target']:AddTargetModel(v.model, {
+                    options = {
                         {
-                            label = _U('TARGET__TABLE__LABEL'),
-                            name = 'it-drugs-use-table',
                             icon = 'fas fa-eye',
-                            onSelect = function(data)
-                                TriggerEvent('it-drugs:client:useTable', {entity = data.entity})
-                            end,
-                            distance = 1.5
+                            label = _U('TARGET__TABLE__LABEL'),
+                            action = function (entity)
+                                local networkId = NetworkGetNetworkIdFromEntity(entity)
+                                lib.callback("it-drugs:server:getTableByNetId", false, function(tableData)
+                                    if not tableData then
+                                        lib.print.error('[it-drugs] Unable to get table data by network id')
+                                    else
+                                        if Config.Debug then
+                                            lib.print.info('[plantSelect] Current table data: ', tableData)
+                                        end
+                                        TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = tableData.id})
+                                    end
+                                end, networkId)
+                            end
                         }
-                    })
-                end
+                    },
+                    distance = 1.5,
+                })
             end
         end
-    end)
+    elseif targetSystem == 'ox_target' then
+        for k, v in pairs(Config.ProcessingTables) do
+            if v.model ~= nil then
+                exports.ox_target:addModel(v.model, {
+                    {
+                        label = _U('TARGET__TABLE__LABEL'),
+                        name = 'it-drugs-use-table',
+                        icon = 'fas fa-eye',
+                        onSelect = function(data)
+                            local networkId = NetworkGetNetworkIdFromEntity(data.entity)
+                            lib.callback("it-drugs:server:getTableByNetId", false, function(tableData)
+                                if not tableData then
+                                    lib.print.error('[it-drugs] Unable to get table data by network id')
+                                else
+                                    if Config.Debug then
+                                        lib.print.info('[plantSelect] Current table data: ', tableData)
+                                    end
+                                    TriggerEvent('it-drugs:client:useTable', {entity = data.entity, type = k})
+                                end
+                            end, networkId)
+                        end,
+                        distance = 1.5
+                    }
+                })
+            end
+        end
+    end
 end
 
 -- ┌─────────────────────────────────────────────────────────────┐
@@ -166,21 +177,8 @@ end
 -- │|____/ \___|_|_|_|_| |_|\__, |   |_|\__,_|_|  \__, |\___|\__|│
 -- │                        |___/                 |___/          │
 -- └─────────────────────────────────────────────────────────────┘
-
-local function isPedBlacklisted(ped)
-	local model = GetEntityModel(ped)
-	for i = 1, #Config.BlacklistPeds do
-		if model == GetHashKey(Config.BlacklistPeds[i]) then
-			return true
-		end
-	end
-	return false
-end
-
--- Create the selling Targets
-CreateSellTarget = function()
-    if Config.Target == 'qb-target' then
-        if not exports['qb-target'] then return end
+local function createSellingTargets(targetSystem)
+    if targetSystem == 'qb-target' then
         exports['qb-target']:AddGlobalPed({
             options = {
                 {
@@ -199,10 +197,7 @@ CreateSellTarget = function()
             },
             distance = 4,
         })
-
-    elseif Config.Target == 'ox_target' then
-        -- Check if ox target is running
-        if not exports.ox_target then return end
+    elseif targetSystem == 'ox_target' then
         exports.ox_target:addGlobalPed({
             {
                 label = _U('TARGET__SELL__LABEL'),
@@ -222,6 +217,55 @@ CreateSellTarget = function()
         })
     end
 end
+
+-- Plant Target
+CreateThread(function()
+    local targetSystem = nil
+    local function detectQbTarget()
+        if not exports['qb-target'] then return false else return true end
+    end
+
+    local function detectOxTarget()
+        if not exports.ox_target then return false else return true end
+    end
+
+    if Config.Target == 'autodetect' then
+        if detectQbTarget() then
+            targetSystem = 'qb-target'
+        elseif detectOxTarget() then
+            targetSystem = 'ox_target'
+        else
+            lib.print.error('[targetSystem] Unable to detect target system! Please set it manually in the config.lua')
+            return
+        end
+    else
+        if Config.Target == 'qb-target' then
+            if detectQbTarget() then
+                targetSystem = 'qb-target'
+            else
+                lib.print.error('[targetSystem] Ubable to detect qb-target! Please make sure it is running')
+                return
+            end
+        elseif Config.Target == 'ox_target' then
+            if detectOxTarget() then
+                targetSystem = 'ox_target'
+            else
+                lib.print.error('[targetSystem] Ubable to detect ox_target! Please make sure it is running')
+                return
+            end
+        end
+    end
+    createPlantTargets(targetSystem)
+    if Config.Dealer then
+        createDealerTargets(targetSystem)
+    end
+    if Config.EnableProcessing then
+        createProccessingTargets(targetSystem)
+    end
+    if Config.EnableSelling then
+        createSellingTargets(targetSystem)
+    end
+end)
 
 RemoveSellTarget = function()
     if Config.Target == 'qb-target' then
