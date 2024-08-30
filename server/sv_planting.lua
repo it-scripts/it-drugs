@@ -1,7 +1,6 @@
 ---@type table: List of all the plants
 local plants = {}
 
-
 ---@section Plant Class
 -- Class to handle the plant object and its methods
 
@@ -18,8 +17,10 @@ function Plant:constructor(id, plantData)
 
     ---@type string: the plant ID
     self.id = id
-    ---@type number: the plant entity
-    self.entity = plantData.entity
+    ---@type number | nil: the plant entity
+    self.entity = nil
+    ---@type number | nil: the plant Network ID
+    self.netId = nil
     ---@type vector3: the plant coords
     self.coords = plantData.coords
     ---@type string: the plant owner
@@ -27,7 +28,9 @@ function Plant:constructor(id, plantData)
     ---@type number: the plant time
     self.plantTime = plantData.plantTime
     ---@type string: the plant type
-    self.plantType = plantData.type
+    self.plantType = plantData.plantType
+    ---@type string: the plant seed
+    self.seed = plantData.seed
     ---@type number: the plant fertilizer
     self.fertilizer = plantData.fertilizer
     ---@type number: the plant water
@@ -37,6 +40,8 @@ function Plant:constructor(id, plantData)
 
     self.growtime = plantData.growtime
     self.stage = self:calcStage()
+
+    plants[self.id] = self
 
     --self.metadata = plantData.metadata -- Experimental feature / can only used with ox_inventory
 
@@ -58,6 +63,7 @@ function Plant:spawn()
 
     ---@type number: the plant stage
     local stage = self:calcStage()
+    
     ---@type string: the plant type
     local plantType = self.plantType
 
@@ -72,6 +78,7 @@ function Plant:spawn()
     FreezeEntityPosition(plantEntity, true)
 
     self.entity = plantEntity
+    self.netId = NetworkGetNetworkIdFromEntity(plantEntity)
     plants[self.id] = self
 
     if Config.Debug then lib.print.info('[Plant:spawn] - Plant spawned with ID:', self.id) end
@@ -82,7 +89,11 @@ end
 function Plant:destroyProp()
     if not DoesEntityExist(self.entity) then return end
     DeleteEntity(self.entity)
-    plants[self.id].entity = nil
+
+    self.entity = nil
+    self.netId = nil
+
+    plants[self.id] = self
 end
 
 --- Method to update the plant prop on the map
@@ -91,25 +102,21 @@ function Plant:updateProps()
     local stage = self:calcStage()
     local plantType = self.plantType
 
+    ---@type string: the plant model hash
     local modelHash = Config.PlantTypes[plantType][stage][1]
 
+    ---@type number: the plant z offset
     local zOffest = Config.PlantTypes[plantType][stage][2]
 
     DeleteEntity(self.entity)
+
+    ---@type number: the plant entity
     local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
     FreezeEntityPosition(plantEntity, true)
 
+    self.stage = stage
     self.entity = plantEntity
-    plants[self.id] = self
-end
-
---- Method to update the plant entity
----@param entity number
----@return nil
-function Plant:updateEntity(entity)
-    self.entity = entity
-
-    -- Update the plant entity in the plants table
+    self.netId = NetworkGetNetworkIdFromEntity(plantEntity)
     plants[self.id] = self
 end
 
@@ -149,14 +156,18 @@ function Plant:getData()
     return {
         id = self.id,
         entity = self.entity,
+        netId = self.netId,
         coords = self.coords,
         owner = self.owner,
         plantType = self.plantType,
+        seed = self.seed,
+        plantTime = self.plantTime,
         fertilizer = self.fertilizer,
         water = self.water,
         health = self.health,
         growtime = self.growtime,
-        stage = self.stage
+        stage = self.stage,
+        growth = self:calcGrowth()
     }
 end
 
@@ -164,7 +175,7 @@ end
 ---@return integer: health percentage
 function Plant:calcHealth()
 
-    if not plants[self.entity] then return 0 end
+    if not plants[self.id] then return 0 end
 
     -- Getting plant data to calculate current plant health
     ---@type number
@@ -174,31 +185,39 @@ function Plant:calcHealth()
     ---@type number
     local water_amount = self.water
 
+    -- If the plant has no fertilizer and water, decrease the health
     if fertilizer_amount == 0 and water_amount == 0 then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
+    -- If the plant has no fertilizer or water, decrease the health
     if fertilizer_amount == 0 or water_amount == 0 then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
          health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
+    -- Return the health value with a minimum of 0
     return math.max(health, 0.0)
 end
 
 --- Method to calculate the growth percentage for a given WeedPlants index
 ---@return integer: growth percentage
 function Plant:calcGrowth()
-    if not plants[self.entity] then return 0 end
+    if not plants[self.id] then return 0 end
     -- If the plant is dead the growth doesnt change anymore
     if self.health <= 0 then return 0 end
+    ---@type number: the current time
     local current_time = os.time()
+    ---@type number: the grow time
     local growTime = self.growtime * 60
+    ---@type number: the progress
     local progress = os.difftime(current_time, self.plantTime)
+    ---@type number: the local growth
     local growth = it.round(progress * 100 / growTime, 2)
+    ---@type number: the return value
     local retval = math.min(growth, 100.00)
     return retval
 end
@@ -221,45 +240,44 @@ lib.callback.register('it-drugs:server:getPlantById', function(source, plantId)
 
     if Config.Debug then lib.print.info('[getPlantById] - Try to get plant with ID:', plantId) end
 
-    if not plants[plantId] then 
+    if not plants[plantId] then
         lib.print.error('[getPlantById] - Plant with ID:', plantId, 'does not exist')
         return nil
     end
 
     if Config.Debug then lib.print.info('[getPlantById] - Successfully get Plant with ID:', plantId) end
-    return Plant:getData()
+    return plants[plantId]:getData()
 end)
 
 --- Callback to get the plant data by entity
 ---@param source number | nil: the source player
----@param entity number: the entity of the plant
+---@param netId number: the net ID of the plant
 ---@return Plant | nil: the plant object
-lib.callback.register('it-drugs:server:getPlantByEntity', function(source, entity)
+lib.callback.register('it-drugs:server:getPlantByNetId', function(source, netId)
 
-    if Config.Debug then lib.print.info('[getPlantByEntity] - Try to get plant with entity:', entity) end
+    if Config.Debug then lib.print.info('[getPlantByNetId] - Try to get plant with netId:', netId) end
    
     for _, v in pairs(plants) do
-        if v.entity == entity then
-            if Config.Debug then lib.print.info('[getPlantByEntity] - Successfully get Plant with entity:', entity) end
-            return Plant:getData()
+        if v.netId == netId then
+            if Config.Debug then lib.print.info('[getPlantByNetId] - Successfully get Plant with netId:', netId) end
+            return v:getData()
         end
     end
 
-    lib.print.error('[getPlantByEntity] - Plant with entity:', entity, 'does not exist')
+    lib.print.error('[getPlantByNetId] - Plant with netId:', netId, 'does not exist')
     return nil
 end)
 
 --- Callback to get all plants owned by a player
 ---@param source number: the source player
 ---@return table | nil: the list of plants
-lib.callback.register('it-drugs:server:getPlantsOwned', function(source)
+lib.callback.register('it-drugs:server:getPlantByOwner', function(source)
 
-    if Config.Debug then lib.print.info('[getPlantsOwned] - Try to get all plants owned by player:', source) end
+    if Config.Debug then lib.print.info('[getPlantByOwner] - Try to get all plants owned by player:', source) end
 
     ---@type number: the player citizen ID
     local src = source
-    ---@type number | boolean: the player citizen ID 
-    -- TODO: Check why this is a boolean
+    ---@type number: the player citizen ID 
     local citId = it.getCitizenId(src)
     ---@type table: the temporary table to store the plants
     local temp = {}
@@ -267,7 +285,7 @@ lib.callback.register('it-drugs:server:getPlantsOwned', function(source)
     -- Loop through all the plants and check if the player owns them
     for k, v in pairs(plants) do
         if v.owner == citId then
-            table.insert(temp, v)
+            temp[k] = v:getData()
         end
     end
     
@@ -286,157 +304,139 @@ end)
 ---@param source number: the source player
 ---@return table | nil: the list of plants
 lib.callback.register('it-drugs:server:getPlants', function(source)
-    return plants
+
+    if Config.Debug then lib.print.info('[getPlants] - Try to get all plants') end
+
+    ---@type table: the temporary table to store the plants
+    local temp = {}
+
+    -- Loop through all the plants and add them to the temporary table
+    for k, v in pairs(plants) do
+        temp[k] = v:getData()
+    end
+
+    if Config.Debug then lib.print.info('[getPlants] - Successfully get all plants') end
+    return temp
 end)
 
---------------------------------------------------
---- @section local functions
-
---- Function to generate a random plant ID
----@return string
-local function generatePlantId()
-    ---@type string: the generated UUID
-    local longId = it.generateUUID()
-
-    ---@type string: the short ID
-    local shortId = string.sub(longId, 1, 8)
-
-    return shortId
-end
-
 --- Method to setup all the weedplants, fetched from the database
---- @return nil
+--- @return boolean
 local setupPlants = function()
-    local result = MySQL.Sync.fetchAll('SELECT * FROM drug_plants')
-    local current_time = os.time()
+    local result = MySQL.query.await('SELECT * FROM `drug_plants`')
 
-    for k, v in pairs(result) do
+    lib.print.info('[setupPlants] - Found', #result, 'plants in the database')
 
+    if not result then return true end
+
+    for i = 1, #result do
+        local v = result[i]
         if not Config.Plants[v.type] then
             MySQL.query('DELETE from drug_plants WHERE id = :id', {
                 ['id'] = v.id
             }, function()
-                lib.print.info('PLANT ID: '.. v.id ..' has an invalid plant type, deleting it from the database')
+                lib.print.info('[setuPlant] Plant with ID: '..v.id..' has a invalid type, deleting it from the database')
             end)
         elseif v.owner == nil then
             MySQL.query('DELETE from drug_plants WHERE id = :id', {
                 ['id'] = v.id
             }, function()
-                lib.print.info('PLANT ID: '.. v.id ..' has no owner, deleting it from the database')
+                lib.print.info('[setuPlant] Plant with ID: '..v.id..' has a invalid owner, deleting it from the database')
             end)
         else
-            local plantType = Config.Plants[v.type].plantType
-
-            local growTime = v.growtime * 60
-            local progress = os.difftime(current_time, v.time)
-            local growth = math.min(it.round(progress * 100 / growTime, 2), 100.00)
-            local stage = calcStage(growth)
-            local modelHash = Config.PlantTypes[plantType][stage][1]
-            local coords = json.decode(v.coords)
-            local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
-            FreezeEntityPosition(plant, true)
-            plants[plant] = {
-                id = v.id,
-                owner = v.owner,
-                coords = vector3(coords.x, coords.y, coords.z),
-                time = v.time,
-                type = v.type,
-                entity = plant,
-                fertilizer = v.fertilizer,
-                water = v.water,
-                growtime = v.growtime,
-                health = v.health,
-                stage = stage
-            }
+            if Config.ClearOnStartup then
+                if v.health == 0 then
+                    MySQL.query('DELETE from drug_plants WHERE id = :id', {
+                        ['id'] = v.id
+                    }, function()
+                        lib.print.info('[setuPlant] Plant with ID: '..v.id..' is dead, deleting it from the database')
+                    end)
+                else
+                    local coords = json.decode(v.coords)
+                    local currentPlant = Plant:new(v.id, {
+                            entity = nil,
+                            coords = vector3(coords.x, coords.y, coords.z),
+                            owner = v.owner,
+                            plantTime = v.time,
+                            plantType = Config.Plants[v.type].plantType,
+                            fertilizer = v.fertilizer,
+                            water = v.water,
+                            health = v.health,
+                            growtime = v.growtime,
+                            seed = v.type,
+                        }
+                    )
+                    currentPlant:spawn()
+                end
+            else
+                local coords = json.decode(v.coords)
+                local currentPlant = Plant:new(v.id, {
+                        entity = nil,
+                        coords = vector3(coords.x, coords.y, coords.z),
+                        owner = v.owner,
+                        plantTime = v.time,
+                        plantType = Config.Plants[v.type].plantType,
+                        fertilizer = v.fertilizer,
+                        water = v.water,
+                        health = v.health,
+                        growtime = v.growtime,
+                        seed = v.type,
+                    }
+                )
+                currentPlant:spawn()
+            end
         end
     end
+    TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+    return true
 end
 
---- Method to delete all cached weed plants and their entities
---- @return nil
-local destroyAllPlants = function()
-    for k, v in pairs(plants) do
-        if DoesEntityExist(k) then
-            DeleteEntity(k)
-            plants[k] = nil
-        end
-    end
-end
-
---- Method to update a plant object, removing the existing one and placing a new object
---- @param k number - WeedPlants table index
---- @param stage number - Stage number
---- @return nil
-local updatePlantProp = function(k, stage)
-    if not plants[k] then return end
-    if not DoesEntityExist(k) then return end
-    if plants[k].health <= 0 then return end
-
-    local plantType = Config.Plants[plants[k].type].plantType
-
-    local modelHash = Config.PlantTypes[plantType][stage][1]
-    DeleteEntity(k)
-    local plant = CreateObjectNoOffset(modelHash, plants[k].coords.x, plants[k].coords.y, plants[k].coords.z + Config.PlantTypes[plantType][stage][2], true, true, false)
-    FreezeEntityPosition(plant, true)
-    plants[plant] = plants[k]
-    plants[plant].entity = plant
-    plants[k] = nil
-end
-
+--- Function to update the plant stats (fertilizer, water, health) every minute
 updatePlantNeeds = function ()
-    for k, v in pairs(plants) do
-        local fertilizer = v.fertilizer
-        local water = v.water
+    for plantId, plant in pairs(plants) do
+        local plantData = plant:getData()
+        local fertilizer = plantData.fertilizer
+        local water = plantData.water
 
         local time = os.time()
-        local planted = v.time
+        local planted = plantData.plantTime
+
+        lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'Time:', time, 'Planted:', planted)
 
         local elapsed = os.difftime(time, planted)
         -- if elapsed is < 1 minute, skip this plant
         if elapsed >= 60 then
             if fertilizer - Config.FertilizerDecay >= 0 then
-                plants[k].fertilizer = it.round(fertilizer - Config.FertilizerDecay, 2)
+                plant:updateFertilizer(it.round(fertilizer - Config.FertilizerDecay, 2))
             else
-                plants[k].fertilizer = 0
+                plant:updateFertilizer(0)
             end
     
             if water - Config.WaterDecay >= 0 then
-                plants[k].water = it.round(water - Config.WaterDecay, 2)
+                plant:updateWater(it.round(water - Config.WaterDecay, 2))
             else
-                plants[k].water = 0
+                plant:updateWater(0)
             end
-            local health = calcHealth(k)
+            local health = plant:calcHealth()
             MySQL.update('UPDATE drug_plants SET water = (:water), fertilizer = (:fertilizer), health = (:health) WHERE id = (:id)', {
-                ['water'] = v.water,
-                ['fertilizer'] = v.fertilizer,
+                ['water'] = plant.water,
+                ['fertilizer'] = plant.fertilizer,
                 ['health'] = health,
-                ['id'] = v.id,
+                ['id'] = plant.id,
             })
         end
 
-        if not DoesEntityExist(k) then
-            lib.print.info('Plant ID: '.. v.id ..' does not exist, respawning it coords:', v.coords.x)
-            -- Respawn the plant
-            local modelHash = Config.PlantTypes[Config.Plants[v.type].plantType][v.stage][1]
-            local plant = CreateObjectNoOffset(modelHash, v.coords.x, v.coords.y, v.coords.z + Config.PlantTypes[Config.Plants[v.type].plantType][v.stage][2], true, true, false)
-            FreezeEntityPosition(plant, true)
-            plants[plant] = plants[k]
-            plants[plant].entity = plant
-            plants[k] = nil
-            v = plants[plant]
+        local entity = plantData.entity
 
-            local stage = calcStage(calcGrowth(plant))
-            if stage ~= v.stage then
-                plants[plant].stage = stage
-                updatePlantProp(plant, stage)
-            end
-        else
-            local stage = calcStage(calcGrowth(k))
-            if stage ~= v.stage then
-                plants[k].stage = stage
-                updatePlantProp(k, stage)
-            end
+        if not DoesEntityExist(entity) then
+            if Config.Debug then lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'does not exist try to respawn the plant') end
+            -- Respawn the plant
+            plant:spawn()
         end
+
+        local stage = plant:calcStage()
+            if stage ~= plantData.stage then
+                plant:updateProps()
+            end
     end
 
     SetTimeout(60 * 1000, updatePlantNeeds)
@@ -444,205 +444,49 @@ end
 
 AddEventHandler('onResourceStart', function(resource)
     if resource ~= GetCurrentResourceName() then return end
+
     while not DatabaseSetuped do
         lib.print.info('Waiting for Database to be setup')
         Wait(100)
     end
-    if Config.Debug then lib.print.info('Setup Plants') end
+    if Config.Debug then lib.print.info('[resoucesStart] Starting Plant Setup...') end
     setupPlants()
-    if Config.ClearOnStartup then
-        Wait(5000) -- Wait 5 seconds to allow all functions to be executed on startup
-        for k, v in pairs(plants) do
-            if plants[k].health == 0 then
-                DeleteEntity(k)
-                MySQL.query('DELETE from drug_plants WHERE id = :id', {
-                    ['id'] = plants[k].id
-                })
-                plants[k] = nil
-            end
-        end
+    while not setupPlants do
+        Wait(100)
     end
     TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     SendToWebhook(0, 'message', nil, 'Started '..GetCurrentResourceName()..' logger')
+    updatePlantNeeds()
+
+    if Config.Debug then lib.print.info('[resoucesStart] Finished Setup...') end
 
 end)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     
-    for k, v in pairs(plants) do
-        MySQL.update('UPDATE drug_plants SET water = (:water), fertilizer = (:fertilizer) WHERE id = (:id)', {
-            ['water'] = json.encode(v.water),
-            ['fertilizer'] = json.encode(v.fertilizer),
+    for plantId, plant in pairs(plants) do
+        local plantData = plant:getData()
+        MySQL.update('UPDATE drug_plants SET health = (:health), water = (:water), fertilizer = (:fertilizer) WHERE id = (:id)', {
+            ['health'] = plant:calcHealth(),
+            ['water'] = json.encode(plantData.water),
+            ['fertilizer'] = json.encode(plantData.fertilizer),
+            ['id'] = plantId,
         })
     end
-    
-    destroyAllPlants()
 
+    for _, plant in pairs(plants) do
+        plant:delete()
+    end
 end)
 
 --- Events
 
-RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
-    local entity = args.entity
-    if not plants[entity] then return end
-    
-    if args.extra == nil then
-        if #(GetEntityCoords(GetPlayerPed(source)) - plants[entity].coords) > 10 then return end
-    end
-    SendToWebhook(source, 'plant', 'destroy', plants[entity])
-
-    if Config.Debug then lib.print.info('Does Entity Exists:', DoesEntityExist(entity)) end
-    if DoesEntityExist(entity) then
-        MySQL.query('DELETE from drug_plants WHERE id = :id', {
-            ['id'] = plants[entity].id
-        })
-
-        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plants[entity].coords, stage)
-        Wait(Config.FireTime / 2)
-        DeleteEntity(entity)
-
-        plants[entity] = nil
-        TriggerClientEvent('it-drugs:client:syncPlantList', -1)
-    end
-end)
-
-RegisterNetEvent('it-drugs:server:harvestPlant', function(entity)
-
-    if not plants[entity] then return end
-    local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
-    if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
-    if calcGrowth(entity) ~= 100 then return end
-
-    if DoesEntityExist(entity) then
-        for k, v in pairs(Config.Plants[plants[entity].type].products) do
-            local product = k
-            local minAmount = v.min
-            local maxAmount = v.max
-            local amount = math.random(minAmount, maxAmount)
-            it.giveItem(src, product, amount)
-        end
-        if math.random(1, 100) <= Config.Plants[plants[entity].type].seed.chance then
-            local seed = plants[entity].type
-
-            if Config.Plants[plants[entity].type].seed.max > 1 then
-                local seedAmount = math.random(Config.Plants[seed].seed.min, Config.Plants[seed].seed.max)
-                it.giveItem(src, seed, seedAmount)
-            end
-        end
-    
-        DeleteEntity(entity)
-        SendToWebhook(src, 'plant', 'harvest', plants[entity])
-  
-        MySQL.query('DELETE from drug_plants WHERE id = :id', {
-            ['id'] = plants[entity].id
-        })
-        plants[entity] = nil
-        TriggerClientEvent('it-drugs:client:syncPlantList', -1)
-    end
-end)
-
-
-RegisterNetEvent('it-drugs:server:plantTakeCare', function(entity, item)
-
-    if not plants[entity] then return end
-    local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
-    if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
-
-    if it.removeItem(src, item, 1) then
-        local itemData = Config.Items[item]
-        if itemData.water ~= 0 then
-            local itemStrength = itemData.water
-            local currentWater = plants[entity].water
-            if currentWater + itemStrength >= 100 then
-                plants[entity].water = 100
-            else
-                plants[entity].water = currentWater + itemStrength
-            end
-
-            MySQL.update('UPDATE drug_plants SET water = (:water) WHERE id = (:id)', {
-                ['water'] = json.encode(plants[entity].water),
-                ['id'] = plants[entity].id,
-            })
-            SendToWebhook(src, 'plant', 'water', plants[entity])
-        end
-
-        if itemData.fertilizer ~= 0 then
-            local itemStrength = itemData.fertilizer
-            local currentFertilizer = plants[entity].fertilizer
-            if currentFertilizer + itemStrength >= 100 then
-                plants[entity].fertilizer = 100
-            else
-                plants[entity].fertilizer = currentFertilizer + itemStrength
-            end
-
-            MySQL.update('UPDATE drug_plants SET fertilizer = (:fertilizer) WHERE id = (:id)', {
-                ['fertilizer'] = json.encode(plants[entity].fertilizer),
-                ['id'] = plants[entity].id,
-            })
-            SendToWebhook(src, 'plant', 'fertilize', plants[entity])
-        end
-        if itemData.itemBack ~= nil then
-            it.giveItem(src, itemData.itemBack, 1)
-        end
-    end
-end)
-
-RegisterNetEvent('it-drugs:server:giveWater', function(entity, item)
-    if not plants[entity] then return end
-    local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
-    if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
-
-    if it.removeItem(src, item, 1) then
-
-        SendToWebhook(src, 'plant', 'water', plants[entity])
-
-        local itemStrength = Config.Items[item].water
-        local currentWater = plants[entity].water
-        if currentWater + itemStrength >= 100 then
-            plants[entity].water = 100
-        else
-            plants[entity].water = currentWater + itemStrength
-        end
-
-        MySQL.update('UPDATE drug_plants SET water = (:water) WHERE id = (:id)', {
-            ['water'] = json.encode(plants[entity].water),
-            ['id'] = plants[entity].id,
-        })
-    end
-end)
-
-RegisterNetEvent('it-drugs:server:giveFertilizer', function(entity, item)
-    if not plants[entity] then return end
-    local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
-    if #(GetEntityCoords(GetPlayerPed(src)) - plants[entity].coords) > 10 then return end
-
-    if it.removeItem(src, item, 1) then
-        SendToWebhook(src, 'plant', 'fertilize', plants[entity])
-        
-        local itemStrength = Config.Items[item].fertilizer
-        local currentFertilizer = plants[entity].fertilizer
-        if currentFertilizer + itemStrength >= 100 then
-            plants[entity].fertilizer = 100
-        else
-            plants[entity].fertilizer = currentFertilizer + itemStrength
-        end
-        
-        MySQL.update('UPDATE drug_plants SET fertilizer = (:fertilizer) WHERE id = (:id)', {
-            ['fertilizer'] = json.encode(plants[entity].fertilizer),
-            ['id'] = plants[entity].id,
-        })
-    end
-end)
-
+--- Event to create a new plant
+---@param coords vector3: the plant coords
+---@param plantItem string: name of the plant item
+---@param zone string | nil: the plant zone
+---@param metadata table | nil: the plant metadata
 RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone, metadata)
     local src = source
     local player = it.getPlayer(src)
@@ -652,9 +496,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
     if it.removeItem(src, plantItem, 1, metadata) then
-        local modelHash = GetHashKey(Config.PlantTypes[plantInfos.plantType][1][1])
-        local plant = CreateObjectNoOffset(modelHash, coords.x, coords.y, coords.z + Config.PlantTypes[plantInfos.plantType][1][2], true, true, false)
-        FreezeEntityPosition(plant, true)
+        
         local time = os.time()
         local owner = it.getCitizenId(src)
 
@@ -666,7 +508,13 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
-        MySQL.insert('INSERT INTO `drug_plants` (owner, coords, time, type, water, fertilizer, health, growtime) VALUES (:owner, :coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
+        local id = it.generateCustomID(8)
+        while plants[id] do
+            id = it.generateCustomID(8)
+        end
+
+        MySQL.insert('INSERT INTO `drug_plants` (id, owner, coords, time, type, water, fertilizer, health, growtime) VALUES (:id, :owner, :coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
+            ['id'] = id,
             ['owner'] = owner,
             ['coords'] = json.encode(coords),
             ['time'] = time,
@@ -675,33 +523,148 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             ['fertilizer'] = 0.0,
             ['health'] = 100.0,
             ['growtime'] = growTime,
-        }, function(id)
-            plants[plant] = {
-                id = id,
-                owner = owner,
+        }, function()
+            local currentPlant = Plant:new(id, {
                 coords = coords,
-                time = time,
-                type = plantItem,
-                water = 0.0,
+                owner = owner,
+                plantTime = time,
+                plantType = Config.Plants[plantItem].plantType,
                 fertilizer = 0.0,
+                water = 0.0,
                 health = 100.0,
                 growtime = growTime,
-                entity = plant,
-                stage = 1
-            }
-            TriggerClientEvent('it-drugs:client:syncPlantList', -1)
-            SendToWebhook(src, 'plant', 'plant', plants[plant])
+                seed = plantItem,
+
+            })
+            currentPlant:spawn()
+            TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+            --TriggerClientEvent('it-drugs:client:syncPlantList', -1)
+            SendToWebhook(src, 'plant', 'plant', plants[id])
         end)
     end
 end)
 
+--- Event to take care of a plant (Gets triggered when the player uses a item on the plant)
+---@param plantId string: the plant Id
+---@param item string: name of the item used
+RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
 
-lib.callback.register('it-drugs:server:getPlants', function(source)
-    return plants
+    if not plants[plantId] then return end
+    local plant = plants[plantId]
+    local plantData = plant:getData()
+
+    local src = source
+    local player = it.getPlayer(src)
+    if not player then return end
+    if #(GetEntityCoords(GetPlayerPed(src)) - plantData.coords) > 10 then return end
+
+    if it.removeItem(src, item, 1) then
+        local itemData = Config.Items[item]
+        if itemData.water ~= 0 then
+            local itemStrength = itemData.water
+            local currentWater = plantData.water
+            if currentWater + itemStrength >= 100 then
+                plant:updateWater(100)
+            else
+                plant:updateWater(currentWater + itemStrength)
+            end
+
+            plantData = plant:getData()
+
+            MySQL.update('UPDATE drug_plants SET water = (:water) WHERE id = (:id)', {
+                ['water'] = json.encode(plantData.water),
+                ['id'] = plantData.id,
+            })
+            --SendToWebhook(src, 'plant', 'water', plants[entity])
+        end
+
+        if itemData.fertilizer ~= 0 then
+            local itemStrength = itemData.fertilizer
+            local currentFertilizer = plantData.fertilizer
+            if currentFertilizer + itemStrength >= 100 then
+                plant:updateFertilizer(100)
+            else
+                plant:updateFertilizer(currentFertilizer + itemStrength)
+            end
+
+            plantData = plant:getData()
+
+            MySQL.update('UPDATE drug_plants SET fertilizer = (:fertilizer) WHERE id = (:id)', {
+                ['fertilizer'] = json.encode(plantData.fertilizer),
+                ['id'] = plantData.id,
+            })
+            -- SendToWebhook(src, 'plant', 'fertilize', plants[entity])
+        end
+        if itemData.itemBack ~= nil then
+            it.giveItem(src, itemData.itemBack, 1)
+        end
+    end
 end)
 
---- Threads
-CreateThread(function()
-    Wait(1000) -- Wait 5 seconds to allow all functions to be executed on startup
-    updatePlantNeeds()
+--- Event to harvest a plant
+---@param plantId string: the plant Id
+RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
+
+    if not plants[plantId] then return end
+    local plant = plants[plantId]
+    local plantData = plant:getData()
+    
+    local src = source
+    local player = it.getPlayer(src)
+    if not player then return end
+    if #(GetEntityCoords(GetPlayerPed(src)) - plantData.coords) > 10 then return end
+    if plant:calcGrowth() ~= 100 then return end
+
+    if DoesEntityExist(plantData.entity) then
+        for k, v in pairs(Config.Plants[plantData.seed].products) do
+            local product = k
+            local minAmount = v.min
+            local maxAmount = v.max
+            local amount = math.random(minAmount, maxAmount)
+            it.giveItem(src, product, amount)
+        end
+        if math.random(1, 100) <= Config.Plants[plantData.seed].seed.chance then
+            local seed = plantData.type
+
+            if Config.Plants[plantData.seed].seed.max > 1 then
+                local seedAmount = math.random(Config.Plants[seed].seed.min, Config.Plants[seed].seed.max)
+                it.giveItem(src, seed, seedAmount)
+            end
+        end
+        -- SendToWebhook(src, 'plant', 'harvest', plants[entity])
+  
+        MySQL.query('DELETE from drug_plants WHERE id = :id', {
+            ['id'] = plantData.id
+        })
+
+        plant:delete()
+        TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+        
+        -- TriggerClientEvent('it-drugs:client:syncPlantList', -1)
+    end
+end)
+
+--- Event to destroy a plant
+---@param args table: the event arguments
+RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
+    local plant = plants[args.plantId]
+    if not plant then return end
+    
+    if #(GetEntityCoords(GetPlayerPed(source)) - plant.coords) > 10 then return end
+    
+    --SendToWebhook(source, 'plant', 'destroy', plants[entity])
+    if DoesEntityExist(plant.entity) then
+      
+        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plant.coords)
+        Wait(Config.FireTime / 2)
+
+        plant:delete()
+
+        MySQL.query('DELETE from drug_plants WHERE id = :id', {
+            ['id'] = plant.id
+        })
+        plant:delete()
+        TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+        --TriggerClientEvent('it-drugs:client:syncPlantList', -1)
+    end
 end)
