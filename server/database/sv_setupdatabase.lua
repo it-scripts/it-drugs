@@ -42,8 +42,12 @@ local function setupDatabase()
 end
 
 CreateThread(function()
-    while not setupDatabase() do
-        Wait(100)
+
+    if not Config.ManuelDatabaseSetup then
+        while not setupDatabase() do
+            Wait(100)
+        end
     end
+
     DatabaseSetuped = true
 end)
