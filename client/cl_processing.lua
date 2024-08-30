@@ -165,9 +165,9 @@ RegisterNetEvent('it-drugs:client:useTable', function(data)
 end)
 
 RegisterNetEvent('it-drugs:client:processDrugs', function(args)
-    local entity = args.entity
-    local type = args.type
-    local recipe = Config.ProcessingTables[type].recipes[args.recipe]
+    
+    local tableData = lib.callback.await('it-drugs:server:getTableById', false, args.tableId)
+    local recipe = lib.callback.await('it-drugs:server:getRecipeById', false, args.tableId, args.recipeId)
     if proccessing then return end
 
     local input = lib.inputDialog(_U('INPUT__AMOUNT__HEADER'), {
@@ -188,6 +188,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         end
     end
 
+    local entity = NetworkGetEntityFromNetworkId(tableData.netId)
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(200)
@@ -195,16 +196,16 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     proccessing = true
 
     RequestAnimDict(recipe.animation.dict)
-    while not HasAnimDictLoaded(recipe.animation.dict) do 
+    while not HasAnimDictLoaded(recipe.animation.dict) do
         Wait(0)
     end
     TaskPlayAnim(ped, recipe.animation.dict, recipe.animation.anim, 8.0, 8.0, -1, 1, 0, false, false, false)
     if Config.ProcessingSkillCheck then
-        for i = 1, amount, 1 do
+        for i = 1, amount do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
-                TriggerServerEvent('it-drugs:server:processDrugs', entity, recipe)
+                TriggerServerEvent('it-drugs:server:processDrugs', {tableId = args.tableId, recipeId = args.recipeId})
             else
                 proccessing = false
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
@@ -218,7 +219,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
     else
-        for i = 1, amount, 1 do
+        for i = 1, amount do
             if lib.progressBar({
                 duration = recipe.processTime * 1000,
                 label = _U('PROGRESSBAR__PROCESS__DRUG'),
@@ -230,11 +231,13 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
                     combat = true,
                 },
             }) then
-                TriggerServerEvent('it-drugs:server:processDrugs', entity, recipe)
+                TriggerServerEvent('it-drugs:server:processDrugs', {tableId = args.tableId, recipeId = args.recipeId})
             else
                 ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
                 ClearPedTasks(ped)
                 RemoveAnimDict(recipe.animation.dict)
+                proccessing = false
+                return
             end
             Wait(1000)
         end
@@ -245,7 +248,11 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
 end)
 
 RegisterNetEvent('it-drugs:client:removeTable', function(args)
-    local entity = args.entity
+
+    local tableData = lib.callback.await('it-drugs:server:getTableById', false, args.tableId)
+
+
+    local entity = NetworkGetEntityFromNetworkId(tableData.netId)
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
@@ -262,7 +269,7 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
     TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
 
-    if lib.progressBar({
+    if ShowProgressBar({
         duration = 5000,
         label = _U('PROGRESSBAR__REMOVE__TABLE'),
         useWhileDead = false,
@@ -273,7 +280,7 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:removeTable', {entity = entity})
+        TriggerServerEvent('it-drugs:server:removeTable', {tableId = args.tableId})
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
