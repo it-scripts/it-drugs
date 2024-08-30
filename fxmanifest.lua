@@ -3,15 +3,20 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
-version 'v1.2.4'
+version 'v1.3.0'
 
-shared_script 'bridge/init.lua'
+identifier 'it-drugs'
+
+shared_script {
+    '@ox_lib/init.lua'
+}
 
 shared_scripts {
     'shared/config.lua',
+    'bridge/init.lua',
+    'shared/functions.lua',
     'locales/en.lua',
     'locales/*.lua',
-    '@ox_lib/init.lua',
     'bridge/**/shared.lua',
     '@es_extended/imports.lua',
 }
@@ -37,6 +42,7 @@ server_scripts {
     '@oxmysql/lib/MySQL.lua',
 
     'bridge/**/server.lua',
+    'bridge/**/server/*.lua',
     
     'server/sv_admin.lua',
     'server/sv_dealer.lua',
