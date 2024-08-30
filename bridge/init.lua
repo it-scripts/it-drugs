@@ -1,5 +1,5 @@
 it = setmetatable({
-    name = "it-drugs",
+    name = GetCurrentResourceName(),
     context = IsDuplicityVersion() and "server" or "client",
 }, {
     __nexindex = function(self, name, fn)
@@ -8,12 +8,13 @@ it = setmetatable({
 })
 
 cache = {
-    resource = it.name,
+    resource = GetResourceMetadata(it.name, 'identifier', 0),
     game = GetGameName();
     version = GetResourceMetadata(it.name, 'version', 0),
     supportedFrameworks = {
         'qb-core',
-        'es_extended'
+        'es_extended',
+        'ND_Core'
     },
     supportedInventories = {
         'ox_inventory',
@@ -26,7 +27,7 @@ cache = {
 
 --- Check of ox_lib is installed and enabled
 if GetResourceState('ox_lib') ~= 'started' then
-    error('[it-drugs] To use this script you need to have ox_lib installed and started bevor this script!')
+    lib.print.error('['..it.name..'] To use this script you need to have ox_lib installed and started bevor this script!')
     return
 end
 
@@ -50,6 +51,12 @@ local function detectFramwork(framework)
         end
     end
 
+    local function detectNDCore()
+        if GetResourceState('ND_Core') == 'started' then
+            return NDCore
+        end
+    end
+
     if framework == 'autodetect' then
         local qbcore = detectQbCore()
         if qbcore then
@@ -62,17 +69,26 @@ local function detectFramwork(framework)
             it.core = 'esx'
             return esx
         end
+
+        local ndcore = detectNDCore()
+        if ndcore then
+            it.core = 'nd-core'
+            return ndcore
+        end
+
         return nil
-
-
     else
         if not lib.table.contains(cache.supportedFrameworks, framework) then
-            lib.print.error('[it-drugs] The selected framework is not supported: ' .. framework)
+            lib.print.error('['..it.name..'] The selected framework is not supported: ' .. framework)
         else
             if framework == 'qb-core' then
                 return detectQbCore()
             elseif framework == 'es_extended' then
                 return detectEsx()
+            elseif framework == 'nd-core' then
+                return detectNDCore()
+            else
+                return nil
             end
         
         end
@@ -146,7 +162,7 @@ local function detectInventory(inventory)
         return false
     else
         if not lib.table.contains(cache.supportedInventories, inventory) then
-            lib.print.error('[it-drugs] The selected inventory is not supported: ' .. inventory)
+            lib.print.error('['..it.name..'] The selected inventory is not supported: ' .. inventory)
             return false
         else
             if inventory == 'ox_inventory' then
@@ -170,34 +186,34 @@ end
 if Config.Framework == 'autodetect' then
     CoreObject = detectFramwork('autodetect')
     if not CoreObject then
-        lib.print.error('[it-drugs] No supported framework detected! Did you rename your core resource?')
+        lib.print.error('['..it.name..'] No supported framework detected! Did you rename your core resource?')
     else
-        lib.print.info('[it-drugs] Detected framework: ' .. it.core)
+        lib.print.info('['..it.name..'] Detected framework: ' .. it.core)
     end
 else
     local framework = Config.Framework
     CoreObject = detectFramwork(framework)
     if not CoreObject then
-        lib.print.error('[it-drugs] Cannot find the resource for the selcted framework: ', framework)
+        lib.print.error('['..it.name..'] Cannot find the resource for the selcted framework: ', framework)
     else
-        lib.info.print('[it-drugs] Detected framework: ', it.core)
+        lib.info.print('['..it.name..'] Detected framework: ', it.core)
     end
 end
 
 if Config.Inventory == 'autodetect' then
     local inventory = detectInventory('autodetect')
     if not inventory then
-        lib.print.error('[it-drugs] No supported inventory detected! Did you rename your inventory resource?')
+        lib.print.error('['..it.name..'] No supported inventory detected! Did you rename your inventory resource?')
     else
-        lib.print.info('[it-drugs] Detected inventory: ' .. it.inventory)
+        lib.print.info('['..it.name..'] Detected inventory: ' .. it.inventory)
     end
 else
     local inventory = Config.Inventory
     local result = detectInventory(inventory)
     if not result then
-        lib.print.info('[it-drugs] Cannot find the resource for the selected inventory: ' .. inventory)
+        lib.print.info('['..it.name..'] Cannot find the resource for the selected inventory: ' .. inventory)
     else
-        lib.print.info('[it-drugs] Detected inventory: ' .. it.inventory)
+        lib.print.info('['..it.name..'] Detected inventory: ' .. it.inventory)
     end
 end
 

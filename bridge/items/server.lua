@@ -13,14 +13,14 @@ function it.hasItem(source, item, amount, metadata)
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, metadata or nil, true)
         if itemData then
-            if itemData >= amount then return true end
+            if itemData >= amount then return true else return false end
         end
     end
 
     if it.inventory == 'origen' then
         local itemCount = origen_inventory:GetItemCount(source, item, metadata or nil, true)
         if itemCount then
-            if itemCount >= amount then return true end
+            if itemCount >= amount then return true else return false end
         end
     end
 
@@ -37,8 +37,8 @@ function it.hasItem(source, item, amount, metadata)
 		local Player = CoreObject.Functions.GetPlayer(source)
 		if not Player then return false end
         local itemData = Player.Functions.GetItemByName(item)
-        if itemData then
-            if itemData.amount >= amount then return true end
+        if itemData ~= nil then
+            if itemData.amount >= amount then return true else return false end
         end
     end
 
@@ -46,13 +46,13 @@ function it.hasItem(source, item, amount, metadata)
 		local Player = CoreObject.GetPlayerFromId(source)
 		local esxItem = Player.getInventoryItem(item)
         if esxItem then
-            if esxItem.count >= amount then return true end
+            if esxItem.count >= amount then return true else return false end
         end
 	end
 
     -- Error Messages when the function fails --
-    lib.print.error('[bridge | hasItem] There was an error while cheching if the player has the item ' .. item .. ' in the inventory. [ERR-INV-01]')
-    lib.print.error('[bridge | hasItem] Need more information about this error? Look here https://help.it-scripts.com/errors/inventory')
+    lib.print.error('[' ..it.name..' | hasItem] There was an error while cheching if the player has the item ' .. item .. ' in the inventory. [ERR-INV-01]')
+    lib.print.error('[' ..it.name..' | hasItem] Need more information about this error? Look here https://help.it-scripts.com/errors/inventory')
     return false
 end
 
@@ -174,11 +174,16 @@ function it.removeItem(source, item, amount, metadata)
     return false
 end
 
+lib.callback.register('it-drugs:server:removeItem', function(source, item, amount, metadata)
+    local removed = it.removeItem(source, item, amount, metadata)
+    return removed
+end)
+
 --- Create a usable item.
 ---@param item string: The item name.
 ---@param cb function: The callback function.
 function it.createUsableItem(item, cb)
-    if ConsumableItems[item] then print('[it-drugs] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
+    if ConsumableItems[item] then print('[it-lib] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
 	
     if it.inventory == 'origen' then
         origen_inventory:CreateUseableItem(item, cb)
@@ -262,7 +267,7 @@ end
 function it.getItemLabel(source, itemName)
     local itemLabel
     if it.inventory == 'ox' then
-        itemLabel = lib.callback.await('it-drugs:client:getItemLabel', source, itemName)
+        itemLabel = lib.callback.await('it-lib:client:getItemLabel', source, itemName)
     end
 
     if it.inventory == 'origen' then
@@ -282,27 +287,27 @@ function it.getItemLabel(source, itemName)
     return itemLabel or itemName
 end
 
-lib.callback.register('it-drugs:server:getItemLabel', function(source, itemName)
+lib.callback.register('it-lib:server:getItemLabel', function(source, itemName)
     local itemLabel = it.getItemLabel(source, itemName)
     return itemLabel
 end)
 
-lib.callback.register('it-drugs:hasItem', function(source, item, amount)
+lib.callback.register('it-lib:hasItem', function(source, item, amount)
     local hasItem = it.hasItem(source, item, amount)
     return hasItem
 end)
 
-lib.callback.register('it-drugs:getItemCount', function(source, item)
+lib.callback.register('it-lib:getItemCount', function(source, item)
     local itemCount = it.getItemCount(source, item)
     return itemCount
 end)
 
-lib.callback.register('it-drugs:server:getItemLabel', function(source, itemName)
+lib.callback.register('it-lib:server:getItemLabel', function(source, itemName)
     local itemLabel = CoreObject.GetItemLabel(itemName)
     return itemLabel
 end)
 
-RegisterNetEvent('it-drugs:toggleItem', function(toggle, name, amount, metadata)
+RegisterNetEvent('it-lib:toggleItem', function(toggle, name, amount, metadata)
     local source = source
     it.toggleItem(source, toggle, name, amount, metadata)
 end)
