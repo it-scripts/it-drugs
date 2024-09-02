@@ -34,18 +34,6 @@ Config.Target = 'autodetect' -- autodetect -- Target system ('qb-target', 'ox_ta
 
 Config.Language = 'en' -- Choose your language ('en', 'es', 'de')
 
---[[
-    Here you set up the discord webhook, you can find more information about
-    this in the server/webhook.lua file.
-    If you dont know what a webhook is, you can read more about it here:
-    https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
-]]
-Config.Webhook = {
-    ['active'] = false, -- Set to true to enable the webhook
-    ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
-    ['name'] = 'it-drugs', -- Name for the webhook
-    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
-}
 
 --[[
     Here you can set some generale settings regarding to the some features of the script.

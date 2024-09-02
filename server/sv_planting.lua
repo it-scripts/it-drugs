@@ -538,8 +538,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             })
             currentPlant:spawn()
             TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
-            --TriggerClientEvent('it-drugs:client:syncPlantList', -1)
-            SendToWebhook(src, 'plant', 'plant', plants[id])
+            SendToWebhook(src, 'plant', 'plant', plants[id]:getData())
         end)
     end
 end)
@@ -575,7 +574,7 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
                 ['water'] = json.encode(plantData.water),
                 ['id'] = plantData.id,
             })
-            --SendToWebhook(src, 'plant', 'water', plants[entity])
+            SendToWebhook(src, 'plant', 'water', plantData)
         end
 
         if itemData.fertilizer ~= 0 then
@@ -593,7 +592,7 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
                 ['fertilizer'] = json.encode(plantData.fertilizer),
                 ['id'] = plantData.id,
             })
-            -- SendToWebhook(src, 'plant', 'fertilize', plants[entity])
+            SendToWebhook(src, 'plant', 'fertilize', plantData)
         end
         if itemData.itemBack ~= nil then
             it.giveItem(src, itemData.itemBack, 1)
@@ -631,7 +630,7 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
                 it.giveItem(src, seed, seedAmount)
             end
         end
-        -- SendToWebhook(src, 'plant', 'harvest', plants[entity])
+        SendToWebhook(src, 'plant', 'harvest', plantData)
   
         MySQL.query('DELETE from drug_plants WHERE id = :id', {
             ['id'] = plantData.id
@@ -639,8 +638,6 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
 
         plant:delete()
         TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
-        
-        -- TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     end
 end)
 
@@ -652,7 +649,7 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
     
     if #(GetEntityCoords(GetPlayerPed(source)) - plant.coords) > 10 then return end
     
-    --SendToWebhook(source, 'plant', 'destroy', plants[entity])
+    SendToWebhook(source, 'plant', 'destroy', plant:getData())
     if DoesEntityExist(plant.entity) then
       
         TriggerClientEvent('it-drugs:client:startPlantFire', -1, plant.coords)
@@ -665,6 +662,5 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
         })
         plant:delete()
         TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
-        --TriggerClientEvent('it-drugs:client:syncPlantList', -1)
     end
 end)

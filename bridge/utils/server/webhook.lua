@@ -1,5 +1,20 @@
 local webhooks = {}
 
+local errors = {
+    [200] = "Everything is fine the webhook message was sent successfully!",
+    [204] = "Everything is fine the webhook message was sent successfully but without any content! (You don't need to worry about this)",
+
+    [400] = "Your webhook URL is invalid!",
+    [401] = "Your webhook URL is invalid!",
+    [404] = "Your webhook URL is invalide!",
+    [405] = "Your webhook URL is invalide!",
+    [429] = "You are being rate limited by Discord!",
+    [500] = "Discord is having internal server issues!",
+    [502] = "Discord is having internal server issues!",
+    [503] = "Discord is having internal server issues!",
+    [504] = "Discord is having internal server issues!",
+}
+
 ---@class EmbedMessage: OxClass
 EmbedMessage = lib.class('EmbedMessage')
 
@@ -135,6 +150,7 @@ end
 Webhook = lib.class('Webhook')
 
 function Webhook:constructor(id, url)
+    self.id = id
     self.url = url
     self.embeds = {}
     self.username = nil
@@ -168,6 +184,18 @@ function Webhook:send(callback)
     }
 
     PerformHttpRequest(self.url, function(statusCode, response, headers)
+
+        if statusCode == 200 or statusCode == 204 then
+            if Config.Debug then
+                lib.print.debug('[WEBHOOK] ' .. self.id .. ' was sent successfully!')
+            end
+            self.embeds = {}
+            webhooks[self.url] = self
+        end
+
+        if statusCode ~= 200 and statusCode ~= 204 then
+            lib.print.error('[WEBHOOK ERROR] ' .. errors[statusCode] .. ' (' .. statusCode .. ')')
+        end
         if callback then
             callback(statusCode, response, headers)
         end
