@@ -28,6 +28,7 @@ Locales['en'] = {
     ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
 
     
+    
     ['MENU__PROCESSING'] = 'Proccessing',
     ['MENU__RECIPE__DESC'] = 'Process your drugs with this recipe',
 
@@ -39,6 +40,18 @@ Locales['en'] = {
 
     ['MENU__TABLE__REMOVE'] = 'Remove Table',
     ['MENU__TABLE__REMOVE__DESC'] = 'Get this table back',
+
+    ['MENU__DEALER__ACTION'] = "What do you want to do?",
+
+    ['MENU__DEALER__BUY'] = 'Buy',
+    ['MENU__DEALER__BUY__DESC'] = 'Buy items from the dealer',
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Buy %s for $%g per item',
+
+    ['MENU__DEALER_SELL'] = 'Sell',
+    ['MENU__DEALER__SELL_DESC'] = 'Sell items to the dealer',
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Sell %s for $%g per item',
+
+    
 
     ['MENU__SELL'] = 'Sell',
     ['MENU__SELL__DEAL'] = 'Deal',
