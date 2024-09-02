@@ -8,6 +8,11 @@ function it.removeItem(itemName, amount, metadata)
     return removed
 end
 
+function it.giveItem(itemName, amount, metadata)
+    local given = lib.callback.await('it-drugs:server:giveItem', false, itemName, amount, metadata)
+    return given
+end
+
 function it.getItemLabel(itemName)
     local itemLabel
     if it.inventory == 'ox' then

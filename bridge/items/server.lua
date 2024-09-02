@@ -110,6 +110,11 @@ function it.giveItem(source, item, amount, metadata)
     return false
 end
 
+lib.callback.register('it-drugs:server:giveItem', function(source, item, amount, metadata)
+    local added = it.giveItem(source, item, amount, metadata)
+    return added
+end)
+
 --- Remove the item from the player's inventory.
 ---@param source number: The player's server ID.
 ---@param item string: The item name.

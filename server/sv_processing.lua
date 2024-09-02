@@ -388,6 +388,7 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
     })
 
     processingTable:delete()
+    TriggerClientEvent('it-drugs:client:syncTables', -1, processingTables)
 end)
 
 RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotation, metadata)

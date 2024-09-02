@@ -76,7 +76,7 @@ local function createDealerTargets(targetSystem)
                             icon = 'fas fa-eye',
                             label = _U('TARGET__DEALER__LABLE'),
                             action = function (entity)
-                                TriggerEvent('it-drugs:client:showDealerMenu', k)
+                                TriggerEvent('it-drugs:client:showDealerActionMenu', k)
                             end
                         }
                     },
@@ -93,7 +93,7 @@ local function createDealerTargets(targetSystem)
                         name = 'it-drugs-talk-dealer',
                         icon = 'fas fa-eye',
                         onSelect = function(data)
-                            TriggerEvent('it-drugs:client:showDealerMenu', k)
+                            TriggerEvent('it-drugs:client:showDealerActionMenu', k)
                         end,
                         distance = 1.5
                     }
@@ -167,6 +167,16 @@ local function createProccessingTargets(targetSystem)
             end
         end
     end
+end
+
+local function isPedBlacklisted(ped)
+	local model = GetEntityModel(ped)
+	for i = 1, #Config.BlacklistPeds do
+		if model == GetHashKey(Config.BlacklistPeds[i]) then
+			return true
+		end
+	end
+	return false
 end
 
 -- ┌─────────────────────────────────────────────────────────────┐
@@ -256,7 +266,7 @@ CreateThread(function()
         end
     end
     createPlantTargets(targetSystem)
-    if Config.Dealer then
+    if Config.EnableDealers then
         createDealerTargets(targetSystem)
     end
     if Config.EnableProcessing then

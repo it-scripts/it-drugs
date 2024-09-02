@@ -44,12 +44,13 @@ CreateThread(function()
     end
 end)
 
-RegisterNetEvent('it-drugs:client:handelBuyInteraction', function(args)
+RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
 
     local item = args.item
     local itemLabel = it.getItemLabel(item)
     local dealerId = args.dealerId
     local price = args.price
+    local action = args.action
 
     local input = lib.inputDialog(_U('INPUT__BUY__HEADER'), {
         {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _U('INPUT__BUY__DESCRIPTION'):format(itemLabel), required = true, min = 1}
@@ -63,12 +64,15 @@ RegisterNetEvent('it-drugs:client:handelBuyInteraction', function(args)
     local amount = tonumber(input[1])
     local total = price * amount
 
-    if it.getPlayerMoney('cash') < total then
-        ShowNotification(nil, _U('NOTIFICATION__NO__MONEY'), 'error')
+    if action == 'sell' then
+        TriggerServerEvent('it-drugs:server:sellItemsToDealer', dealerId, item, amount, total)
         return
     end
 
-    TriggerServerEvent('it-drugs:server:buyDealerItem', dealerId, item, amount, total)    
+    if action == 'buy' then
+        TriggerServerEvent('it-drugs:server:buyItemsFromDealer', dealerId, item, amount, total)
+        return
+    end
 end)
 
 

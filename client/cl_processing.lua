@@ -60,6 +60,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end
 
 RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, metadata)
@@ -126,6 +127,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
                 placed = true
                 lib.hideTextUI()
                 DeleteObject(table)
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             end
         else
@@ -150,6 +152,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
                 placed = true
                 lib.hideTextUI()
                 DeleteObject(table)
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             end
         end
@@ -245,6 +248,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 RegisterNetEvent('it-drugs:client:removeTable', function(args)
@@ -290,4 +294,5 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)

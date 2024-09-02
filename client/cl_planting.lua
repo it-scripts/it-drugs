@@ -80,16 +80,27 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     if plantInfos.reqItems["planting"] ~= nil then
         for item, itemData in pairs(plantInfos.reqItems["planting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            local givenItems = {}
             if not it.hasItem(item, itemData.amount or 1) then
                 ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
                 DeleteObject(plant)
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        it.giveItem(item)
+                    end
+                end
+                
                 return
             else
                 if itemData.remove then
                     if not it.removeItem(item, itemData.amount or 1) then
                         ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
                         DeleteObject(plant)
+                        TriggerEvent('it-drugs:client:syncRestLoop', false)
                         return
+                    else
+                        table.insert(givenItems, item)
                     end
                 end
             end
@@ -172,8 +183,9 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-
     end
+
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end
 
 -- Events
@@ -267,6 +279,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
                 planted = true
                 lib.hideTextUI()
                 DeleteObject(plant)
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             end
         end
@@ -313,8 +326,8 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 local giveWater = function(args)
@@ -418,6 +431,7 @@ RegisterNetEvent('it-drugs:client:useItem', function (args)
     elseif itemInfos.fertilizer ~= 0 then
         giveFertilizer(args)
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
@@ -462,6 +476,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 RegisterNetEvent('it-drugs:client:startPlantFire', function(coords)

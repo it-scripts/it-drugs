@@ -1,29 +1,99 @@
-RegisterNetEvent("it-drugs:client:showDealerMenu", function(dealerId)
+RegisterNetEvent('it-drugs:client:showDealerActionMenu', function(dealerId)
+    
+    local dealerData = Config.DrugDealers[dealerId]
+    local dealerName = dealerData.label
+
+    lib.registerContext({
+        id = "it-drugs-dealer-action-menu",
+        title = _U('MENU__DEALER'):format(dealerName),
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
+        options = {
+            {
+                title = _U('MENU__DEALER__ACTION'),
+            },
+            {
+                title = _U('MENU__DEALER__BUY'),
+                description = _U('MENU__DEALER__BUY__DESC'),
+                icon = "shopping-cart",
+                arrow = true,
+                event = "it-drugs:client:showDealerMenu",
+                args = {dealerId = dealerId, action = 'sell'}
+            },
+            {
+                title = _U('MENU__DEALER_SELL'),
+                description = _U('MENU__DEALER__SELL_DESC'),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:showDealerMenu",
+                args = {dealerId = dealerId, action = 'buy'}
+            }
+        }
+    })
+
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
+    lib.showContext("it-drugs-dealer-action-menu")
+end)
+
+RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
     local options = {}
+
+    local dealerId = args.dealerId
+    local action = args.action
 
     local dealerData = Config.DrugDealers[dealerId]
     local dealerName = dealerData.label
 
-    for k, v in pairs(dealerData.items) do
 
-        local itemData = lib.callback.await('it-drugs:server:getDealerItemData', false, dealerId, k)
+    if action == 'buy' then
+        local buyItems = lib.callback.await('it-drugs:server:getDealerBuyItems', false, dealerId)
 
-        table.insert(options, {
-            title = it.getItemLabel(k),
-            description = _U('MENU__DEALER__DESC'):format(itemData.price),
-            icon = "coins",
-            arrow = true,
-            event = "it-drugs:client:handelBuyInteraction",
-            args = {item = k, price = itemData.price, dealerId = dealerId}
-        })
+        for k, v in pairs(buyItems) do
+            table.insert(options, {
+                title = it.getItemLabel(k),
+                description = _U('MENU__DEALER_SELL_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:handleDealerInteraction",
+                args = {item = k, price = v.price, dealerId = dealerId, action = 'sell'}
+            })
+        end
+
+    elseif action == 'sell' then
+
+        local sellItems = lib.callback.await('it-drugs:server:getDealerSellItems', false, dealerId)
+
+        for k, v in pairs(sellItems) do
+            table.insert(options, {
+                title = it.getItemLabel(k),
+                description = _U('MENU__DEALER_BUY_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:handleDealerInteraction",
+                args = {item = k, price = v.price, dealerId = dealerId, action = 'buy'}
+            })
+        end
+
+    else
+        ShowNotification(nil, _U('NOTIFICATION__INVALID__ACTION'), 'error')
+        return
     end
 
     lib.registerContext({
         id = "it-drugs-dealer-menu",
         title = _U('MENU__DEALER'):format(dealerName),
+        menu = 'it-drugs-dealer-action-menu',
+        onBack = function()
+            TriggerEvent('it-drugs:client:showDealerActionMenu', dealerId)
+        end,
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
         options = options
     })
 
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
     lib.showContext("it-drugs-dealer-menu")
 end)
 
@@ -406,7 +476,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         options = options,
         menu = 'it-drugs-recipes-menu',
         onBack = function()
-            TriggerEvent('it-drugs:client:showRecipesMenu', {type = data.type, entity = data.entity})
+            TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = data.tableId})
         end,
         onExit = function()
             TriggerEvent('it-drugs:client:syncRestLoop', false)

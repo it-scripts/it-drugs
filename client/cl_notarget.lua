@@ -4,6 +4,8 @@ local plants = {}
 local processingTables = {}
 local restLoop = false
 
+local dealerLocations = {}
+
 --- Get the closest plant to the given coords
 ---@param coords vector3: The coords to check from
 ---@return table | nil, integer: The closest plant and the distance to it
