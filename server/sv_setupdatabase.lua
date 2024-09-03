@@ -26,12 +26,20 @@ local function setupDatabase()
     MySQL.rawExecute(plantSetupStatment, {}, function(response)
         if not response then
             lib.print.error('[setupDatabase] Faild to create plant database')
+        else
+            if Config.Debug then
+                lib.print.info('[setupDatabase] Plant database created:', response)
+            end
         end
     end)
     
     MySQL.rawExecute(proccessingStatement, {}, function(response)
         if not response then
             lib.print.error('[setupDatabase] Faild to create processing database')
+        else
+            if Config.Debug then
+                lib.print.info('[setupDatabase] Plant database created:', response)
+            end
         end
     end)
   
