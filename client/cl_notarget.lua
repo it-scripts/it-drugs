@@ -1,5 +1,3 @@
-if Config.Target then return end
-
 local plants = {}
 local processingTables = {}
 local restLoop = false
@@ -41,6 +39,21 @@ local function getClosestProcessingTable(coords)
     return closestTable, closestDistance
 end
 
+RegisterNetEvent('it-drugs:client:syncRestLoop', function(status)
+    restLoop = status
+end)
+
+RegisterNetEvent('it-drugs:client:syncPlants', function(plantList)
+    lib.print.info('Syncing plants', plantList)
+    plants = plantList
+end)
+
+RegisterNetEvent('it-drugs:client:syncTables', function(tableList)
+    lib.print.info('Syncing tables', tableList)
+    processingTables = tableList
+end)
+
+if Config.Target then return end
 
 CreateThread(function()
 
@@ -72,18 +85,4 @@ CreateThread(function()
         end
         Wait(0)
     end
-end)
-
-RegisterNetEvent('it-drugs:client:syncRestLoop', function(status)
-    restLoop = status
-end)
-
-RegisterNetEvent('it-drugs:client:syncPlants', function(plantList)
-    lib.print.info('Syncing plants', plantList)
-    plants = plantList
-end)
-
-RegisterNetEvent('it-drugs:client:syncTables', function(tableList)
-    lib.print.info('Syncing tables', tableList)
-    processingTables = tableList
 end)
