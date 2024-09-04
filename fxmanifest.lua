@@ -50,14 +50,9 @@ server_scripts {
     'server/sv_processing.lua',
     'server/sv_selling.lua',
     'server/sv_usableitems.lua',
-    'server/sv_versioncheck.lua',
     'server/sv_webhooks.lua',
-    'server/database/sv_setupdatabase.lua'
-}
-
-files = {
-    'server/database/drug_plants.sql',
-    'server/database/drug_processing.sql',
+    'server/sv_versioncheck.lua',
+    'server/sv_setupdatabase.lua'
 }
 
 dependencies {
