@@ -380,12 +380,13 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
    
     if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
     it.giveItem(source, processingTable.tableType, 1)
-  
-    SendToWebhook(source, 'table', 'remove', processingTable:getData())
 
     MySQL.query('DELETE from drug_processing WHERE id = :id', {
         ['id'] = args.tableId
     })
+
+    local tableData = processingTable:getData()
+    SendToWebhook(source, 'table', 'remove', tableData)
 
     processingTable:delete()
     TriggerClientEvent('it-drugs:client:syncTables', -1, processingTables)
@@ -433,7 +434,8 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
 
             currentTable:spawn()
             TriggerClientEvent('it-drugs:client:syncTables', -1, processingTables)
-            SendToWebhook(src, 'table', 'place', currentTable:getData())
+            local tableData = currentTable:getData()
+            SendToWebhook(src, 'table', 'place', tableData)
         end)
     else
         if Config.Debug then lib.print.error("Can not remove item") end
