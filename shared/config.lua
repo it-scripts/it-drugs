@@ -24,7 +24,7 @@ Locales = Locales or {}
 
 Config.Framework = 'autodetect' -- Choose your framework ('ox_inventory', 'qb-inventory', 'esx_inventory', 'custom_inventory', 'autodetect')
 Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory')
-Config.Target = 'autodetect' -- autodetect -- Target system ('qb-target', 'ox_target' or false to disable)
+Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
 
 --[[
     Here you can set the language for the script, you can choose between 'en', 'es', 'de'
@@ -174,7 +174,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_lemonhaze_seed'] = {
         label = 'Lemon Haze', -- Label for the plant
         plantType = 'plant1', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = 2, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -187,21 +187,12 @@ Config.Plants = { -- Create seeds for drugs
             max = 2 -- Max amount of seeds
         },
         time = 3000, -- Time it takes to plant/harvest in miliseconds
-        reqItems = { -- Items required to plant the seed
-            ["planting"] = {
-                ['watering_can'] = {amount = 1, remove = true},
-                ['shovel'] = {amount = 1, remove = true},
-            },
-            ["harvesting"] = {
-                ['watering_can'] = {amount = 1, remove = true},
-                ['shovel'] = {amount = 1, remove = true},
-            }
-        }
     },
     ['coca_seed'] = {
         growthTime = 45, -- Cutsom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
-        label = 'Coca Plant', --
+        label = 'Coca Plant', -- Label for the plant
+        zones = {}, -- Zones where the seed can be planted
         plantType = 'small_plant', -- Choose plant types from (plant1, plant2, small_plant) also you can change plants yourself in main/client.lua line: 2
         products = { -- Item the plant is going to produce when harvested with the max amount
             ['coca']= {min = 1, max = 2}
@@ -259,19 +250,6 @@ Config.ProcessingTables = { -- Create processing table
                     dict = 'anim@gangops@facility@servers@bodysearch@',
                     anim = 'player_search',
                 }
-            },
-            ['joint_hidden'] = {
-                label = 'Joint Unsichtbar',
-                ingrediants = {
-                    ['weed_lemonhaze'] = 3,
-                    ['paper'] = 1
-                },
-                outputs = {
-                    ['joint'] = 2
-                },
-                processTime = 5,
-                failChance = 15,
-                showIngrediants = false,
             },
         }
     },
@@ -377,6 +355,15 @@ Config.SellSettings = {
     ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
+Config.SellEverywhere = {
+    ['enabled'] = false, -- Allow selling drugs everywhere
+    drugs = {
+        { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+        { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+        { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+    }
+}
+
 Config.SellZones = {
     ['groove'] = {
         points = {
@@ -388,9 +375,9 @@ Config.SellZones = {
         },
         thickness = 27,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['vinewood'] = {
@@ -409,9 +396,9 @@ Config.SellZones = {
         },
         thickness = 59.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['beach'] = {
@@ -428,9 +415,9 @@ Config.SellZones = {
         },
         thickness = 4.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
 }
@@ -464,11 +451,11 @@ Config.DrugDealers = {
         },
         items = {
             ['buying'] = { -- Items the dealer buys from you
-                ['weed_lemonhaze'] = {min = 100, max = 200}, -- min/max price
+                ['weed_lemonhaze'] = {min = 100, max = 200, moneyType = 'cash'}, -- min/max price
             },
             ['selling'] = { -- Items the dealer sells to you
-                ['weed_lemonhaze_seed'] = {min = 100, max = 200}, -- min/max price
-                ['coca_seed'] = {min = 100, max = 300},
+                ['weed_lemonhaze_seed'] = {min = 100, max = 200, moneyType = 'bank'}, -- min/max price
+                ['coca_seed'] = {min = 100, max = 300, moneyType = 'black_money'},
             },
         },
     },
@@ -491,7 +478,7 @@ Config.BlacklistPeds = {
     but it's only for development.
 ]]
 Config.EnableVersionCheck = true -- Enable version check
-Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.ManuelDatabaseSetup = true -- Set to true to disable the automatic database setup and check
-Config.Debug = true -- Set to true to enable debug mode
+Config.Branch = 'v1.3.0beta' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
+Config.ManualDatabaseSetup = false -- Set to true to disable the automatic database setup and check
+Config.Debug = false -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone
