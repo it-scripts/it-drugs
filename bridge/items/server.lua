@@ -39,6 +39,7 @@ function it.hasItem(source, item, amount, metadata)
         local itemData = Player.Functions.GetItemByName(item)
         if itemData ~= nil then
             if itemData.amount >= amount then return true else return false end
+        else return false
         end
     end
 
@@ -276,18 +277,26 @@ function it.getItemLabel(source, itemName)
     end
 
     if it.inventory == 'origen' then
-        itemLabel = origen_inventory:GetItemLabel(itemName)
+        if origen_inventory.GetItemLabel then
+            itemLabel = origen_inventory.GetItemLabel(itemName)
+        end
     end
 
     if it.inventory == 'codem' then
-        itemLabel = exports['codem-inventory']:GetItemLabel(itemName)
+        if exports['codem-inventory']:GetItemLabel(itemName) then
+            itemLabel = exports['codem-inventory']:GetItemLabel(itemName)
+        end
     end
 
     if it.core == 'qb-core' then
-        itemLabel = CoreObject.Shared.Items[itemName].label
+        if CoreObject.Shared.Items[itemName] then
+            itemLabel = CoreObject.Shared.Items[itemName].label
+        end
     end
     if it.core == 'esx' then
-        itemLabel = CoreObject.GetItemLabel(itemName)
+        if CoreObject.GetItemLabel then
+            itemLabel = CoreObject.GetItemLabel(itemName)
+        end
     end
     return itemLabel or itemName
 end

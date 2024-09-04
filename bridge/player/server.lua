@@ -122,11 +122,11 @@ function it.addMoney(source, moneyType, amount, reason)
         moneyType = types[moneyType]['esx']
         local currentMoney = Player.getAccount(moneyType).money
         Player.addAccountMoney(moneyType, amount)
-        if currentMoney + amount == Player.getAccount(moneyType) then
-           return true
+        if currentMoney + amount == currentMoney then
+            lib.print.info('['..it.name..' | addMoney] Unable to add money. It seems like the money was not added.')
+            return false
         end
-        lib.print.info('['..it.name..' | addMoney] Unable to add money. It seems like the money was not added.')
-        return false
+        return true
     end
 
     if it.core == 'ND_Core' then
@@ -205,36 +205,46 @@ function it.getMoney(source, moneyType)
     local types = {
         ['cash'] = {
             ['qbcore'] = 'cash',
-            ['esx'] = 'money'
+            ['esx'] = 'money',
+            ['ND_Core'] = 'cash'
         },
         ['bank'] = {
             ['qbcore'] = 'bank',
-            ['esx'] = 'bank'
+            ['esx'] = 'bank',
+            ['ND_Core'] = 'bank'
         },
         ['black_money'] = {
             ['qbcore'] = 'black_money',
-            ['esx'] = 'black_money'
+            ['esx'] = 'black_money',
+            ['ND_Core'] = nil
         }
     }
 
     if it.core == 'qb-core' then
         moneyType = types[moneyType]['qbcore']
-        return Player.Functions.GetMoney(moneyType)
+        if Player.Functions.GetMoney(moneyType) then
+            return Player.Functions.GetMoney(moneyType)
+        end
     end
 
     if it.core == 'esx' then
         moneyType = types[moneyType]['esx']
-        return Player.getAccount(moneyType).money
+        if Player.getAccount(moneyType) then
+            return Player.getAccount(moneyType).money
+        end
+        
     end
 
     if it.core == 'ND_Core' then
         moneyType = types[moneyType]['ND_Core']
-        return Player.getData(moneyType)
+        if Player.getData(moneyType) then
+            return Player.getData(moneyType)
+        end
     end
 
-    lib.print.error('['..it.name..' | getMoney] Unable to get money. It seems like the framework is not supported.')
-    lib.print.error('['..it.name..' | getMoney] Debug information:', "Core: "..it.core, "it:", it, "cache:", cache)
-    return false
+    lib.print.error('['..it.name..' | getMoney] Unable to get money. It looks as if this account does not exist:', moneyType, '[ERR-MONEY-01]')
+    lib.print.error('['..it.name..' | getMoney] More information about this error: https://help.it-scripts.com/errors')
+    return 0
 end
 
 function it.setMoney(source, moneyType, amount)

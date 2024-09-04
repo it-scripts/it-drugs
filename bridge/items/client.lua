@@ -24,7 +24,10 @@ function it.getItemLabel(itemName)
         return lib.callback.await('it-lib:server:getItemLabel', false, itemName)
     end
     if it.core == 'qb-core' then
-        itemLabel = CoreObject.Shared.Items[itemName].label
+        local item = CoreObject.Shared.Items[itemName]
+        if item then
+            itemLabel = item.label
+        end
     end
     if it.core == 'esx' then
         itemLabel = lib.callback.await('it-lib:server:getItemLabel', false, itemName)

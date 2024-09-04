@@ -41,7 +41,7 @@ local function detectFramwork(framework)
 
     local function detectQbCore()
         if GetResourceState('qb-core') == 'started' then
-            return exports['qb-core']:GetFramework()
+            return exports['qb-core']:GetCoreObject()
         end
     end
 
