@@ -48,7 +48,7 @@ end
 
 CreateThread(function()
 
-    if not Config.ManuelDatabaseSetup then
+    if not Config.ManualDatabaseSetup then
         while not setupDatabase() do
             Wait(100)
         end
