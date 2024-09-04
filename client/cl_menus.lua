@@ -310,7 +310,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     progress = math.floor(plantData.water),
                     colorScheme = "blue",
                     event = "it-drugs:client:showItemMenu",
-                    args = {plantData = plantData, eventType = "fertilizer"}
+                    args = {plantData = plantData, eventType = "water"}
                 },
                 {
                     title = _U('MENU__PLANT__DESTROY'),

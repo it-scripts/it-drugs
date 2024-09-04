@@ -1,4 +1,5 @@
 if not Config.Target then return end
+local targetSystem = nil
 -- ┌────────────────────────────────────────────────────────┐
 -- │ ____  _             _     _____                    _   │
 -- │|  _ \| | __ _ _ __ | |_  |_   _|_ _ _ __ __ _  ___| |_ │
@@ -8,7 +9,7 @@ if not Config.Target then return end
 -- │                                         |___/          │
 -- └────────────────────────────────────────────────────────┘
 
-local function createPlantTargets(targetSystem)
+local function createPlantTargets()
 
     if targetSystem == 'qb-target' then
         for k, v in pairs(Config.PlantTypes) do
@@ -66,7 +67,7 @@ local function createPlantTargets(targetSystem)
     end
 end
 
-local function createDealerTargets(targetSystem)
+local function createDealerTargets()
     if targetSystem == 'qb-target' then
         for k, v in pairs(Config.DrugDealers) do
             if v.ped ~= nil then
@@ -112,7 +113,7 @@ end
 -- │                                               |___/                 |___/          │
 -- └────────────────────────────────────────────────────────────────────────────────────┘
 -- Proccesing Target
-local function createProccessingTargets(targetSystem)
+local function createProccessingTargets()
     if targetSystem == 'qb-target' then
         for k, v in pairs(Config.ProcessingTables) do
             if v.model ~= nil then
@@ -187,7 +188,7 @@ end
 -- │|____/ \___|_|_|_|_| |_|\__, |   |_|\__,_|_|  \__, |\___|\__|│
 -- │                        |___/                 |___/          │
 -- └─────────────────────────────────────────────────────────────┘
-local function createSellingTargets(targetSystem)
+function CreateSellingTargets()
     if targetSystem == 'qb-target' then
         exports['qb-target']:AddGlobalPed({
             options = {
@@ -230,7 +231,6 @@ end
 
 -- Plant Target
 CreateThread(function()
-    local targetSystem = nil
     local function detectQbTarget()
         if not exports['qb-target'] then return false else return true end
     end
@@ -265,15 +265,22 @@ CreateThread(function()
             end
         end
     end
-    createPlantTargets(targetSystem)
+    createPlantTargets()
     if Config.EnableDealers then
-        createDealerTargets(targetSystem)
+        createDealerTargets()
     end
     if Config.EnableProcessing then
-        createProccessingTargets(targetSystem)
+        createProccessingTargets()
     end
-    if Config.EnableSelling then
-        createSellingTargets(targetSystem)
+
+    for _, dealerData in pairs(Config.DrugDealers) do
+        if dealerData.ped ~= nil then
+            table.insert(Config.BlacklistPeds, dealerData.ped)
+        end
+    end
+
+    if Config.EnableSelling and Config.SellEverywhere['enabled'] then
+        CreateSellingTargets()
     end
 end)
 

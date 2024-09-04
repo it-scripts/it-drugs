@@ -1,30 +1,34 @@
+
 -- \ Locals and tables
 local SoldPeds = {}
 local SellZone = {}
 local currentZone = nil
 
 -- \ Create Zones for the drug sales
-for k, v in pairs(Config.SellZones) do
-    local coords = {}
-    for _, point in ipairs(v.points) do
-        table.insert(coords, vector3(point.x, point.y, point.z))
-    end
 
-	lib.zones.poly({
-        points = coords,
-        thickness = v.thickness,
-        debug = Config.DebugPoly,
-		onEnter = function(self)
-			CreateSellTarget()
-			currentZone = k
-			if Config.Debug then print("Entered Zone ["..k.."]") end
-		end,
-		onExit = function(self)
-			currentZone = nil
-			RemoveSellTarget()
-			if Config.Debug then print("Exited Zone ["..k.."]") end
+if not Config.SellEverywhere['enabled'] then
+	for k, v in pairs(Config.SellZones) do
+		local coords = {}
+		for _, point in ipairs(v.points) do
+			table.insert(coords, vector3(point.x, point.y, point.z))
 		end
-    })
+
+		lib.zones.poly({
+			points = coords,
+			thickness = v.thickness,
+			debug = Config.DebugPoly,
+			onEnter = function(self)
+				CreateSellingTargets()
+				currentZone = k
+				if Config.Debug then print("Entered Zone ["..k.."]") end
+			end,
+			onExit = function(self)
+				currentZone = nil
+				RemoveSellTarget()
+				if Config.Debug then print("Exited Zone ["..k.."]") end
+			end
+		})
+	end
 end
 
 -- \ Play five animation for both player and ped
@@ -81,8 +85,14 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		return
 	end
 
-	if not currentZone then return end
-	local zoneConfig = Config.SellZones[currentZone]
+	local zoneConfig = nil
+	local currentZone = nil
+	if Config.SellEverywhere['enabled'] then
+		zoneConfig = Config.SellEverywhere
+	else
+		if not currentZone then return end
+		zoneConfig = Config.SellZones[currentZone]
+	end
 
 	local sellAmount = math.random(Config.SellSettings['sellAmount'].min, Config.SellSettings['sellAmount'].max)
 	local sellItemData = nil
