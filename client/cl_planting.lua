@@ -52,6 +52,9 @@ local GetGroundHash = function(coords)
 end
 
 local function checkforZones(coords, targetZones)
+
+    if not targetZones or #targetZones == 0 then return nil end
+
     for _, targetZone in ipairs(targetZones) do
         for id, zone in ipairs(growZones) do
             if zone:contains(vector3(coords.x, coords.y, coords.z)) then
@@ -75,37 +78,6 @@ end
 ---@param metadata table|nil: Plant metadata
 local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
 
-
-    -- Check if the player has the required items for planting
-    if plantInfos.reqItems["planting"] ~= nil then
-        for item, itemData in pairs(plantInfos.reqItems["planting"]) do
-            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            local givenItems = {}
-            if not it.hasItem(item, itemData.amount or 1) then
-                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
-                DeleteObject(plant)
-
-                if #givenItems > 0 then
-                    for _, item in pairs(givenItems) do
-                        it.giveItem(item)
-                    end
-                end
-                
-                return
-            else
-                if itemData.remove then
-                    if not it.removeItem(item, itemData.amount or 1) then
-                        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
-                        DeleteObject(plant)
-                        TriggerEvent('it-drugs:client:syncRestLoop', false)
-                        return
-                    else
-                        table.insert(givenItems, item)
-                    end
-                end
-            end
-        end
-    end
     -- check for near plants
     local plants = lib.callback.await('it-drugs:server:getPlants', false)
 
@@ -145,6 +117,36 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
             ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
             DeleteObject(plant)
             return
+        end
+    end
+
+    if plantInfos.reqItems and plantInfos.reqItems["planting"] ~= nil then
+        for item, itemData in pairs(plantInfos.reqItems["planting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            local givenItems = {}
+            if not it.hasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+                DeleteObject(plant)
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        it.giveItem(item)
+                    end
+                end
+                
+                return
+            else
+                if itemData.remove then
+                    if not it.removeItem(item, itemData.amount or 1) then
+                        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+                        DeleteObject(plant)
+                        TriggerEvent('it-drugs:client:syncRestLoop', false)
+                        return
+                    else
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
         end
     end
 
@@ -290,6 +292,36 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
 
     local plantData = args.plantData
     local entity = NetworkGetEntityFromNetworkId(plantData.netId)
+
+    plantData.reqItems = Config.Plants[plantData.seed].reqItems
+
+    if plantData.reqItems and plantData.reqItems["harvesting"] ~= nil then
+        for item, itemData in pairs(plantData.reqItems["planting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            local givenItems = {}
+            if not it.hasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        it.giveItem(item)
+                    end
+                end
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+                return
+            else
+                if itemData.remove then
+                    if not it.removeItem(item, itemData.amount or 1) then
+                        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+                        TriggerEvent('it-drugs:client:syncRestLoop', false)
+                        return
+                    else
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
+        end
+    end
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)

@@ -455,7 +455,7 @@ AddEventHandler('onResourceStart', function(resource)
         Wait(100)
     end
     TriggerClientEvent('it-drugs:client:syncPlantList', -1)
-    SendToWebhook(0, 'message', nil, 'Started '..GetCurrentResourceName()..' logger')
+    SendToWebhook(0, 'message', nil, {description = 'Started '..GetCurrentResourceName()..' logger'})
     updatePlantNeeds()
 
     if Config.Debug then lib.print.info('[resoucesStart] Finished Setup...') end
@@ -626,11 +626,10 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
             local seed = plantData.type
 
             if Config.Plants[plantData.seed].seed.max > 1 then
-                local seedAmount = math.random(Config.Plants[seed].seed.min, Config.Plants[seed].seed.max)
-                it.giveItem(src, seed, seedAmount)
+                local seedAmount = math.random(Config.Plants[plantData.seed].seed.min, Config.Plants[plantData.seed].seed.max)
+                it.giveItem(src, plantData.seed, seedAmount)
             end
         end
-        SendToWebhook(src, 'plant', 'harvest', plantData)
   
         MySQL.query('DELETE from drug_plants WHERE id = :id', {
             ['id'] = plantData.id
@@ -638,6 +637,7 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
 
         plant:delete()
         TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+        SendToWebhook(src, 'plant', 'harvest', plantData)
     end
 end)
 
