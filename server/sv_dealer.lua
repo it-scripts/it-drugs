@@ -30,6 +30,7 @@ function Dealer:generateSellItemData(item)
 
     self.sellItems[item] = {
         price = math.random(priceData.min, priceData.max),
+        moneyType = priceData.moneyType,
         --amount = math.random(priceData.amount.min, priceData.amount.max)
     }
 end
@@ -40,6 +41,7 @@ function Dealer:generateBuyItemData(item)
 
     self.buyItems[item] = {
         price = math.random(priceData.min, priceData.max),
+        moneyType = priceData.moneyType,
         --amount = math.random(priceData.amount.min, priceData.amount.max)
     }
 end
@@ -55,6 +57,23 @@ end
 function Dealer:getBuyItemData(item)
     return self.buyItems[item]
 end
+
+function Dealer:getData()
+    return {
+        id = self.id,
+        position = self.position,
+        buyItems = self.buyItems,
+        sellItems = self.sellItems
+    }
+end
+
+lib.callback.register('it-drugs:server:getDealers', function()
+    local temp = {}
+    for dealerID, dealer in pairs(dealers) do
+        temp[dealerID] = dealer:getData()
+    end
+    return temp
+end)
 
 lib.callback.register('it-drugs:server:getDealerPosition', function(_, dealerID)
     lib.print.info("Getting position for dealer ID", dealerID)
@@ -103,7 +122,8 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
         return
     end
 
-    local serverPrice = dealers[dealerID]:getBuyItemData(item).price * amount
+    local buyItemData = dealers[dealerID]:getBuyItemData(item)
+    local serverPrice = buyItemData.price * amount
 
     if total ~= serverPrice then
         ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'error')
@@ -112,12 +132,13 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
 
     if it.hasItem(src, item, amount) then
         if it.removeItem(src, item, amount) then
-            it.addMoney(src, 'cash', total)
+            it.addMoney(src, buyItemData.moneyType, total)
             ShowNotification(src, _U('NOTIFICATION__SELL__SUCCESS'):format(it.getItemLabel(source, item)), 'success')
         end
     else
         ShowNotification(src, _U('NOTIFICATION__NO__ITEM'), 'error')
     end
+    TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)
 end)
 
 RegisterNetEvent('it-drugs:server:buyItemsFromDealer', function(dealerID, item, amount, total)
@@ -128,22 +149,25 @@ RegisterNetEvent('it-drugs:server:buyItemsFromDealer', function(dealerID, item, 
         return
     end
 
-    local serverPrice = dealers[dealerID]:getSellItemData(item).price * amount
+    local sellItemData = dealers[dealerID]:getSellItemData(item)
+    local serverPrice = sellItemData.price * amount
 
     if total ~= serverPrice then
         ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'error')
         return
     end
 
-    if it.getMoney(src, 'cash') < total then
+    if it.getMoney(src, sellItemData.moneyType) < total then
         ShowNotification(src, _U('NOTIFICATION__NO__MONEY'), 'error')
         return
     end
 
-    if it.removeMoney(src, 'cash', total) then
+    if it.removeMoney(src, sellItemData.moneyType, total) then
         it.giveItem(src, item, amount)
         ShowNotification(src, _U('NOTIFICATION__BUY__SUCCESS'):format(it.getItemLabel(source, item)), 'success')
     end
+
+    TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)
 end)
 
 CreateThread(function()
