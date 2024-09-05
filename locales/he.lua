@@ -1,4 +1,6 @@
 Locales['he'] = {
+    ['MENU__DEALER'] = 'סוחר: %s',
+    ['MENU__DEALER__DESC'] = 'קנה את זה תמורת ₪%g ליחידה',
     ['MENU__PLANT'] = '%s',
     ['MENU__DEAD__PLANT'] = 'צמח מת',
 
@@ -38,7 +40,7 @@ Locales['he'] = {
 
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
-    ['MENU__SELL__DESC'] = 'מכור %s (x%g) תמורת $%g',
+    ['MENU__SELL__DESC'] = 'מכור %s (x%g) תמורת ₪%g',
 
     ['MENU__SELL__ACCEPT'] = 'קבל הצעה',
     ['MENU__SELL__ACCEPT__DESC'] = 'קבל את ההצעה הנוכחית',
@@ -55,9 +57,8 @@ Locales['he'] = {
     ['MENU__TABLE__COUNT'] = 'סך השולחנות',
     ['MENU__TABLE__COUNT__DESC'] = 'כרגע יש %g שולחנות פעילים',
 
-    ['MENU__LIST__PLANTS'] = 'View plants by Distance',
-    ['MENU__LIST__PLANTS__DESC'] = 'View detail infomration about each plant',
-
+    ['MENU__LIST__PLANTS'] = 'הצג צמחים לפי מרחק',
+    ['MENU__LIST__PLANTS__DESC'] = 'הצג מידע מפורט על כל צמח',
     ['MENU__LIST__TABLES'] = 'הצג טבלאות לפי מרחק',
     ['MENU__LIST__TABLES__DESC'] = 'הצג מידע מפורט על כל שולחן',
 
@@ -81,9 +82,8 @@ Locales['he'] = {
     ['MENU__OWNER__META'] = 'לחץ כדי להעתיק את מזהה הבעלים',
 
     ['MENU__PLANT__LOCATION'] = 'מיקום',
-    ['MENU__LOCATION__DESC'] = 'Street: %s | Coordinates: (%g, %g, %g)',
-    ['MENU__LOCATION__META'] = 'Click top copy coords',
-
+    ['MENU__LOCATION__DESC'] = 'רחוב: %s | קואורדינטות: (%g, %g, %g)',
+    ['MENU__LOCATION__META'] = 'לחץ כדי להעתיק קואורדינטות',
     ['MENU__PLANT__TELEPORT'] = 'השתגר לצמח',
     ['MENU__PLANT__TELEPORT__DESC'] = 'השתגר למיקום הצמח',
 
@@ -102,11 +102,13 @@ Locales['he'] = {
     ['NOTIFICATION__TO__NEAR'] = 'אתה לא יכול לשתול את זה ליד צמח אחר',
     ['NOTIFICATION__CANCELED'] = '...בוטל',
     ['NOTIFICATION__NO__ITEMS'] = 'אין לך פריטים לטפל בצמח הזה',
-
+    ['NOTIFICATION__NO__MONEY'] = 'אין לך מספיק כסף עליך',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'רכשת בהצלחה קצת %s',
+    ['NOTIFICATION__DRUG__COOLDOWN'] = 'עליך להמתין לפני שתוכל לקחת שוב את הסם הזה',
     ['NOTIFICATION__NO__AMOUNT'] = 'אתה צריך להזין סכום',
 
     ['NOTIFICATION__MISSING__INGIDIANT'] = 'אין לך את כל המרכיבים',
-    ['NOTIFICATION__SKILL__SUCCESS'] = 'You have processed on drug',
+    ['NOTIFICATION__SKILL__SUCCESS'] = 'עיבדת סם אחד',
     ['NOTIFICATION__SKILL__ERROR'] = 'לחצת על המקש הלא נכון',
     ['NOTIFICATION__PROCESS__FAIL'] = 'לא הצלחת לעבד את הסם',
 
@@ -117,19 +119,17 @@ Locales['he'] = {
     ['NOTIFICATION__NO__DRUGS'] = 'אין לך שום דבר שהאדם רוצה',
     ['NOTIFICATION__TO__LONG'] = 'בזבזת זמן אז האדם עזב',
     ['NOTIFICATION__OFFER__REJECTED'] = 'דחית את ההצעה',
-    ['NOTIFICATION__SOLD__DRUG'] = " $%g קיבלת ",
-    ['NOTIFICATION__SELL__FAIL'] = ' %g! לא יכולת למכור את שלך ',
-    ['NOTIFICATION__NO__ITEM__LEFT'] = 'למכור %g אין לך',
+    ['NOTIFICATION__SOLD__DRUG'] = " ₪%g קיבלת ",
+    ['NOTIFICATION__SELL__FAIL'] = 'לא הצלחת למכור את ה-%g שלך!',
+    ['NOTIFICATION__NO__ITEM__LEFT'] = 'אין לך עוד %g למכירה!',
     ['NOTIFICATION__STOLEN__DRUG'] = 'שדדו אותך ולא מקבל שום כסף',
 
     ['NOTIFICATION__DRUG__NO__EFFECT'] = 'לתרופה זו אין השפעה',
     ['NOTIFICATION__DRUG__ALREADY'] = 'אתה כבר תחת השפעת סם',
 
     ['NOTIFICATION__NO__PERMISSION'] = 'אין לך הרשאה לעשות זאת',
-    ['NOTIFICATION__ADMINMENU__USAGE'] = 'Please use: /%s [plants/tables]',
-
-    ['NOTIFICATION__COPY__CLIPBOARD'] = ' %s :המידע הועתק ללוח ',
-
+    ['NOTIFICATION__ADMINMENU__USAGE'] = 'אנא השתמש: /%s [צמחים/שולחנות]',
+    ['NOTIFICATION__COPY__CLIPBOARD'] = 'המידע הועתק ללוח: %s',
     ['NOTIFICATION__TELEPORTED'] = 'השתגר למיקום הישות',
 
     ['NOTIFICATION__PLANT__DESTROYED'] = 'הצמח הושמד בהצלחה',
@@ -144,7 +144,7 @@ Locales['he'] = {
     ['PROGRESSBAR__FERTILIZE__PLANT'] = '...מדשן',
     ['PROGRESSBAR__DESTROY__PLANT'] = '...הורס',
 
-    ['PROGRESSBAR__PLACE__TABLE'] = '...מניח על השולחן',
+    ['PROGRESSBAR__PLACE__TABLE'] = '...מניח השולחן',
     ['PROGRESSBAR__REMOVE__TABLE'] = '...מסיר שולחן',
     ['PROGRESSBAR__PROCESS__DRUG'] = '...מעבד',
 
@@ -154,10 +154,14 @@ Locales['he'] = {
     ['INPUT__AMOUNT__HEADER'] = 'מעבד',
     ['INPUT__AMOUNT__TEXT'] = 'כמות',
     ['INPUT__AMOUNT__DESCRIPTION'] = '?כמה אתה רוצה לעבד',
+    ['INPUT__BUY__HEADER'] = 'רכישה',
+    ['INPUT__BUY__TEXT'] = 'כמות',
+    ['INPUT__BUY__DESCRIPTION'] = '?כמה %s אתה רוצה לקנות',
 
     ['TARGET__PLANT__LABEL'] = 'בדוק צמח',
     ['TARGET__TABLE__LABEL'] = 'השתמש בשולחן',
     ['TARGET__SELL__LABEL'] = 'דבר',
+    ['TARGET__DEALER__LABLE'] = 'בדוק סוחר',
 
     ['COMMAND__ADMINMENU'] = 'drugadmin',
     ['COMMAND__GROUNDHASH'] = 'getGroundHash',
