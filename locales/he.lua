@@ -1,6 +1,8 @@
 Locales['he'] = {
+
     ['MENU__DEALER'] = 'סוחר: %s',
     ['MENU__DEALER__DESC'] = 'קנה את זה תמורת ₪%g ליחידה',
+
     ['MENU__PLANT'] = '%s',
     ['MENU__DEAD__PLANT'] = 'צמח מת',
 
@@ -37,6 +39,16 @@ Locales['he'] = {
 
     ['MENU__TABLE__REMOVE'] = 'הסר שולחן',
     ['MENU__TABLE__REMOVE__DESC'] = 'תחזיר את השולחן הזה',
+
+    ['MENU__DEALER__ACTION'] = "What do you want to do?", -- Please edit
+
+    ['MENU__DEALER__BUY'] = 'Buy', -- Please edit
+    ['MENU__DEALER__BUY__DESC'] = 'Buy items from the dealer', -- Please edit
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Buy %s for $%g per item', -- Please edit
+
+    ['MENU__DEALER_SELL'] = 'Sell', -- Please edit
+    ['MENU__DEALER__SELL_DESC'] = 'Sell items to the dealer', -- Please edit
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Sell %s for $%g per item', -- Please edit
 
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
