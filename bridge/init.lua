@@ -18,7 +18,7 @@ cache = {
     },
     supportedInventories = {
         'ox_inventory',
-        'qb-core',
+        'qb-inventory',
         'es_extended',
         'origen_inventory',
         'codem-inventory'
@@ -41,38 +41,50 @@ local function detectFramwork(framework)
 
     local function detectQbCore()
         if GetResourceState('qb-core') == 'started' then
-            return exports['qb-core']:GetCoreObject()
+            local qbcore = exports['qb-core']:GetCoreObject()
+            if qbcore then
+                it.core = 'qb-core'
+                return qbcore
+            end    
+            return nil
         end
     end
 
     local function detectEsx()
         if GetResourceState('es_extended') == 'started' then
-            return exports['es_extended']:getSharedObject()
+            local esx = exports['es_extended']:getSharedObject()
+            if esx then
+                it.core = 'esx'
+                return esx
+            end
+            return nil
         end
     end
 
     local function detectNDCore()
         if GetResourceState('ND_Core') == 'started' then
-            return NDCore
+            local ndcore = exports['ND_Core']:GetCoreObject()
+            if ndcore then
+                it.core = 'nd-core'
+                return ndcore
+            end
+            return nil
         end
     end
 
     if framework == 'autodetect' then
         local qbcore = detectQbCore()
         if qbcore then
-            it.core = 'qb-core'
             return qbcore
         end
 
         local esx = detectEsx()
         if esx then
-            it.core = 'esx'
             return esx
         end
 
         local ndcore = detectNDCore()
         if ndcore then
-            it.core = 'nd-core'
             return ndcore
         end
 
@@ -82,15 +94,22 @@ local function detectFramwork(framework)
             lib.print.error('['..it.name..'] The selected framework is not supported: ' .. framework)
         else
             if framework == 'qb-core' then
-                return detectQbCore()
+                local qbcore = detectQbCore()
+                if qbcore then
+                    return qbcore
+                end
             elseif framework == 'es_extended' then
-                return detectEsx()
+                local esx = detectEsx()
+                if esx then
+                    return esx
+                end
             elseif framework == 'nd-core' then
-                return detectNDCore()
-            else
-                return nil
+                local ndcore = detectNDCore()
+                if ndcore then
+                    return ndcore
+                end
             end
-        
+            return nil
         end
     end
 end
@@ -166,15 +185,35 @@ local function detectInventory(inventory)
             return false
         else
             if inventory == 'ox_inventory' then
-                return detectOxInventory()
+                local ox = detectOxInventory()
+                if ox then
+                    it.inventory = 'ox'
+                    return ox
+                end
             elseif inventory == 'qb-inventory' then
-                return detectQbInventory()
+                local qb = detectQbInventory()
+                if qb then
+                    it.inventory = 'qb'
+                    return qb
+                end
             elseif inventory == 'es_extended' then
-                return detectESXInventory()
+                local esx = detectESXInventory()
+                if esx then
+                    it.inventory = 'esx'
+                    return esx
+                end
             elseif inventory == 'origen_inventory' then
-                return detectOriginsInventory()
+                local origen = detectOriginsInventory()
+                if origen then
+                    it.inventory = 'origen'
+                    return origen
+                end
             elseif inventory == 'codem-inventory' then
-                return detectCodemInventory()
+                local codem = detectCodemInventory()
+                if codem then
+                    it.inventory = 'codem'
+                    return codem
+                end
             else
                 return false
             end
@@ -196,7 +235,7 @@ else
     if not CoreObject then
         lib.print.error('['..it.name..'] Cannot find the resource for the selcted framework: ', framework)
     else
-        lib.info.print('['..it.name..'] Detected framework: ', it.core)
+        lib.print.info('['..it.name..'] Detected framework: ', it.core)
     end
 end
 
@@ -211,9 +250,9 @@ else
     local inventory = Config.Inventory
     local result = detectInventory(inventory)
     if not result then
-        lib.print.info('['..it.name..'] Cannot find the resource for the selected inventory: ' .. inventory)
+        lib.print.info('['..it.name..'] Cannot find the resource for the selected inventory: ', inventory)
     else
-        lib.print.info('['..it.name..'] Detected inventory: ' .. it.inventory)
+        lib.print.info('['..it.name..'] Detected inventory: ', it.inventory)
     end
 end
 
