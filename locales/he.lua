@@ -40,15 +40,16 @@ Locales['he'] = {
     ['MENU__TABLE__REMOVE'] = 'הסר שולחן',
     ['MENU__TABLE__REMOVE__DESC'] = 'תחזיר את השולחן הזה',
 
-    ['MENU__DEALER__ACTION'] = "What do you want to do?", -- Please edit
+    ['MENU__DEALER__ACTION'] = "מה תרצה לעשות?", -- Please edit
 
-    ['MENU__DEALER__BUY'] = 'Buy', -- Please edit
-    ['MENU__DEALER__BUY__DESC'] = 'Buy items from the dealer', -- Please edit
-    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Buy %s for $%g per item', -- Please edit
+    ['MENU__DEALER__BUY'] = 'לקנות', -- Please edit
+    ['MENU__DEALER__BUY__DESC'] = 'לקנות מוצרים מהמוכר', -- Please edit
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'קנה %s ב$g₪ לאחד', -- Please edit קנה %s ב$g₪ לאחד
 
-    ['MENU__DEALER_SELL'] = 'Sell', -- Please edit
-    ['MENU__DEALER__SELL_DESC'] = 'Sell items to the dealer', -- Please edit
-    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Sell %s for $%g per item', -- Please edit
+
+    ['MENU__DEALER_SELL'] = 'למכור', -- Please edit
+    ['MENU__DEALER__SELL_DESC'] = 'מכור מוצרים למוכר', -- Please edit
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'מכר %s ב$g₪ לאחד', -- Please edit
 
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
