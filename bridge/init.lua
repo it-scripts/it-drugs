@@ -218,6 +218,7 @@ local function detectInventory(inventory)
                 return false
             end
         end
+        return false
     end
 end
 
