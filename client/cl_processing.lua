@@ -159,14 +159,6 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
     end
 end)
 
-RegisterNetEvent('it-drugs:client:useTable', function(data)
-    local netId = NetworkGetNetworkIdFromEntity(data.entity)
-    lib.callback('it-drugs:server:getTableData', false, function(result)
-        if not result then return end
-        TriggerEvent('it-drugs:client:showRecipesMenu', result)
-    end, netId)
-end)
-
 RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     
     local tableData = lib.callback.await('it-drugs:server:getTableById', false, args.tableId)
