@@ -22,8 +22,8 @@ Locales = Locales or {}
     If you need need more information about this configuration, you can read the documentation here: https://help.it-scripts.com/scripts/it-drugs
 ]]
 
-Config.Framework = 'autodetect' -- Choose your framework ('ox_inventory', 'qb-inventory', 'esx_inventory', 'custom_inventory', 'autodetect')
-Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory')
+Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
+Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
 Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
 
 --[[
