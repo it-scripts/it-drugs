@@ -19,6 +19,7 @@ cache = {
     supportedInventories = {
         'ox_inventory',
         'qb-inventory',
+        'qs-inventory',
         'es_extended',
         'origen_inventory',
         'codem-inventory'
@@ -130,6 +131,12 @@ local function detectInventory(inventory)
         end
     end
 
+    local function detectQsInventory()
+        if GetResourceState('qs-inventory') == 'started' then
+            return true
+        end
+    end
+
     local function detectESXInventory()
         if GetResourceState('es_extended') == 'started' then
             return true
@@ -159,6 +166,16 @@ local function detectInventory(inventory)
         if qb then
             it.inventory = 'qb'
             return qb
+        end
+
+        local qs = detectQsInventory()
+        if qs then
+            if it.core == 'qb-core' then
+                it.inventory = 'qb'
+            else
+                it.inventory = 'esx'
+            end
+            return qs
         end
         
         local esx = detectESXInventory()
@@ -195,6 +212,16 @@ local function detectInventory(inventory)
                 if qb then
                     it.inventory = 'qb'
                     return qb
+                end
+            elseif inventory == 'qs-inventory' then
+                local qs = detectQsInventory()
+                if qs then
+                    if it.core == 'qb-core' then
+                        it.inventory = 'qb'
+                    else
+                        it.inventory = 'esx'
+                    end
+                    return qs
                 end
             elseif inventory == 'es_extended' then
                 local esx = detectESXInventory()
