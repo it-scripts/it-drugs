@@ -43,25 +43,33 @@ function it.getPlayerJob(player)
     end
 
     if it.core == 'qb-core' then
+
+        local job = player.PlayerData.job
+
         return {
-            name = player.job.name,
-            label = player.job.label,
-            grade_name = player.job.grade,
-            grade_label = player.job.grade.name,
-            grade_salary = player.job.payment,
-            isboss = player.job.isboss,
-            onduty = player.job.onduty
+            name = job.name,
+            label = job.label,
+            grade_name = job.grade,
+            grade_label = job.grade.name,
+            grade_salary = job.payment,
+            grade_level = job.grade.level,
+            isboss = job.isboss,
+            onduty = job.onduty
         }
     end
 
     if it.core == 'esx' then
+
+        local job = player.getJob()
+
         return {
-            name = player.job.name,
-            label = player.job.label,
-            grade_name = player.job.grade_name,
-            grade_label = player.job.grade_label,
-            grade_salary = player.job.grade_salary,
-            isboss = player.job.grade_name == 'boss' or false,
+            name = job.name,
+            label = job.label,
+            grade_name = job.grade_name,
+            grade_label = job.grade_label,
+            grade_salary = job.grade_salary,
+            grade_level = job.grade,
+            isboss = job.grade_name == 'boss' or false,
             onduty = true
         }
     end
