@@ -129,7 +129,7 @@ local function createProccessingTargets()
                                         lib.print.error('[it-drugs] Unable to get table data by network id')
                                     else
                                         if Config.Debug then
-                                            lib.print.info('[plantSelect] Current table data: ', tableData)
+                                            lib.print.info('[createProccessingTargets] Current table data: ', tableData)
                                         end
                                         TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = tableData.id})
                                     end
@@ -156,9 +156,9 @@ local function createProccessingTargets()
                                     lib.print.error('[it-drugs] Unable to get table data by network id')
                                 else
                                     if Config.Debug then
-                                        lib.print.info('[plantSelect] Current table data: ', tableData)
+                                        lib.print.info('[createProccessingTargets] Current table data: ', tableData)
                                     end
-                                    TriggerEvent('it-drugs:client:useTable', {entity = data.entity, type = k})
+                                    TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = tableData.id})
                                 end
                             end, networkId)
                         end,
@@ -232,14 +232,27 @@ end
 -- Plant Target
 CreateThread(function()
     local function detectQbTarget()
-        if not exports['qb-target'] then return false else return true end
+
+       
+        if GetResourceState('qb-target') ~= 'started' then
+            return false
+        else
+            if not exports['qb-target'] then return false else return true end
+            return true
+        end
     end
 
     local function detectOxTarget()
-        if not exports.ox_target then return false else return true end
+
+        if GetResourceState('ox_target') ~= 'started' then
+            return false
+        else
+            if not exports.ox_target then return false else return true end
+        end
     end
 
     if Config.Target == 'autodetect' then
+        lib.print.info('[targetSystem] Autodetecting target system...')
         if detectQbTarget() then
             targetSystem = 'qb-target'
         elseif detectOxTarget() then
@@ -265,6 +278,11 @@ CreateThread(function()
             end
         end
     end
+
+    while not targetSystem do
+        Wait(100)
+    end
+
     createPlantTargets()
     if Config.EnableDealers then
         createDealerTargets()

@@ -42,7 +42,9 @@ lib.callback.register('it-drugs:server:getRecipeById', function(source, tableId,
         return nil
     end
 
-    local recipe = processingTables[tableId]:getRecipeData(recipeId)
+    local currenTable = processingTables[tableId]
+
+    local recipe = currenTable:getRecipeData(recipeId)
 
     if not recipe then
         if Config.Debug then lib.print.error('[getRecipeById] - Recipe with ID:', recipeId, 'not found') end
