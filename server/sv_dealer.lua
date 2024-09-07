@@ -133,7 +133,7 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
     if it.hasItem(src, item, amount) then
         if it.removeItem(src, item, amount) then
             it.addMoney(src, buyItemData.moneyType, total)
-            ShowNotification(src, _U('NOTIFICATION__SELL__SUCCESS'):format(it.getItemLabel(source, item)), 'success')
+            ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__SUCCESS'):format(amount, it.getItemLabel(source, item), total), 'success')
         end
     else
         ShowNotification(src, _U('NOTIFICATION__NO__ITEM'), 'error')
@@ -164,7 +164,7 @@ RegisterNetEvent('it-drugs:server:buyItemsFromDealer', function(dealerID, item, 
 
     if it.removeMoney(src, sellItemData.moneyType, total) then
         it.giveItem(src, item, amount)
-        ShowNotification(src, _U('NOTIFICATION__BUY__SUCCESS'):format(it.getItemLabel(source, item)), 'success')
+        ShowNotification(src, _U('NOTIFICATION__DEALER__BUY__SUCCESS'):format(amount, it.getItemLabel(source, item), total), 'success')
     end
 
     TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)
