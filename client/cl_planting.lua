@@ -52,20 +52,16 @@ local GetGroundHash = function(coords)
 end
 
 local function checkforZones(coords, targetZones)
-
     if not targetZones or #targetZones == 0 then return nil end
-
-    for _, targetZone in ipairs(targetZones) do
-        for id, zone in ipairs(growZones) do
+    for _, targetZone in pairs(targetZones) do
+        for id, zone in pairs(growZones) do
             if zone:contains(vector3(coords.x, coords.y, coords.z)) then
                 if id == targetZone then
                     return id
                 end
             end
-        end
-        
+        end      
     end
-
     return nil
 end
 
@@ -111,6 +107,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     end
 
     local zone = checkforZones(coords, plantInfos.zones)
+    if Config.Debug then lib.print.info('[plantSeed] - current Zone:', zone) end -- DEBUG
     if plantInfos.onlyZone then
         zone = checkforZones(coords, plantInfos.zones)
         if zone == nil then
