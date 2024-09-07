@@ -116,6 +116,9 @@ Locales['de'] = {
     ['NOTIFICATION__SKILL__ERROR'] = 'Du hast die falsche Taste gedrückt',
     ['NOTIFICATION__PROCESS__FAIL'] = 'Du hast es nicht geschafft die Drogen zu verarbeiten',
 
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Du hast erflogreich %gx %s für %g verkauft',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Du hast erflogreich %gx %s für %g gekauft',
+
     ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
     ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist gerade nicht interessiert!',
     ['NOTIFICATION__ALLREADY__SPOKE'] = 'Du hast bereits mit diesem Passant gesprochen!',

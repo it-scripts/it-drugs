@@ -114,6 +114,8 @@ Locales['en'] = {
     ['MENU__TABLE__DESTROY'] = 'Destroy Table',
     ['MENU__TABLE__DESTROY__DESC'] = 'Destroy this table',
 
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'You have successfully sold %gx %s for $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'You have successfully bought %gx %s for $%g',
     ['NOTIFICATION__NO__MONEY'] = 'You don´t have enought money on you',
     ['NOTIFICATION__BUY__SUCCESS'] = 'You successfuly bought some %s',
 
