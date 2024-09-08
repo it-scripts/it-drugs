@@ -477,8 +477,10 @@ Config.BlacklistPeds = {
     Debug mode, you can see all kinds of prints/logs using debug,
     but it's only for development.
 ]]
+Config.ManualZoneChecker = false -- Set to true to enable the automatic zone checker
+Config.ManualDatabaseSetup = false -- Set to true to disable the automatic database setup and check
+
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'v1.3.0beta' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.ManualDatabaseSetup = false -- Set to true to disable the automatic database setup and check
 Config.Debug = false -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

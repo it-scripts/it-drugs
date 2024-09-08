@@ -18,13 +18,11 @@ if not Config.SellEverywhere['enabled'] then
 			thickness = v.thickness,
 			debug = Config.DebugPoly,
 			onEnter = function()
-				lib.print.info('Zone Entered: '..k)
 				CreateSellingTargets()
 				currentZone = k
 				if Config.Debug then lib.print.info("Entered Zone ["..k.."]") end
 			end,
 			onExit = function()
-				lib.print.info('Zone Exited: '..k)
 				currentZone = nil
 				RemoveSellTarget()
 				if Config.Debug then lib.print.info("Exited Zone ["..k.."]") end

@@ -32,7 +32,6 @@ if GetResourceState('ox_lib') ~= 'started' then
     return
 end
 
-
 -- Function do get the farmework and core object of the server
 
 --- Detect the framework of the server
