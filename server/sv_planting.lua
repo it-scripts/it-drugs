@@ -324,7 +324,7 @@ end)
 local setupPlants = function()
     local result = MySQL.query.await('SELECT * FROM `drug_plants`')
 
-    lib.print.info('[setupPlants] - Found', #result, 'plants in the database')
+    if Config.Debug then lib.print.info('[setupPlants] - Found', #result, 'plants in the database') end
 
     if not result then return true end
 
@@ -400,7 +400,7 @@ updatePlantNeeds = function ()
         local time = os.time()
         local planted = plantData.plantTime
 
-        lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'Time:', time, 'Planted:', planted)
+        if Config.Debug then lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'Time:', time, 'Planted:', planted) end
 
         local elapsed = os.difftime(time, planted)
         -- if elapsed is < 1 minute, skip this plant
