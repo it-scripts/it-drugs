@@ -14,7 +14,8 @@ cache = {
     supportedFrameworks = {
         'qb-core',
         'es_extended',
-        'ND_Core'
+        'ND_Core',
+        'qbx_core'
     },
     supportedInventories = {
         'ox_inventory',
@@ -40,12 +41,12 @@ end
 local function detectFramwork(framework)
 
     local function detectQbCore()
-        if GetResourceState('qb-core') == 'started' then
+        if GetResourceState('qb-core') == 'started' or GetResourceState('qbx_core') == 'started' then
             local qbcore = exports['qb-core']:GetCoreObject()
             if qbcore then
                 it.core = 'qb-core'
                 return qbcore
-            end    
+            end
             return nil
         end
     end
@@ -78,6 +79,11 @@ local function detectFramwork(framework)
             return qbcore
         end
 
+        local qbox = detectQbox()
+        if qbox then
+            return qbox
+        end
+
         local esx = detectEsx()
         if esx then
             return esx
@@ -97,6 +103,11 @@ local function detectFramwork(framework)
                 local qbcore = detectQbCore()
                 if qbcore then
                     return qbcore
+                end
+            elseif framework == 'qbx_core' then
+                local qbox = detectQbCore()
+                if qbox then
+                    return qbox
                 end
             elseif framework == 'es_extended' then
                 local esx = detectEsx()
