@@ -118,9 +118,9 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     end
 
     if plantInfos.reqItems and plantInfos.reqItems["planting"] ~= nil then
+        local givenItems = {}
         for item, itemData in pairs(plantInfos.reqItems["planting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            local givenItems = {}
             if not it.hasItem(item, itemData.amount or 1) then
                 ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
                 DeleteObject(plant)
@@ -130,16 +130,12 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
                         it.giveItem(item)
                     end
                 end
-                
+
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             else
                 if itemData.remove then
-                    if not it.removeItem(item, itemData.amount or 1) then
-                        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
-                        DeleteObject(plant)
-                        TriggerEvent('it-drugs:client:syncRestLoop', false)
-                        return
-                    else
+                    if it.removeItem(item, itemData.amount or 1) then
                         table.insert(givenItems, item)
                     end
                 end
@@ -293,9 +289,9 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
     plantData.reqItems = Config.Plants[plantData.seed].reqItems
 
     if plantData.reqItems and plantData.reqItems["harvesting"] ~= nil then
-        for item, itemData in pairs(plantData.reqItems["planting"]) do
+        local givenItems = {}
+        for item, itemData in pairs(plantData.reqItems["harvesting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            local givenItems = {}
             if not it.hasItem(item, itemData.amount or 1) then
                 ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
 
@@ -304,15 +300,12 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
                         it.giveItem(item)
                     end
                 end
+
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             else
                 if itemData.remove then
-                    if not it.removeItem(item, itemData.amount or 1) then
-                        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
-                        TriggerEvent('it-drugs:client:syncRestLoop', false)
-                        return
-                    else
+                    if it.removeItem(item, itemData.amount or 1) then
                         table.insert(givenItems, item)
                     end
                 end
