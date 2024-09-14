@@ -316,11 +316,6 @@ lib.callback.register('it-lib:getItemCount', function(source, item)
     return itemCount
 end)
 
-lib.callback.register('it-lib:server:getItemLabel', function(source, itemName)
-    local itemLabel = CoreObject.GetItemLabel(itemName)
-    return itemLabel
-end)
-
 RegisterNetEvent('it-lib:toggleItem', function(toggle, name, amount, metadata)
     local source = source
     it.toggleItem(source, toggle, name, amount, metadata)
