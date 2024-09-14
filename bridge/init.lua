@@ -79,7 +79,7 @@ local function detectFramwork(framework)
             return qbcore
         end
 
-        local qbox = detectQbox()
+        local qbox = detectQbCore()
         if qbox then
             return qbox
         end
