@@ -35,30 +35,58 @@ if Config.EnableProcessing then
 end
 
 if Config.EnableDrugs then
-    for drug, _ in pairs(Config.Drugs) do
-        it.createUsableItem(drug, function(source, data)
-            local src = source
-            if it.hasItem(src, drug, 1) then
-                local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
-                if Config.Debug then lib.print.info('currentDrug', currentDrug) end
-                if not currentDrug then
 
-                    local isDrugOnCooldown = lib.callback.await('it-drugs:client:isDrugOnCooldown', src, drug)
-                    if isDrugOnCooldown then
-                        ShowNotification(src, _U('NOTIFICATION__DRUG__COOLDOWN'), "info")
-                        return
-                    end
+    if it.inventory ~= "ox" then
+        for drug, _ in pairs(Config.Drugs) do
+            it.createUsableItem(drug, function(source, data)
+                local src = source
+                if it.hasItem(src, drug, 1) then
+                    local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
+                    if Config.Debug then lib.print.info('currentDrug', currentDrug) end
+                    if not currentDrug then
 
-                    local metadata = getMetadata(data)
-                    if it.removeItem(src, drug, 1, metadata) then
-                        TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                        local isDrugOnCooldown = lib.callback.await('it-drugs:client:isDrugOnCooldown', src, drug)
+                        if isDrugOnCooldown then
+                            ShowNotification(src, _U('NOTIFICATION__DRUG__COOLDOWN'), "info")
+                            return
+                        end
+
+                        local metadata = getMetadata(data)
+                        lib.print.info("Metadata", metadata)
+                        if it.removeItem(src, drug, 1, metadata) then
+                            lib.print.info("TriggerClientEvent")
+                            TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                        else
+                            if Config.Debug then lib.print.error('Failed to remove item') end
+                        end
                     else
-                        if Config.Debug then lib.print.error('Failed to remove item') end
+                        ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
                     end
-                else
-                    ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
                 end
-            end
-        end)
+            end)
+        end
+    else
+        for drug, _ in pairs(Config.Drugs) do
+            exports(drug, function(event, item, inventory, slot, data)
+                if event == 'usedItem' then
+                    local src = inventory.id
+                    local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
+                    if Config.Debug then lib.print.info('currentDrug', currentDrug) end
+                    if not currentDrug then
+
+                        local isDrugOnCooldown = lib.callback.await('it-drugs:client:isDrugOnCooldown', src, drug)
+                        if isDrugOnCooldown then
+                            ShowNotification(src, _U('NOTIFICATION__DRUG__COOLDOWN'), "info")
+                            return
+                        end
+
+                        TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                       
+                    else
+                        ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
+                    end
+                end
+            end)
+        end
     end
 end
