@@ -303,10 +303,10 @@ CreateThread(function()
 end)
 
 RemoveSellTarget = function()
-    if Config.Target == 'qb-target' then
+    if targetSystem == 'qb-target' then
         if not exports['qb-target'] then return end
         exports['qb-target']:RemoveGlobalPed({_U('TARGET__SELL__LABEL')})
-    elseif Config.Target == 'ox_target' then
+    elseif targetSystem == 'ox_target' then
         -- Check if ox target is running
         if not exports.ox_target then return end
         exports.ox_target:removeGlobalPed('it-drugs-sell')
@@ -316,8 +316,8 @@ end
 -- Remove all Targets
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    if Config.Target == 'qb-target' then
-        if not exports['qb-target'] then return end
+
+    if targetSystem == 'qb-target' then
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
                 exports['qb-target']:RemoveTargetModel(plant[1])
@@ -328,8 +328,7 @@ AddEventHandler('onResourceStop', function(resource)
                 exports['qb-target']:RemoveTargetModel(v.model)
             end
         end
-    elseif Config.Target == 'ox_target' then
-        if not exports.ox_target then return end
+    elseif targetSystem == 'ox_target' then
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
                 exports.ox_target:removeModel(plant[1], 'it-drugs-check-plant')
