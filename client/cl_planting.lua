@@ -155,7 +155,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     end
 
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
 
     if ShowProgressBar({
@@ -323,10 +323,10 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
     do 
-        Wait(0) 
+        Wait(0)
     end
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
     if ShowProgressBar({
         duration = Config.Plants[plantData.seed].time,
@@ -413,7 +413,7 @@ local giveFertilizer = function(args)
     while not HasModelLoaded(model) do Wait(0) end
     local created_object = CreateObject(model, coords.x, coords.y, coords.z, true, true, true)
     AttachEntityToEntity(created_object, ped, GetPedBoneIndex(ped, 28422), 0.3, 0.1, 0.0, 90.0, 180.0, 0.0, true, true, false, true, 1, true)
-    
+
     if ShowProgressBar({
         duration = Config.Plants[plantData.seed].time,
         label = _U('PROGRESSBAR__FERTILIZE__PLANT'),
@@ -475,7 +475,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         Wait(0)
     end
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
     if ShowProgressBar({
         duration = Config.Plants[type].time,
