@@ -25,9 +25,9 @@ function it.hasItem(source, item, amount, metadata)
     end
 
     if it.inventory == 'codem' then
-        local hasItem = exports['codem-inventory']:HasItem(source, item, amount)
+        local hasItem = exports['codem-inventory']:GetItemsTotalAmount(source, item)
         if hasItem then
-            return hasItem
+            if hasItem >= amount then return true else return false end
         end
     end
 
@@ -146,8 +146,8 @@ function it.removeItem(source, item, amount, metadata)
     end
 
     if it.inventory == 'codem' then
-        local removedItem = exports['codem-inventory']:HasItem(source, item, amount)
-        if removedItem then
+        local removedItem = exports['codem-inventory']:GetItemsTotalAmount(source, item)
+        if removedItem >= amount then
             exports['codem-inventory']:RemoveItem(source, item, amount) -- slot can be added as a third parameter
             return true
         end
