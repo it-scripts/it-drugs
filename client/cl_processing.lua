@@ -74,7 +74,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
     
-    lib.showTextUI(_U('INTERACTION__PLACING__TEXT'), {
+    lib.showTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
         position = "left-center",
         icon = "spoon",
     })
