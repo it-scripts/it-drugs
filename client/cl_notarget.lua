@@ -9,7 +9,7 @@ local restLoop = false
 local function getClosestPlant(coords)
 
     local closestPlant = nil
-    local closestDistance = 1000
+    local closestDistance = 20
 
     for k, v in pairs(plants) do
         local distance = #(coords - v.coords)
@@ -25,7 +25,7 @@ end
 local function getClosestProcessingTable(coords)
 
     local closestTable = nil
-    local closestDistance = 1000
+    local closestDistance = 20
 
     for k, v in pairs(processingTables) do
         local distance = #(coords - v.coords)
@@ -41,7 +41,7 @@ end
 local function getClosestDealer(coords)
 
     local closestDealer = nil
-    local closestDistance = 1000
+    local closestDistance = 20
 
     for k, v in pairs(dealers) do
         local vec3 = vector3(v.position.x, v.position.y, v.position.z)
@@ -106,5 +106,22 @@ CreateThread(function()
             end
         end
         Wait(0)
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(10000)  -- Wait 10 Seconds for refresh Press E and refresh info
+
+        local newPlants = lib.callback.await('it-drugs:server:getPlants', false)
+        if newPlants then
+            plants = newPlants
+        end
+
+        local newProcessingTables = lib.callback.await('it-drugs:server:getTables', false)
+        if newProcessingTables then
+            processingTables = newProcessingTables 
+        end
+            
     end
 end)
