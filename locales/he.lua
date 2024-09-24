@@ -162,6 +162,7 @@ Locales['he'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = '...מעבד',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - למקם עציץ / [G] - ביטול',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - למקם עציץ / [G] - ביטול', -- NEED TRANSLATE
     ['INTERACTION__INTERACT_TEXT'] = '[E] - אינטראקציה',
 
     ['INPUT__AMOUNT__HEADER'] = 'מעבד',
