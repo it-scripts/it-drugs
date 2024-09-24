@@ -168,6 +168,7 @@ Locales['fr'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Traitement...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Placer la plante / [G] - Annuler',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Placer la table / [G] - Annuler',
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagir',
 
     ['INPUT__AMOUNT__HEADER'] = 'Traitement',
