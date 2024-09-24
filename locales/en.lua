@@ -172,6 +172,8 @@ Locales['en'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Processing...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Place Plant / [G] - Cancel',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Place Table / [G] - Cancel',
+	
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interact',
 
     ['INPUT__AMOUNT__HEADER'] = 'Processing',
