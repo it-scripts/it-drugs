@@ -158,7 +158,7 @@ Locales['de'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Verarbeiten...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Pflanze platzieren / [G] - Abbrechen',
-    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Pflanze platzieren / [G] - Abbrechen', -- Need Translate
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Verarbeitungstisch platzieren / [G] - Abbrechen', -- Need Translate
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagieren',
 
     ['INPUT__BUY__HEADER'] = 'Kaufen',
