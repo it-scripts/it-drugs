@@ -147,6 +147,8 @@ Locales['de'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Blip wurde zur Karte hinzugefügt',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Blip wurde von der Karte entfernt',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Um die Pflanze zu zerstören, benötigen Sie ein Feuerzeug', -- NEED TRANSLATE
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Gießen...',
