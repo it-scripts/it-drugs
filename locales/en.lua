@@ -161,6 +161,8 @@ Locales['en'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Added Blip to Map',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Removed Blip from Map',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'You need a lighter to destroy the plant',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Watering...',
