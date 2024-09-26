@@ -457,7 +457,11 @@ RegisterNetEvent('it-drugs:client:useItem', function (args)
 end)
 
 RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
-
+    if not it.hasItem(Config.DestroyItemName, 1) and Config.ItemToDestroyPlant then
+        ShowNotification(nil, _U('NOTIFICATION__NEED_LIGHTER'), "error")
+        return
+    end
+        
     local plantData = args.plantData
     local type = plantData.seed
     local entity = NetworkGetEntityFromNetworkId(plantData.netId)
