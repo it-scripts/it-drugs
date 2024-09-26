@@ -151,6 +151,8 @@ Locales['he'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'נוסף בליפ למפה',
     ['NOTIFICATION__REMOVE__BLIP'] = 'הוסר בליפ מהמפה',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = '', -- NEED TRANSLATE
+
     ['PROGRESSBAR__SPAWN__PLANT'] = '...שותל',
     ['PROGRESSBAR__HARVEST__PLANT'] = '...קוצר',
     ['PROGRESSBAR__SOAK__PLANT'] = '...משקה',
