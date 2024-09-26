@@ -157,6 +157,8 @@ Locales['fr'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Repère ajouté à la carte',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Repère supprimé de la carte',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Il vous faut un briquet pour détruire la plante',
+    
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Plantation...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Récolte...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Arrosage...',
