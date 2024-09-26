@@ -266,7 +266,7 @@ RegisterNetEvent('it-drugs:client:takeDrug', function(drugItem)
         return
     end
 
-    lib.print.info('[takeDrug] | Drug Data:', drugData)
+    if Config.Debug then lib.print.info('[takeDrug] | Drug Data:', drugData) end
     if cooldowns[drugItem] ~= nil then
         local time = GetGameTimer()
         if time > cooldowns[drugItem] then
