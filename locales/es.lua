@@ -147,6 +147,8 @@ Locales['es'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Blip añadido al mapa',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Blip eliminado del mapa',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Necesitas un encendedor para destruir la planta.', -- NEED TRANSLATE
+    
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Plantando...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Cosechando...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Regando...',
