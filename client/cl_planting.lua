@@ -459,6 +459,7 @@ end)
 RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
     if not it.hasItem(Config.DestroyItemName, 1) and Config.ItemToDestroyPlant then
         ShowNotification(nil, _U('NOTIFICATION__NEED_LIGHTER'), "error")
+        TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
         
