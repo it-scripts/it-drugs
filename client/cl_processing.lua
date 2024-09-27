@@ -179,6 +179,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         if not it.hasItem(item, itemAmount * amount) then
             ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             proccessing = false
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
             return
         end
     end
