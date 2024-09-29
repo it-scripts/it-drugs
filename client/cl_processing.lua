@@ -215,6 +215,10 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
     else
+            if recipe.particlefx.status then 
+                TriggerServerEvent("it-drugs:server:syncparticlefx",recipe.processTime * 1000, recipe.particlefx.dict, recipe.particlefx.particle, GetEntityCoords(ped))
+             
+            end
         for i = 1, amount do
             if lib.progressBar({
                 duration = recipe.processTime * 1000,
@@ -289,3 +293,32 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
     end
     TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
+
+
+RegisterNetEvent('it-drugs:client:syncparticlefx', function(time, dict, particle, coord)
+    local playerPed = PlayerPedId() 
+    local playerCoords = GetEntityCoords(playerPed)
+    local targetCoords  = vector3(coord.x, coord.y, coord.z)
+    local distance = #(playerCoords - targetCoords)
+    if distance <= 100 then
+        CreateSmokeEffect(time, dict, particle, coord)
+    end
+end)
+
+function CreateSmokeEffect(time, dict, particle, coord)
+    Citizen.CreateThread(function()
+        RequestNamedPtfxAsset(dict)
+        while not HasNamedPtfxAssetLoaded(dict) do
+            Wait(0)
+        end
+        UseParticleFxAssetNextCall(dict)
+        local smokeFx = StartParticleFxLoopedAtCoord(particle, coord.x, coord.y, coord.z + 1.5, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
+        if smokeFx ~= nil then
+            SetParticleFxLoopedColour(smokeFx, 255.0, 255.0, 153.0) 
+            Wait(time)
+            StopParticleFxLooped(smokeFx, false)
+        else
+        --    print("erreur")
+        end
+    end)
+end
