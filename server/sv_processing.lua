@@ -17,6 +17,7 @@ function Recipe:constructor(id, recipeData)
     self.failChance = recipeData.failChance
     self.processTime = recipeData.processTime
     self.showIngrediants = recipeData.showIngrediants
+    self.particlefx = recipeData.particlefx
     self.animation = recipeData.animation or {dict = 'anim@amb@drug_processors@coke@female_a@idles', name = 'idle_a',}
 end
 
@@ -29,6 +30,7 @@ function Recipe:getData()
         failChance = self.failChance,
         processTime = self.processTime,
         showIngrediants = self.showIngrediants,
+        particlefx = self.particlefx,
         animation = self.animation
     }
 end
@@ -442,4 +444,8 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
     else
         if Config.Debug then lib.print.error("Can not remove item") end
     end
+end)
+
+RegisterNetEvent('it-drugs:server:syncparticlefx', function(time, dict, particle, coord)
+    TriggerClientEvent('it-drugs:client:syncparticlefx',-1, time, dict, particle, coord)
 end)
