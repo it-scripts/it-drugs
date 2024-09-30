@@ -232,7 +232,7 @@ Config.SkillCheck = {
 
 Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
-        model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['joint'] = {
                 label = 'Joint',
@@ -247,15 +247,15 @@ Config.ProcessingTables = { -- Create processing table
                 failChance = 15,
                 showIngrediants = true,
                 animation = {
-                    dict = 'anim@gangops@facility@servers@bodysearch@',
-                    anim = 'player_search',
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
                 }
             },
         }
     },
     
     ['cocaine_processing_table'] = {
-        model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        model = 'freeze_it-scripts_coke_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['cocaine'] = {
                 label = 'Cocaine',
@@ -270,8 +270,8 @@ Config.ProcessingTables = { -- Create processing table
                 failChance = 15,
                 showIngrediants = true,
                 animation = {
-                    dict = 'anim@gangops@facility@servers@bodysearch@',
-                    anim = 'player_search',
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
                 }
             },
         }
