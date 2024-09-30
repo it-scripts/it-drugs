@@ -379,9 +379,11 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
     if not processingTables[args.tableId] then return end
 
     local processingTable = processingTables[args.tableId]
-   
-    if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
-    it.giveItem(source, processingTable.tableType, 1)
+
+    if not args.extra then
+        if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
+        it.giveItem(source, processingTable.tableType, 1)
+    end
 
     MySQL.query('DELETE from drug_processing WHERE id = :id', {
         ['id'] = args.tableId

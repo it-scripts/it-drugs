@@ -647,7 +647,9 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
     local plant = plants[args.plantId]
     if not plant then return end
     
-    if #(GetEntityCoords(GetPlayerPed(source)) - plant.coords) > 10 then return end
+    if not args.extra then
+        if #(GetEntityCoords(GetPlayerPed(source)) - plant.coords) > 10 then return end
+    end
     
     SendToWebhook(source, 'plant', 'destroy', plant:getData())
     if DoesEntityExist(plant.entity) then

@@ -749,7 +749,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 icon = "fire",
                 arrow = true,
                 onSelect = function()
-                    TriggerServerEvent('it-drugs:server:destroyPlant', {entity = plantData.entity, extra='admin'})
+                    TriggerServerEvent('it-drugs:server:destroyPlant', {plantId = plantData.id, extra='admin'})
                     ShowNotification(nil, _U('NOTIFICATION__PLANT__DESTROYED'), 'success')
                 end
             }
@@ -807,7 +807,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 icon = "trash",
                 arrow = true,
                 onSelect = function()
-                    TriggerServerEvent('it-drugs:server:removeTable', {entity = tableData.entity, extra='admin'})
+                    TriggerServerEvent('it-drugs:server:removeTable', {tableId = tableData.id, extra='admin'})
                     ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'success')
                 end,
                 

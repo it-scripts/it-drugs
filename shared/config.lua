@@ -232,6 +232,7 @@ Config.SkillCheck = {
 
 Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
+        label = 'Weed Processing Table', -- Label for the table
         model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['joint'] = {
@@ -255,6 +256,7 @@ Config.ProcessingTables = { -- Create processing table
     },
     
     ['cocaine_processing_table'] = {
+        label = 'Cocaine Processing Table', -- Label for the table
         model = 'freeze_it-scripts_coke_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['cocaine'] = {
