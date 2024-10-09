@@ -18,6 +18,7 @@ function Recipe:constructor(id, recipeData)
     self.processTime = recipeData.processTime
     self.showIngrediants = recipeData.showIngrediants
     self.animation = recipeData.animation or {dict = 'anim@amb@drug_processors@coke@female_a@idles', name = 'idle_a',}
+    self.particlefx = recipeData.particlefx or nil
 end
 
 function Recipe:getData()
@@ -29,7 +30,8 @@ function Recipe:getData()
         failChance = self.failChance,
         processTime = self.processTime,
         showIngrediants = self.showIngrediants,
-        animation = self.animation
+        animation = self.animation,
+        particlefx = self.particlefx
     }
 end
 
@@ -354,16 +356,18 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(data)
     end
 
     for k, v in pairs(recipe.ingrediants) do
-        if not it.removeItem(source, k, v) then
-            ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
-            if #givenItems > 0 then
-                for _, x in pairs(givenItems) do
-                    it.giveItem(source, x.name, x.amount)
+        if v.remove then
+            if not it.removeItem(source, k, v.amount) then
+                ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+                if #givenItems > 0 then
+                    for _, x in pairs(givenItems) do
+                        it.giveItem(source, x.name, x.amount)
+                    end
                 end
+                return
+            else
+                table.insert(givenItems, {name = k, amount = v.amount})
             end
-            return
-        else
-            table.insert(givenItems, {name = k, amount = v})
         end
     end
     SendToWebhook(source, 'table', 'process', processingTable:getData())
@@ -444,4 +448,8 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
     else
         if Config.Debug then lib.print.error("Can not remove item") end
     end
+end)
+
+RegisterNetEvent('it-drugs:server:syncparticlefx', function(status, tableId, netId, particlefx)
+    TriggerClientEvent('it-drugs:client:syncparticlefx',-1, status, tableId, netId, particlefx)
 end)

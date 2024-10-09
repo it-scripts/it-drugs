@@ -238,8 +238,8 @@ Config.ProcessingTables = { -- Create processing table
             ['joint'] = {
                 label = 'Joint',
                 ingrediants = {
-                    ['weed_lemonhaze'] = 3,
-                    ['paper'] = 1
+                    ['weed_lemonhaze'] = {amount = 3, remove = true},
+                    ['paper'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['joint'] = 2
@@ -250,7 +250,14 @@ Config.ProcessingTables = { -- Create processing table
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
-                }
+                },
+                particlefx = {
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                    color = {r = 255, g = 255, b = 153},
+                    offset = {x = 0.0, y = -1.5, z = 1.0},
+                    scale = 0.5,
+                },
             },
         }
     },
@@ -262,8 +269,8 @@ Config.ProcessingTables = { -- Create processing table
             ['cocaine'] = {
                 label = 'Cocaine',
                 ingrediants = {
-                    ['coca'] = 3,
-                    ['nitrous'] = 1
+                    ['coca'] = {amount = 3, remove = true},
+                    ['nitrous'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['cocaine'] = 2
@@ -484,5 +491,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'v1.3.0beta' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = false -- Set to true to enable debug mode
+Config.Debug = true -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

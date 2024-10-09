@@ -3,6 +3,8 @@ if not Config.EnableProcessing then return end
 local tablePlacing = false
 local proccessing = false
 
+local processingFx = {}
+
 local RotationToDirection = function(rot)
     local rotZ = math.rad(rot.z)
     local rotX = math.rad(rot.x)
@@ -31,7 +33,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
     do 
-        Wait(0) 
+        Wait(0)
     end
 
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
@@ -175,8 +177,8 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     end
 
     local amount = tonumber(input[1])
-    for item, itemAmount in pairs(recipe.ingrediants) do
-        if not it.hasItem(item, itemAmount * amount) then
+    for item, itemData in pairs(recipe.ingrediants) do
+        if not it.hasItem(item, itemData.amount * amount) then
             ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
             proccessing = false
             return
@@ -195,6 +197,12 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         Wait(0)
     end
     TaskPlayAnim(ped, recipe.animation.dict, recipe.animation.anim, 8.0, 8.0, -1, 1, 0, false, false, false)
+
+    if recipe.particlefx then
+        if Config.Debug then lib.print.info('Calling ParticleFX Sync [start]') end
+        TriggerServerEvent("it-drugs:server:syncparticlefx", true, tableData.id, tableData.netId, recipe.particlefx)
+    end
+
     if Config.ProcessingSkillCheck then
         for i = 1, amount do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
@@ -239,6 +247,10 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         proccessing = false
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
+    end
+    if recipe.particlefx then
+        if Config.Debug then lib.print.info('Calling ParticleFX Sync [stop]') end
+        TriggerServerEvent("it-drugs:server:syncparticlefx", false, tableData.id, nil, nil)
     end
     TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
@@ -287,4 +299,43 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     end
     TriggerEvent('it-drugs:client:syncRestLoop', false)
+end)
+
+local function CreateSmokeEffect(status, tableId, netId, particleFx, coord)
+
+    if status then
+        local entity = NetworkGetEntityFromNetworkId(netId)
+        RequestNamedPtfxAsset(particleFx.dict)
+        while not HasNamedPtfxAssetLoaded(particleFx.dict) do
+            Wait(0)
+        end
+        UseParticleFxAssetNextCall(particleFx.dict)
+        if Config.Debug then print('Starting ParticleFX') end
+        local entityRotation = GetEntityRotation(entity)
+        processingFx[tableId] = StartParticleFxLoopedOnEntity(particleFx.particle, entity, particleFx.offset.x, particleFx.offset.y, particleFx.offset.z, entityRotation.x, entityRotation.y, entityRotation.z, particleFx.scale, false, false, false)
+        SetParticleFxLoopedColour(processingFx[tableId], particleFx.color.r, particleFx.color.g, particleFx.color.b, 0)
+    else
+        if processingFx[tableId] ~= nil then
+            if Config.Debug then print('Stopping ParticleFX') end
+            StopParticleFxLooped(processingFx[tableId], 0)
+            processingFx[tableId] = nil
+        end
+    end
+end
+
+RegisterNetEvent('it-drugs:client:syncparticlefx', function(status, tableId, netId, particlefx)
+    if status then
+        local playerPed = PlayerPedId()
+        local playerCoords = GetEntityCoords(playerPed)
+
+        local targetEntity = NetworkGetEntityFromNetworkId(netId)
+
+        local targetCoords  = GetEntityCoords(targetEntity)
+        local distance = #(playerCoords - targetCoords)
+        if distance <= 100 then
+            CreateSmokeEffect(status, tableId, netId, particlefx)
+        end
+    else
+        CreateSmokeEffect(status, tableId, netId, particlefx)
+    end
 end)
