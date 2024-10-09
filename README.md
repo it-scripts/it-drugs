@@ -18,12 +18,16 @@ it-drugs is a drug script for FiveM, offering a fully immersive and interactive 
 ### Supported Frameworks
 - `✅` **| [ESX](https://github.com/esx-framework/esx_core)**
 - `✅` **| [QbCore](https://github.com/qbcore-framework/qb-core)**
+- `✅` **| [QBox](https://github.com/qbcore-framework/qb-core)**
+- `🔧` **| [ND_Core](https://github.com/ND-Framework/ND_Core)**
 
 ### Suported Inventorys
 - `✅` **| [esx_inventory](https://github.com/esx-framework/esx_core)**
 - `✅` **| [qb_inventory](https://github.com/qbcore-framework/qb-inventory)**
 - `✅` **| [ox_inventory](https://github.com/overextended/ox_inventory)**
-- `🔧` **| [qs_inventory](https://github.com/overextended/ox_inventory)** *(Nativ qb-core support should work)*
+- `✅` **| [qs_inventory](https://www.quasar-store.com/de/package/6304046?image=0)**
+- `✅` **| [mInventory](https://codem.tebex.io/package/5900973)**
+- `🔧` **| [Origen Inventory](https://www.origennetwork.store/package/5881161)**
 
 `✅` **| Supported** `🔧` **| Pending** `❌` **| Not Supported**
 
@@ -33,7 +37,7 @@ it-drugs is a drug script for FiveM, offering a fully immersive and interactive 
 - `⚙️` **| [ox_target](https://github.com/overextended/ox_target)** *
 - `⚙️` **| [qb-target](https://github.com/qbcore-framework/qb-target)** *
 
-* Please use only one
+* Optional
 
 <div align="center">
 

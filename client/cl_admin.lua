@@ -27,13 +27,13 @@ RegisterNetEvent('it-drugs:client:addAllAdminBlips', function(args)
     if type == 'plants' then
         local allPlants = lib.callback.await('it-drugs:server:getPlants', false)
         for _, data in pairs(allPlants) do
-            AddAdminBlip(data.id, data.coords, Config.Plants[data.type].label, 'plant')
+            AddAdminBlip(data.id, data.coords, Config.Plants[data.seed].label, 'plant')
         end
         ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     elseif type == 'tables' then
         local allTables = lib.callback.await('it-drugs:server:getTables', false)
         for _, data in pairs(allTables) do
-            AddAdminBlip(data.id, data.coords, 'Proccessing Table: '..Config.ProcessingTables[data.type].type, 'processing')
+            AddAdminBlip(data.id, data.coords, 'Proccessing Table: '..Config.ProcessingTables[data.tableType].label, 'processing')
         end
         ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     end
@@ -49,7 +49,7 @@ RegisterNetEvent('it-drugs:client:addAdminBlip', function(args)
         AddAdminBlip(id, coords, Config.Plants[entityType].label, 'plant')
         ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     elseif type == 'table' then
-        AddAdminBlip(id, coords, 'Proccessing Table: '..Config.ProcessingTables[entityType].type, 'processing')
+        AddAdminBlip(id, coords, Config.ProcessingTables[entityType].label, 'processing')
         ShowNotification(nil, _U('NOTIFICATION__ADD__BLIP'), "success")
     end
 end)
@@ -61,14 +61,14 @@ RegisterNetEvent('it-drugs:client:removeAllAdminBlips', function(args)
         local allPlants = lib.callback.await('it-drugs:server:getPlants', false)
         for _, data in pairs(allPlants) do
             RemoveAdminBlip(data.id)
-            ShowNotification(nil, _U('NOTIFICATION__REMOVE__BLIP'), "success")
         end
+        ShowNotification(nil, _U('NOTIFICATION__REMOVE__BLIP'), "success")
     elseif type == 'tables' then
         local allTables = lib.callback.await('it-drugs:server:getTables', false)
         for _, data in pairs(allTables) do
             RemoveAdminBlip(data.id)
-            ShowNotification(nil, _U('NOTIFICATION__REMOVE__BLIP'), "success")
         end
+        ShowNotification(nil, _U('NOTIFICATION__REMOVE__BLIP'), "success")
     end
 end)
 
@@ -84,13 +84,15 @@ RegisterNetEvent('it-drugs:client:generatePlantListMenu', function()
     -- Sort plants by distance To player
     for _, data in pairs(allPlants) do
         local distance = #(currentCoords - data.coords)
+        lib.print.info(data.plantType)
+        lib.print.info(data)
         local temp = {
             id = data.id,
             owner = data.owner,
             coords = data.coords,
-            entity = data.entity,
-            type = data.type,
-            label = Config.Plants[data.type].label,
+            netId = data.netId,
+            type = data.seed,
+            label = Config.Plants[data.seed].label..' ('..data.id..')',
             distance = distance
         }
         table.insert(plantList, temp)
@@ -115,10 +117,10 @@ RegisterNetEvent('it-drugs:client:generateTableListMenu', function()
         local temp = {
             id = data.id,
             coords = data.coords,
-            type = data.type,
-            label = 'Proccessing Table: '..Config.ProcessingTables[data.type].type,
+            type = data.tableType,
+            label = Config.ProcessingTables[data.tableType].label..' ('..data.id..')',
             distance = distance,
-            entity = data.entity
+            netId = data.netId
         }
         table.insert(tableList, temp)
     end

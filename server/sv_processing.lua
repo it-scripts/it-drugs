@@ -19,6 +19,7 @@ function Recipe:constructor(id, recipeData)
     self.showIngrediants = recipeData.showIngrediants
     self.particlefx = recipeData.particlefx
     self.animation = recipeData.animation or {dict = 'anim@amb@drug_processors@coke@female_a@idles', name = 'idle_a',}
+    self.particlefx = recipeData.particlefx or nil
 end
 
 function Recipe:getData()
@@ -30,8 +31,8 @@ function Recipe:getData()
         failChance = self.failChance,
         processTime = self.processTime,
         showIngrediants = self.showIngrediants,
-        particlefx = self.particlefx,
-        animation = self.animation
+        animation = self.animation,
+        particlefx = self.particlefx
     }
 end
 
@@ -356,16 +357,18 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(data)
     end
 
     for k, v in pairs(recipe.ingrediants) do
-        if not it.removeItem(source, k, v) then
-            ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
-            if #givenItems > 0 then
-                for _, x in pairs(givenItems) do
-                    it.giveItem(source, x.name, x.amount)
+        if v.remove then
+            if not it.removeItem(source, k, v.amount) then
+                ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+                if #givenItems > 0 then
+                    for _, x in pairs(givenItems) do
+                        it.giveItem(source, x.name, x.amount)
+                    end
                 end
+                return
+            else
+                table.insert(givenItems, {name = k, amount = v.amount})
             end
-            return
-        else
-            table.insert(givenItems, {name = k, amount = v})
         end
     end
     SendToWebhook(source, 'table', 'process', processingTable:getData())
@@ -381,9 +384,11 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
     if not processingTables[args.tableId] then return end
 
     local processingTable = processingTables[args.tableId]
-   
-    if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
-    it.giveItem(source, processingTable.tableType, 1)
+
+    if not args.extra then
+        if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
+        it.giveItem(source, processingTable.tableType, 1)
+    end
 
     MySQL.query('DELETE from drug_processing WHERE id = :id', {
         ['id'] = args.tableId
@@ -446,6 +451,7 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
     end
 end)
 
-RegisterNetEvent('it-drugs:server:syncparticlefx', function(time, dict, particle, coord)
-    TriggerClientEvent('it-drugs:client:syncparticlefx',-1, time, dict, particle, coord)
+
+RegisterNetEvent('it-drugs:server:syncparticlefx', function(status, tableId, netId, particlefx)
+    TriggerClientEvent('it-drugs:client:syncparticlefx',-1, status, tableId, netId, particlefx)
 end)

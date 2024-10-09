@@ -55,6 +55,18 @@ server_scripts {
     'server/sv_setupdatabase.lua'
 }
 
+files = {
+    'stream/freeze_it-drugs_table.ytyp',
+    'stream/freeze_it-scripts_coke_table.ydr',
+    'stream/freeze_it-scripts_meth_table.ytyp',
+    'stream/freeze_it-scripts_weed_table.ydr',
+}
+
+data_file 'DLC_ITYP_REQUEST' 'stream/freeze_it-drugs_table.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/freeze_it-scripts_coke_table.ydr'
+data_file 'DLC_ITYP_REQUEST' 'stream/freeze_it-scripts_meth_table.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/freeze_it-scripts_weed_table.ydr'
+
 dependencies {
     'ox_lib',
     'oxmysql'

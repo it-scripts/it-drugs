@@ -235,13 +235,14 @@ Config.SkillCheck = {
 
 Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
-        model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        label = 'Weed Processing Table', -- Label for the table
+        model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['joint'] = {
                 label = 'Joint',
                 ingrediants = {
-                    ['weed_lemonhaze'] = 3,
-                    ['paper'] = 1
+                    ['weed_lemonhaze'] = {amount = 3, remove = true},
+                    ['paper'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['joint'] = 2
@@ -255,21 +256,29 @@ Config.ProcessingTables = { -- Create processing table
                     particle = 'scr_ar_trail_smoke_slow',
                 },
                 animation = {
-                    dict = 'anim@gangops@facility@servers@bodysearch@',
-                    anim = 'player_search',
-                }
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
+                },
+                particlefx = {
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                    color = {r = 255, g = 255, b = 153},
+                    offset = {x = 0.0, y = -1.5, z = 1.0},
+                    scale = 0.5,
+                },
             },
         }
     },
     
     ['cocaine_processing_table'] = {
-        model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        label = 'Cocaine Processing Table', -- Label for the table
+        model = 'freeze_it-scripts_coke_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['cocaine'] = {
                 label = 'Cocaine',
                 ingrediants = {
-                    ['coca'] = 3,
-                    ['nitrous'] = 1
+                    ['coca'] = {amount = 3, remove = true},
+                    ['nitrous'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['cocaine'] = 2
@@ -283,8 +292,8 @@ Config.ProcessingTables = { -- Create processing table
                     particle = 'scr_ar_trail_smoke_slow',
                 },
                 animation = {
-                    dict = 'anim@gangops@facility@servers@bodysearch@',
-                    anim = 'player_search',
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
                 }
             },
         }
@@ -495,5 +504,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'v1.3.0beta' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = false -- Set to true to enable debug mode
+Config.Debug = true -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

@@ -60,12 +60,12 @@ RegisterNetEvent('it-drugs:client:syncRestLoop', function(status)
 end)
 
 RegisterNetEvent('it-drugs:client:syncPlants', function(plantList)
-    lib.print.info('Syncing plants', plantList)
+    if Config.Debug then lib.print.info('Syncing plants', plantList) end
     plants = plantList
 end)
 
 RegisterNetEvent('it-drugs:client:syncTables', function(tableList)
-    lib.print.info('Syncing tables', tableList)
+    if Config.Debug then lib.print.info('Syncing tables', tableList) end
     processingTables = tableList
 end)
 
