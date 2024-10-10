@@ -366,6 +366,7 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
     end
     if #options == 0 then
         ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
+        TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
 
