@@ -250,11 +250,6 @@ Config.ProcessingTables = { -- Create processing table
                 processTime = 5,
                 failChance = 15,
                 showIngrediants = true,
-                particlefx = {
-                    status = true,
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                },
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
@@ -286,11 +281,6 @@ Config.ProcessingTables = { -- Create processing table
                 processTime = 10,
                 failChance = 15,
                 showIngrediants = true,
-                particlefx = {
-                    status = true,
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                },
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
