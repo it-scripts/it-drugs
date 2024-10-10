@@ -17,6 +17,7 @@ function Recipe:constructor(id, recipeData)
     self.failChance = recipeData.failChance
     self.processTime = recipeData.processTime
     self.showIngrediants = recipeData.showIngrediants
+    self.particlefx = recipeData.particlefx
     self.animation = recipeData.animation or {dict = 'anim@amb@drug_processors@coke@female_a@idles', name = 'idle_a',}
     self.particlefx = recipeData.particlefx or nil
 end
@@ -449,6 +450,7 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
         if Config.Debug then lib.print.error("Can not remove item") end
     end
 end)
+
 
 RegisterNetEvent('it-drugs:server:syncparticlefx', function(status, tableId, netId, particlefx)
     TriggerClientEvent('it-drugs:client:syncparticlefx',-1, status, tableId, netId, particlefx)

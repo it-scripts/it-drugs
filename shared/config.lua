@@ -126,6 +126,9 @@ Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
 Config.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
+Config.ItemToDestroyPlant = false -- true to need an item to destroy a plant
+Config.DestroyItemName = "lighter"
+
 
 Config.Items = {
     ['watering_can'] = {
@@ -247,6 +250,11 @@ Config.ProcessingTables = { -- Create processing table
                 processTime = 5,
                 failChance = 15,
                 showIngrediants = true,
+                particlefx = {
+                    status = true,
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                },
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
@@ -278,6 +286,11 @@ Config.ProcessingTables = { -- Create processing table
                 processTime = 10,
                 failChance = 15,
                 showIngrediants = true,
+                particlefx = {
+                    status = true,
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                },
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',

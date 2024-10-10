@@ -147,6 +147,8 @@ Locales['de'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Blip wurde zur Karte hinzugefügt',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Blip wurde von der Karte entfernt',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Um die Pflanze zu zerstören, benötigen Sie ein Feuerzeug', -- NEED TRANSLATE
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanzen...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernten...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Gießen...',
@@ -158,6 +160,7 @@ Locales['de'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Verarbeiten...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Pflanze platzieren / [G] - Abbrechen',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Verarbeitungstisch platzieren / [G] - Abbrechen', -- Need Translate
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagieren',
 
     ['INPUT__BUY__HEADER'] = 'Kaufen',
