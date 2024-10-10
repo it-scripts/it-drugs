@@ -223,10 +223,6 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
     else
-            if recipe.particlefx.status then 
-                TriggerServerEvent("it-drugs:server:syncparticlefx",recipe.processTime * 1000, recipe.particlefx.dict, recipe.particlefx.particle, GetEntityCoords(ped))
-             
-            end
         for i = 1, amount do
             if lib.progressBar({
                 duration = recipe.processTime * 1000,
