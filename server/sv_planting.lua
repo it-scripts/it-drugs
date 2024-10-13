@@ -148,6 +148,12 @@ function Plant:updateHealth(health)
 
     -- Update the plant health in the plants table
     plants[self.id].health = health
+
+    -- Send data to database
+    MySQL.update('UPDATE drug_plants SET health = (:health) WHERE id = (:id)', {
+        ['health'] = health,
+        ['id'] = self.id,
+    })
 end
 
 --- Method to get the plant data
@@ -188,7 +194,7 @@ function Plant:calcHealth()
     -- If the plant has no fertilizer and water, decrease the health
     if fertilizer_amount == 0 and water_amount == 0 then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-    elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
+    elseif fertilizer_amount < Config.FertilizerThreshold and water_amount < Config.WaterThreshold then
         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
