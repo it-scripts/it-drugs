@@ -151,6 +151,8 @@ Locales['he'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'נוסף בליפ למפה',
     ['NOTIFICATION__REMOVE__BLIP'] = 'הוסר בליפ מהמפה',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = '', -- NEED TRANSLATE
+
     ['PROGRESSBAR__SPAWN__PLANT'] = '...שותל',
     ['PROGRESSBAR__HARVEST__PLANT'] = '...קוצר',
     ['PROGRESSBAR__SOAK__PLANT'] = '...משקה',
@@ -162,6 +164,7 @@ Locales['he'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = '...מעבד',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - למקם עציץ / [G] - ביטול',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - למקם עציץ / [G] - ביטול', -- NEED TRANSLATE
     ['INTERACTION__INTERACT_TEXT'] = '[E] - אינטראקציה',
 
     ['INPUT__AMOUNT__HEADER'] = 'מעבד',

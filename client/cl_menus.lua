@@ -366,6 +366,7 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
     end
     if #options == 0 then
         ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
+        TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
 
@@ -447,7 +448,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
             -- Menu only shows the amount not the name of the item
             table.insert(options, {
                 title = _U('MENU__UNKNOWN__INGREDIANT'),
-                description = _U('MENU__INGREDIANT__DESC'):format(v),
+                description = _U('MENU__INGREDIANT__DESC'):format(v.amount),
                 icon = "flask",
             })
         end
@@ -455,7 +456,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
                 title = it.getItemLabel(k),
-                description = _U('MENU__INGREDIANT__DESC'):format(v), --:replace("{amount}", v),
+                description = _U('MENU__INGREDIANT__DESC'):format(v.amount), --:replace("{amount}", v),
                 icon = "flask",
             })
         end

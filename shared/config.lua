@@ -126,6 +126,9 @@ Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
 Config.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
+Config.ItemToDestroyPlant = false -- true to need an item to destroy a plant
+Config.DestroyItemName = "lighter"
+
 
 Config.Items = {
     ['watering_can'] = {

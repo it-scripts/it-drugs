@@ -450,6 +450,7 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
     end
 end)
 
+
 RegisterNetEvent('it-drugs:server:syncparticlefx', function(status, tableId, netId, particlefx)
     TriggerClientEvent('it-drugs:client:syncparticlefx',-1, status, tableId, netId, particlefx)
 end)

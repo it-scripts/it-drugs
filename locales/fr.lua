@@ -157,6 +157,8 @@ Locales['fr'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Repère ajouté à la carte',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Repère supprimé de la carte',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Il vous faut un briquet pour détruire la plante',
+    
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Plantation...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Récolte...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Arrosage...',
@@ -168,6 +170,7 @@ Locales['fr'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Traitement...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Placer la plante / [G] - Annuler',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Placer la table / [G] - Annuler',
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagir',
 
     ['INPUT__AMOUNT__HEADER'] = 'Traitement',
