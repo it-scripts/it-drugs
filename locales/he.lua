@@ -44,12 +44,12 @@ Locales['he'] = {
 
     ['MENU__DEALER__BUY'] = 'לקנות', -- Please edit
     ['MENU__DEALER__BUY__DESC'] = 'לקנות מוצרים מהמוכר', -- Please edit
-    ['MENU__DEALER_BUY_ITEM__DESC'] = 'קנה %s ב$g₪ לאחד', -- Please edit קנה %s ב$g₪ לאחד
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'קנה %s ב%g₪ לאחד', -- Please edit קנה %s ב$g₪ לאחד
 
 
     ['MENU__DEALER_SELL'] = 'למכור', -- Please edit
     ['MENU__DEALER__SELL_DESC'] = 'מכור מוצרים למוכר', -- Please edit
-    ['MENU__DEALER_SELL_ITEM__DESC'] = 'מכר %s ב$g₪ לאחד', -- Please edit
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'מכר %s ב%g₪ לאחד', -- Please edit
 
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
