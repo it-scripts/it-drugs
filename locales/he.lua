@@ -44,12 +44,12 @@ Locales['he'] = {
 
     ['MENU__DEALER__BUY'] = 'לקנות', -- Please edit
     ['MENU__DEALER__BUY__DESC'] = 'לקנות מוצרים מהמוכר', -- Please edit
-    ['MENU__DEALER_BUY_ITEM__DESC'] = 'קנה %s ב$g₪ לאחד', -- Please edit קנה %s ב$g₪ לאחד
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'קנה %s ב%g₪ לאחד', -- Please edit קנה %s ב$g₪ לאחד
 
 
     ['MENU__DEALER_SELL'] = 'למכור', -- Please edit
     ['MENU__DEALER__SELL_DESC'] = 'מכור מוצרים למוכר', -- Please edit
-    ['MENU__DEALER_SELL_ITEM__DESC'] = 'מכר %s ב$g₪ לאחד', -- Please edit
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'מכר %s ב%g₪ לאחד', -- Please edit
 
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
@@ -151,7 +151,7 @@ Locales['he'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'נוסף בליפ למפה',
     ['NOTIFICATION__REMOVE__BLIP'] = 'הוסר בליפ מהמפה',
 
-    ['NOTIFICATION__NEED_LIGHTER'] = '', -- NEED TRANSLATE
+    ['NOTIFICATION__NEED_LIGHTER'] = 'אתה צריך מצית כדי לשרוף את הצמח', 
 
     ['PROGRESSBAR__SPAWN__PLANT'] = '...שותל',
     ['PROGRESSBAR__HARVEST__PLANT'] = '...קוצר',
@@ -164,7 +164,7 @@ Locales['he'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = '...מעבד',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - למקם עציץ / [G] - ביטול',
-    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - למקם עציץ / [G] - ביטול', -- NEED TRANSLATE
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - למקם שולחן / [G] - ביטול', -- NEED TRANSLATE
     ['INTERACTION__INTERACT_TEXT'] = '[E] - אינטראקציה',
 
     ['INPUT__AMOUNT__HEADER'] = 'מעבד',
