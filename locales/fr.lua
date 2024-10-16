@@ -129,6 +129,7 @@ Locales['fr'] = {
     ['NOTIFICATION__PROCESS__FAIL'] = 'Vous n\'avez pas réussi à traiter la drogue',
 
     ['NOTIFICATION__CALLING__COPS'] = 'L\'acheteur appelle la police !',
+    ['NOTIFICATION__REFUSE__SALE'] = 'L\'acheteur ne veux pas de drogue !',
     ['NOTIFICATION__MAX__PLANTS'] = 'Veuillez vous occuper de vos plantes actuelles d\'abord',
     ['NOTIFICATION__NOT__INTERESTED'] = 'L\'acheteur n\'est pas intéressé à acheter maintenant !',
     ['NOTIFICATION__ALLREADY__SPOKE'] = 'Vous avez déjà parlé avec cette personne',

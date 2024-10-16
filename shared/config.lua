@@ -359,6 +359,7 @@ Config.SellSettings = {
     ['onlyAvailableItems'] = true, -- Only offers with drugs the player has in his inventory
     ['sellChance'] = 70, -- Chance to sell drug (in %)
     ['stealChance'] = 20, -- Chance that the ped dont give you money (in %)
+    ['copsChance'] = 10, -- Chance that the ped don't want to buy drugs
     ['sellAmount'] = { -- Amount of drugs you can sell
         min = 1,
         max = 6,

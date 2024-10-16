@@ -93,18 +93,25 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 
 	-- seed math random
 	math.randomseed(GetGameTimer())
-	local sellChance = math.random(0, 100)
-
-	if sellChance > Config.SellSettings['sellChance'] then
-		ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'error')
-		TaskUseMobilePhoneTimed(entity, 8000)
-		SetPedAsNoLongerNeeded(entity)
-		ClearPedTasks(PlayerPedId())
-		AddSoldPed(entity)
-
-		local coords = GetEntityCoords(entity)
-		SendPoliceAlert(coords)
-		return
+	if math.random(0, 100) <= Config.SellSettings['copsChance'] then
+	    ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'error')
+	    TaskUseMobilePhoneTimed(entity, 8000)
+	    SetPedAsNoLongerNeeded(entity)
+	    ClearPedTasks(PlayerPedId())
+	    AddSoldPed(entity)
+	
+	    local coords = GetEntityCoords(entity)
+	    SendPoliceAlert(coords)
+	    return
+	end
+	
+	if math.random(0, 100) <= Config.SellSettings['sellChance'] then
+	    ShowNotification(nil, _U('NOTIFICATION__REFUSE__SALE'), 'error')
+	    SetPedAsNoLongerNeeded(entity)
+	    ClearPedTasks(PlayerPedId())
+	    AddSoldPed(entity)
+	
+	    return
 	end
 
 	local zoneConfig = nil
