@@ -350,7 +350,7 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(data)
     if failChance <= recipe.failChance then
         ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'error')
         for k,v in pairs(recipe.ingrediants) do
-            it.removeItem(source, k, v)
+            it.removeItem(source, k, v.amount)
         end
         return
     end
