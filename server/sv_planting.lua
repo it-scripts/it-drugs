@@ -192,19 +192,13 @@ function Plant:calcHealth()
     local water_amount = self.water
 
     -- If the plant has no fertilizer and water, decrease the health
-    if fertilizer_amount == 0 and water_amount == 0 then
-        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-    elseif fertilizer_amount < Config.FertilizerThreshold and water_amount < Config.WaterThreshold then
-        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-    end
-
-    -- If the plant has no fertilizer or water, decrease the health
     if fertilizer_amount == 0 or water_amount == 0 then
-        health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+    health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
-         health -= math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+        health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
 
+    self.health = health
     -- Return the health value with a minimum of 0
     return math.max(health, 0.0)
 end
@@ -411,6 +405,7 @@ updatePlantNeeds = function ()
         local elapsed = os.difftime(time, planted)
         -- if elapsed is < 1 minute, skip this plant
         if elapsed >= 60 then
+            if Config.Debug then lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'is ready to be updated') end
             if fertilizer - Config.FertilizerDecay >= 0 then
                 plant:updateFertilizer(it.round(fertilizer - Config.FertilizerDecay, 2))
             else
