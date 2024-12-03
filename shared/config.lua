@@ -32,7 +32,7 @@ Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target'
     Feel free to share them with us so we can add them to the script for everyone to use.
 ]]
 
-Config.Language = 'en' -- Choose your language ('en', 'es', 'de')
+Config.Language = 'en' -- Choose your language from the locales folder
 
 
 --[[
