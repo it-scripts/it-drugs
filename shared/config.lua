@@ -155,15 +155,30 @@ Config.Items = {
 
 Config.PlantTypes = {
     -- small is growth 0-30%, medium is 30-80%, large is 80-100%
-    ["plant1"] = {
+    ["plantLemon"] = {
+        [1] = {"an_weed_yellow_01_small_01b", -0.5}, -- Set to -0.5 to make the plant grow in the ground
+        [2] = {"an_weed_yellow_med_01b", -0.5},
+        [3] = {"an_weed_yellow_lrg_01b", -0.5},
+    },
+    ["plantOg"] = {
         [1] = {"bkr_prop_weed_01_small_01a", -0.5}, -- Set to -0.5 to make the plant grow in the ground
         [2] = {"bkr_prop_weed_med_01a", -0.5},
         [3] = {"bkr_prop_weed_lrg_01a", -0.5},
     },
-    ["plant2"] = {
-        [1] = {"bkr_prop_weed_01_small_01b", -0.5},
-        [2] = {"bkr_prop_weed_med_01b",-0.5},
-        [3] = {"bkr_prop_weed_lrg_01b", -0.5},
+    ["plantPurple"] = {
+        [1] = {"an_weed_purple_01_small_01b", -0.5},
+        [2] = {"an_weed_purple_med_01b",-0.5},
+        [3] = {"an_weed_purple_lrg_01b", -0.5},
+    },
+    ["plantWhite"] = {
+        [1] = {"an_weed_white_01_small_01b", -0.5},
+        [2] = {"an_weed_white_med_01b",-0.5},
+        [3] = {"an_weed_white_lrg_01b", -0.5},
+    },
+    ["plantBlue"] = {
+        [1] = {"an_weed_blue_01_small_01b", -0.5},
+        [2] = {"an_weed_blue_med_01b",-0.5},
+        [3] = {"an_weed_blue_lrg_01b", -0.5},
     },
     ["small_plant"] = {
         [1] = {"h4_prop_bush_cocaplant_01", -1.0},
@@ -176,12 +191,80 @@ Config.Plants = { -- Create seeds for drugs
 
     ['weed_lemonhaze_seed'] = {
         label = 'Lemon Haze', -- Label for the plant
-        plantType = 'plant1', -- Choose plant types from (plant1, plant2, small_plant)
+        plantType = 'plantLemon', -- Choose plant types from (plant1, plant2, small_plant)
         growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
             ['weed_lemonhaze'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_og_seed'] = {
+        label = 'Og Kush', -- Label for the plant
+        plantType = 'plantOg', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_Og'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_purple_haze_seed'] = {
+        label = 'Purple Haze', -- Label for the plant
+        plantType = 'plantPurple', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_purple_haze'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_white_widow_seed'] = {
+        label = 'White Widow', -- Label for the plant
+        plantType = 'plantWhite', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_white_widow'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_blueberry_seed'] = {
+        label = 'Blueberry', -- Label for the plant
+        plantType = 'plantBlue', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_blueberry'] = {min = 1, max = 4},  
             --['other_item'] = {min = 1, max = 2}
         },
         seed = {
@@ -238,8 +321,8 @@ Config.ProcessingTables = { -- Create processing table
         label = 'Weed Processing Table', -- Label for the table
         model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
-            ['joint'] = {
-                label = 'Joint',
+            ['joint Lemon haze'] = {
+                label = 'Joint lemon haze',
                 ingrediants = {
                     ['weed_lemonhaze'] = {amount = 3, remove = true},
                     ['paper'] = {amount = 1, remove = true}
@@ -247,7 +330,31 @@ Config.ProcessingTables = { -- Create processing table
                 outputs = {
                     ['joint'] = 2
                 },
-                processTime = 5,
+                processTime = 15,
+                failChance = 15,
+                showIngrediants = true,
+                animation = {
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
+                },
+                particlefx = {
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                    color = {r = 255, g = 255, b = 153},
+                    offset = {x = 0.0, y = -1.5, z = 1.0},
+                    scale = 0.5,
+                },
+            },
+            ['joint Og'] = {
+                label = 'Joint og kush',
+                ingrediants = {
+                    ['weed_og'] = {amount = 3, remove = true},
+                    ['paper'] = {amount = 1, remove = true}
+                },
+                outputs = {
+                    ['joint'] = 2
+                },
+                processTime = 15,
                 failChance = 15,
                 showIngrediants = true,
                 animation = {

@@ -76,6 +76,110 @@ weed_lemonhaze = {
     description = 'Weed Lemonhaze'
 },
 
+weed_og_seed = {
+    name = 'weed_og_seed',
+    label = 'Weed Og Seed',
+    weight = 20,
+    type = 'item', 		
+    image = 'weed_og_seed.png', 		
+    unique = false, 	
+    useable = true, 	
+    shouldClose = true,	    
+    combinable = nil,   
+    description = 'Weed Og Seed'
+},
+
+weed_og = {
+    name = 'weed_og',
+    label = 'weed Og',
+    weight = 20,
+    type = 'item',
+    image = 'weed_og.png',
+    unique = false,
+    useable = false,
+    shouldClose = false,
+    combinable = nil,
+    description = 'Weed Og'
+},
+
+weed_purple_haze_seed = {
+    name = 'weed_purple_haze_seed',
+    label = 'Weed Purple Haze Seed',
+    weight = 20,
+    type = 'item', 		
+    image = 'weed_purple_haze_seed.png', 		
+    unique = false, 	
+    useable = true, 	
+    shouldClose = true,	    
+    combinable = nil,   
+    description = 'Weed Purple Haze Seed'
+},
+
+weed_purple_haze = {
+    name = 'weed_purple_haze',
+    label = 'weed Purple Haze',
+    weight = 20,
+    type = 'item',
+    image = 'weed_purple_haze.png',
+    unique = false,
+    useable = false,
+    shouldClose = false,
+    combinable = nil,
+    description = 'Weed Purple Haze'
+},
+
+weed_white_widow_seed = {
+    name = 'weed_white_widow_seed',
+    label = 'Weed White Widow Seed',
+    weight = 20,
+    type = 'item', 		
+    image = 'weed_white_widow_seed.png', 		
+    unique = false, 	
+    useable = true, 	
+    shouldClose = true,	    
+    combinable = nil,   
+    description = 'Weed White Widow Seed'
+},
+
+weed_white_widow = {
+    name = 'weed_white_widow',
+    label = 'weed White Widow',
+    weight = 20,
+    type = 'item',
+    image = 'weed_white_widow.png',
+    unique = false,
+    useable = false,
+    shouldClose = false,
+    combinable = nil,
+    description = 'Weed white Widow'
+},
+
+weed_blueberry_seed = {
+    name = 'weed_blueberry_seed',
+    label = 'Weed Blueberry Seed',
+    weight = 20,
+    type = 'item', 		
+    image = 'weed_blueberry_seed.png', 		
+    unique = false, 	
+    useable = true, 	
+    shouldClose = true,	    
+    combinable = nil,   
+    description = 'Weed Blueberry Seed'
+},
+
+weed_blueberry = {
+    name = 'weed_blueberry',
+    label = 'weed Blueberry',
+    weight = 20,
+    type = 'item',
+    image = 'weed_blueberry.png',
+    unique = false,
+    useable = false,
+    shouldClose = false,
+    combinable = nil,
+    description = 'Weed Blueberry'
+},
+
 coca_seed = {
     name = 'coca_seed',
     label = 'coca seed',
