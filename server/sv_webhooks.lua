@@ -37,7 +37,6 @@ local messagesToSend = {
 }
 
 local function buildPlaceHolderEmbed(type, messageData)
-    lib.print.info('[buildPlaceHolderEmbed]', type, messageData)
     local embed = {
         ["color"] = 4374938,
         ["author"] = {
@@ -100,7 +99,6 @@ local function buildPlaceHolderEmbed(type, messageData)
             ["icon_url"] = webhookSettings['avatar'],
         }
     elseif type == 'message' then
-        lib.print.info('messageData', messageData)
         embed["title"] = "Script Message"
         embed["description"] = messageData.description
         embed["footer"] = {

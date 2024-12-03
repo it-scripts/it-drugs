@@ -76,13 +76,13 @@ lib.callback.register('it-drugs:server:getDealers', function()
 end)
 
 lib.callback.register('it-drugs:server:getDealerPosition', function(_, dealerID)
-    lib.print.info("Getting position for dealer ID", dealerID)
+    if Config.Debug then lib.print.info("Getting position for dealer ID", dealerID) end
     if not dealers[dealerID] then
         if Config.Debug then lib.print.info("No Dealer Found") end
         return "No Dealer Found"
     end
 
-    lib.print.info("Dealer Position", dealers[dealerID]:getPosition())
+    if Config.Debug then lib.print.info("Dealer Position", dealers[dealerID]:getPosition()) end
     return dealers[dealerID]:getPosition()
 end)
 

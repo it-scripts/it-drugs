@@ -84,8 +84,6 @@ RegisterNetEvent('it-drugs:client:generatePlantListMenu', function()
     -- Sort plants by distance To player
     for _, data in pairs(allPlants) do
         local distance = #(currentCoords - data.coords)
-        lib.print.info(data.plantType)
-        lib.print.info(data)
         local temp = {
             id = data.id,
             owner = data.owner,

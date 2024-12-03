@@ -201,7 +201,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
     -- Get the player's owned plants
     local ownedPlants = lib.callback.await('it-drugs:server:getPlantByOwner', false)
 
-    lib.print.info('Owned Plants: ', ownedPlants) -- DEBUG
+    if Config.Debug then lib.print.info('Owned Plants: ', ownedPlants) end-- DEBUG
 
     if ownedPlants ~= nil then
         if #ownedPlants >= Config.PlayerPlantLimit then

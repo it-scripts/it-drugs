@@ -52,9 +52,7 @@ if Config.EnableDrugs then
                         end
 
                         local metadata = getMetadata(data)
-                        lib.print.info("Metadata", metadata)
                         if it.removeItem(src, drug, 1, metadata) then
-                            lib.print.info("TriggerClientEvent")
                             TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
                         else
                             if Config.Debug then lib.print.error('Failed to remove item') end

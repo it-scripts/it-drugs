@@ -31,7 +31,7 @@ if not Config.SellEverywhere['enabled'] then
 				if Config.Debug then lib.print.info("Inside Zone ["..k.."]") end
 			end
 		})
-		lib.print.info('Zone Created: '..k)
+		if Config.Debug then lib.print.info('Zone Created: '..k) end
 	end
 end
 
@@ -146,10 +146,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 			return
 		end
 	end
-
-	lib.print.info('Player Items: '..playerItems)
-	lib.print.info('sellAmount: '..sellAmount)
-
+	
 	if playerItems < sellAmount then
 		sellAmount = playerItems
 	end

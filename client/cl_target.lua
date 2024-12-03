@@ -253,7 +253,7 @@ CreateThread(function()
     end
 
     if Config.Target == 'autodetect' then
-        lib.print.info('[targetSystem] Autodetecting target system...')
+        if Config.Debug then lib.print.info('[targetSystem] Autodetecting target system...') end
         if detectQbTarget() then
             targetSystem = 'qb-target'
         elseif detectOxTarget() then
