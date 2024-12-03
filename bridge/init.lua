@@ -265,7 +265,7 @@ if Config.Framework == 'autodetect' then
     if not CoreObject then
         lib.print.error('['..it.name..'] No supported framework detected! Did you rename your core resource?')
     else
-        lib.print.info('['..it.name..'] Detected framework: ' .. it.core)
+        if Config.Debug then lib.print.info('['..it.name..'] Detected framework: ' .. it.core) end
     end
 else
     local framework = Config.Framework
@@ -273,7 +273,7 @@ else
     if not CoreObject then
         lib.print.error('['..it.name..'] Cannot find the resource for the selcted framework: ', framework)
     else
-        lib.print.info('['..it.name..'] Detected framework: ', it.core)
+        if Config.Debug then lib.print.info('['..it.name..'] Detected framework: ', it.core) end
     end
 end
 
@@ -282,7 +282,7 @@ if Config.Inventory == 'autodetect' then
     if not inventory then
         lib.print.error('['..it.name..'] No supported inventory detected! Did you rename your inventory resource?')
     else
-        lib.print.info('['..it.name..'] Detected inventory: ' .. it.inventory)
+        if Config.Debug then lib.print.info('['..it.name..'] Detected inventory: ' .. it.inventory) end
     end
 else
     local inventory = Config.Inventory
@@ -290,7 +290,7 @@ else
     if not result then
         lib.print.info('['..it.name..'] Cannot find the resource for the selected inventory: ', inventory)
     else
-        lib.print.info('['..it.name..'] Detected inventory: ', it.inventory)
+        if Config.Debug then lib.print.info('['..it.name..'] Detected inventory: ', it.inventory) end
     end
 end
 
