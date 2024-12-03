@@ -41,6 +41,7 @@ local function createPlantTargets()
     elseif targetSystem == 'ox_target' then
         for k, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
+                exports.ox_target:removeModel(plant[1], 'it-drugs-check-plant')
                 exports.ox_target:addModel(plant[1], {
                     {
                         label = _U('TARGET__PLANT__LABEL'),
@@ -318,7 +319,7 @@ AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
 
     if targetSystem == 'qb-target' then
-        for k, v in pairs(Config.PlantTypes) do
+        for _, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
                 exports['qb-target']:RemoveTargetModel(plant[1])
             end
@@ -329,14 +330,18 @@ AddEventHandler('onResourceStop', function(resource)
             end
         end
     elseif targetSystem == 'ox_target' then
-        for k, v in pairs(Config.PlantTypes) do
+        for _, v in pairs(Config.PlantTypes) do
             for _, plant in pairs(v) do
+                if Config.Debug then lib.print.info('Removing plant target: ', plant[1]) end
                 exports.ox_target:removeModel(plant[1], 'it-drugs-check-plant')
             end
         end
-        for k, v in pairs(Config.ProcessingTables) do
-            if v.model ~= nil then
-                exports.ox_target:removeModel(v.model, 'it-drugs-use-table')
+
+        if Config.EnableProcessing then
+            for _, v in pairs(Config.ProcessingTables) do
+                if v.model ~= nil then
+                    exports.ox_target:removeModel(v.model, 'it-drugs-use-table')
+                end
             end
         end
     end
