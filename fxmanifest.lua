@@ -124,4 +124,3 @@ dependencies {
 }
 
 lua54 'yes'
-usefxv2oal 'yes'
