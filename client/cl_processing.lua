@@ -96,7 +96,6 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
     while not placed do
         Wait(0)
         hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-
         if hit == 1 then
             SetEntityCoords(table, dest.x, dest.y, dest.z)
 
@@ -133,9 +132,9 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
                 return
             end
         else
-
             coords = GetEntityCoords(ped)
             local heading = GetEntityHeading(ped)
+            rotation = heading -- Update the rotation to the player heading when not hitting anything
             local forardVector = GetEntityForwardVector(ped)
             _, groundZ = GetGroundZFor_3dCoord(coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), coords.z + (forardVector.z * .5), true)
 
@@ -302,18 +301,50 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
     TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
-local function CreateSmokeEffect(status, tableId, netId, particleFx, coord)
+local getTableCenter = function(tableEntity)
+    -- Get the table's position
+    local tablePos = GetEntityCoords(tableEntity)
+    
+    -- Get the table's dimensions
+    local min, max = GetModelDimensions(GetEntityModel(tableEntity))
+    
+    -- Calculate the center of the table
+    local centerX = (min.x + max.x) / 2
+    local centerY = (min.y + max.y) / 2
+    local centerZ = (min.z + max.z) / 2
+    
+    -- Calculate the world coordinates of the center
+    local centerPos = vector3(tablePos.x + centerX, tablePos.y + centerY, tablePos.z + centerZ)
+    
+    -- Get the table's rotation
+    local tableRot = GetEntityRotation(tableEntity)
+    
+    return centerPos, tableRot
+end
 
+local function CreateSmokeEffect(status, tableId, netId, particleFx)
     if status then
         local entity = NetworkGetEntityFromNetworkId(netId)
+        
+        local entityCenterCoords, entityRotation = getTableCenter(entity)
+
         RequestNamedPtfxAsset(particleFx.dict)
         while not HasNamedPtfxAssetLoaded(particleFx.dict) do
             Wait(0)
         end
         UseParticleFxAssetNextCall(particleFx.dict)
-        if Config.Debug then print('Starting ParticleFX') end
-        local entityRotation = GetEntityRotation(entity)
-        processingFx[tableId] = StartParticleFxLoopedOnEntity(particleFx.particle, entity, particleFx.offset.x, particleFx.offset.y, particleFx.offset.z, entityRotation.x, entityRotation.y, entityRotation.z, particleFx.scale, false, false, false)
+   
+        local offsetX = 0.0
+        local offsetY = -0.5
+
+        -- Adjust the offset based on the table's rotation
+        if math.abs(entityRotation.z) > 45 and math.abs(entityRotation.z) < 135 then
+            offsetX = -0.5
+            offsetY = 0.0
+        end
+
+        processingFx[tableId] = StartParticleFxLoopedAtCoord(particleFx.particle, entityCenterCoords.x + offsetX, entityCenterCoords.y + offsetY, entityCenterCoords.z, entityRotation.x, entityRotation.y, entityRotation.z, particleFx.scale, false, false, false, 0)
+
         SetParticleFxLoopedColour(processingFx[tableId], particleFx.color.r, particleFx.color.g, particleFx.color.b, 0)
     else
         if processingFx[tableId] ~= nil then
