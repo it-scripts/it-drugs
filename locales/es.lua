@@ -101,6 +101,8 @@ Locales['es'] = {
     ['MENU__TABLE__DESTROY__DESC'] = 'Destruir esta mesa',
 
     ['NOTIFICATION__NO__MONEY'] = 'No tienes suficiente dinero.',
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Has vendido con éxito %gx %s por $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Has comprado %gx %s por $%g',
     ['NOTIFICATION__BUY__SUCCESS'] = 'Has comprado con éxito algunos %s',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'No puedes hacer esto en un vehículo.',
@@ -145,6 +147,8 @@ Locales['es'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Blip añadido al mapa',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Blip eliminado del mapa',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Necesitas un encendedor para destruir la planta.', -- NEED TRANSLATE
+    
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Plantando...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Cosechando...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Regando...',

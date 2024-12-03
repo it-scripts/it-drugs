@@ -8,55 +8,38 @@ Locales = Locales or {}
 -- │| |_| |  __/ | | |  __/ | | (_| | |│
 -- │ \____|\___|_| |_|\___|_|  \__,_|_|│
 -- └───────────────────────────────────┘
--- All general settings like language or webhook can be found here
 
 --[[
-    The first thing will be to choose our main language, here you can choose
-    between the default languages that you will find within locales/*,
-    if yours is not there, feel free to create it!
+    Overwelmed by the amount of settings? Don't worry, we got you covered.
+    Here is a quick guide to get you started with the configuration of the script.
+    https://help.it-scripts.com/scripts/it-drugs/installation
 ]]
-Config.Language = 'en'
-Config.Target = 'ox_target' -- Target system ('qb-target', 'ox_target' or false to disable)
 
 --[[
-    Here you set up the discord webhook, you can find more information about
-    this in the server/webhook.lua file.
-    If you dont know what a webhook is, you can read more about it here:
-    https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
+    The first thing to do is to set which framework, inventory and target system the server uses
+    The system will automatically detect the framework, inventory and target system if you set it to 'autodetect'
+    If you are using a custom framework, inventory or target system contact the developer or add support yourself by creating a pull request
+    If you need need more information about this configuration, you can read the documentation here: https://help.it-scripts.com/scripts/it-drugs
 ]]
-Config.Webhook = {
-    ['active'] = false, -- Set to true to enable the webhook
-    ['url'] = nil, -- This will do nothing set you webhook url in server/sv_webhook.lua
-    ['name'] = 'it-drugs', -- Name for the webhook
-    ['avatar'] = 'https://i.imgur.com/KvZZn88.png', -- Avatar for the webhook
-}
 
--- The Drug Dealer system is a system that allows you to buy seed from a dealer
-Config.EnableDealers = true -- Enable drug dealer system
+Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
+Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
+Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
 
-Config.DrugDealers = {
-    ['seed_dealer'] = { -- Dealer id (Musst be unique)
-        label = 'Seed Dealer', -- Dealer name
-        locations = { -- Dealer will spawn at one of these locations
-            vector4(-462.8489, 1101.5592, 326.6819, 166.9773),
-            vector4(-49.4244, 1903.6714, 194.3613, 95.7213),
-            vector4(2414.2463, 5003.8462, 45.6655, 40.8932),
-        },
-        ped = 's_m_y_dealer_01', -- Ped model
-        blip = {
-            display = false, -- Display blip on map
-            sprite = 140, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
-            displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
-            displayText = 'Seed Dealer',
-        },
-        items = { -- Items the dealer is selling
-            ['weed_lemonhaze_seed'] = {min = 100, max = 200}, -- min/max price
-            ['coca_seed'] = {min = 100, max = 300},
-        }
-    },
-}
+--[[
+    Here you can set the language for the script, you can choose between 'en', 'es', 'de'
+    If you want to add more languages, you can do this in the server/locales folder. 
+    Feel free to share them with us so we can add them to the script for everyone to use.
+]]
 
---- Growing Related Settings
+Config.Language = 'en' -- Choose your language from the locales folder
+
+
+--[[
+    Here you can set some generale settings regarding to the some features of the script.
+    You can set the distance for the raycasting, the time a fire will burn and if the script should clear dead plants on start-up.
+    You can also set the player plant limit, this is the maximum amount of plants a player can have simultaneously.
+]]
 Config.rayCastingDistance = 7.0 -- distance in meters
 Config.FireTime = 10000 -- in ms
 Config.ClearOnStartup = true -- Clear dead plants on script start-up
@@ -70,7 +53,6 @@ Config.PlayerPlantLimit = 10 -- Max amount of plants a player can have simultane
 -- │/____\___/|_| |_|\___||___/│
 -- └───────────────────────────┘
 
-Config.OnlyZones = false -- Allow drug growth only in defined zones
 Config.GlobalGrowTime = 30 -- Time in minutes for a plant to grow
 
 Config.Zones = {
@@ -92,7 +74,6 @@ Config.Zones = {
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Weed Zone',
         },
-        exclusive = {'weed_lemonhaze_seed'} -- Types of drugs that will be affected in this are.
     },
     ['weed_zone_two'] = { -- Zone id (Musst be unique)
         points = {
@@ -111,7 +92,6 @@ Config.Zones = {
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Weed Zone',
         },
-        exclusive = {'weed_lemonhaze_seed'} -- Types of drugs that will be affected in this are.
     },
 }
 
@@ -146,6 +126,9 @@ Config.FertilizerThreshold = 10
 Config.WaterThreshold = 10
 Config.HealthBaseDecay = {7, 10} -- Min/Max Amount of health decay when the plant is below the above thresholds for water and nutrition
 
+Config.ItemToDestroyPlant = false -- true to need an item to destroy a plant
+Config.DestroyItemName = "lighter"
+
 
 Config.Items = {
     ['watering_can'] = {
@@ -172,29 +155,46 @@ Config.Items = {
 
 Config.PlantTypes = {
     -- small is growth 0-30%, medium is 30-80%, large is 80-100%
-    ["plant1"] = {
-        [1] = {"bkr_prop_weed_01_small_01a", -0.5},
+    ["plantLemon"] = {
+        [1] = {"an_weed_yellow_01_small_01b", -0.5}, -- Set to -0.5 to make the plant grow in the ground
+        [2] = {"an_weed_yellow_med_01b", -0.5},
+        [3] = {"an_weed_yellow_lrg_01b", -0.5},
+    },
+    ["plantOg"] = {
+        [1] = {"bkr_prop_weed_01_small_01a", -0.5}, -- Set to -0.5 to make the plant grow in the ground
         [2] = {"bkr_prop_weed_med_01a", -0.5},
         [3] = {"bkr_prop_weed_lrg_01a", -0.5},
     },
-    ["plant2"] = {
-        [1] = {"bkr_prop_weed_01_small_01b", -0.5},
-        [2] = {"bkr_prop_weed_med_01b",-0.5},
-        [3] = {"bkr_prop_weed_lrg_01b", -0.5},
+    ["plantPurple"] = {
+        [1] = {"an_weed_purple_01_small_01b", -0.5},
+        [2] = {"an_weed_purple_med_01b",-0.5},
+        [3] = {"an_weed_purple_lrg_01b", -0.5},
+    },
+    ["plantWhite"] = {
+        [1] = {"an_weed_white_01_small_01b", -0.5},
+        [2] = {"an_weed_white_med_01b",-0.5},
+        [3] = {"an_weed_white_lrg_01b", -0.5},
+    },
+    ["plantBlue"] = {
+        [1] = {"an_weed_blue_01_small_01b", -0.5},
+        [2] = {"an_weed_blue_med_01b",-0.5},
+        [3] = {"an_weed_blue_lrg_01b", -0.5},
     },
     ["small_plant"] = {
-        [1] = {"bkr_prop_weed_bud_pruned_01a", 0},
-        [2] = {"bkr_prop_weed_bud_02b", 0},
-        [3] = {"bkr_prop_weed_bud_02a", 0},
+        [1] = {"h4_prop_bush_cocaplant_01", -1.0},
+        [2] = {"h4_prop_bush_cocaplant_01", -0.75},
+        [3] = {"h4_prop_bush_cocaplant_01", 0},
     },
 }
 
 Config.Plants = { -- Create seeds for drugs
 
     ['weed_lemonhaze_seed'] = {
+        label = 'Lemon Haze', -- Label for the plant
+        plantType = 'plantLemon', -- Choose plant types from (plant1, plant2, small_plant)
         growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
-        label = 'Lemon Haze', --
-        plantType = 'plant1', -- Choose plant types from (plant1, plant2, small_plant)
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
             ['weed_lemonhaze'] = {min = 1, max = 4},  
             --['other_item'] = {min = 1, max = 2}
@@ -204,11 +204,81 @@ Config.Plants = { -- Create seeds for drugs
             min = 1, -- Min amount of seeds
             max = 2 -- Max amount of seeds
         },
-        time = 3000 -- Time it takes to plant/harvest in miliseconds
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_og_seed'] = {
+        label = 'Og Kush', -- Label for the plant
+        plantType = 'plantOg', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_Og'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_purple_haze_seed'] = {
+        label = 'Purple Haze', -- Label for the plant
+        plantType = 'plantPurple', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_purple_haze'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_white_widow_seed'] = {
+        label = 'White Widow', -- Label for the plant
+        plantType = 'plantWhite', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_white_widow'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
+    },
+    ['weed_blueberry_seed'] = {
+        label = 'Blueberry', -- Label for the plant
+        plantType = 'plantBlue', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_blueberry'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
     },
     ['coca_seed'] = {
         growthTime = 45, -- Cutsom growth time in minutes false if you want to use the global growth time
-        label = 'Coca Plant', --
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        label = 'Coca Plant', -- Label for the plant
+        zones = {}, -- Zones where the seed can be planted
         plantType = 'small_plant', -- Choose plant types from (plant1, plant2, small_plant) also you can change plants yourself in main/client.lua line: 2
         products = { -- Item the plant is going to produce when harvested with the max amount
             ['coca']= {min = 1, max = 2}
@@ -222,13 +292,6 @@ Config.Plants = { -- Create seeds for drugs
     },
 }
 
---[[
-    Next you have to prepeare the Processing settings. You can create as many processing tables as you want.
-    You can create use as many ingrediants as you want. You can also change the processing table models to your liking.
-    Each table is for proccessing a specific drug type. You can also create to tables for the same drug type.
-
-]]
-
 -- ┌─────────────────────────────────────────────────┐
 -- │ ____                              _             │
 -- │|  _ \ _ __ ___   ___ ___  ___ ___(_)_ __   __ _ │
@@ -238,8 +301,14 @@ Config.Plants = { -- Create seeds for drugs
 -- │                                           |___/ │
 -- └─────────────────────────────────────────────────┘
 
+--[[
+    Next you have to prepeare the Processing settings. You can create as many processing tables as you want.
+    You can create use as many ingrediants as you want. You can also change the processing table models to your liking.
+    Each table is for proccessing a specific drug type. You can also create to tables for the same drug type.
+
+]]
+
 Config.EnableProcessing = true -- Enable crafting system
-Config.ShowIngrediants = true -- Show ingrediants in the processing table
 
 Config.ProcessingSkillCheck = false -- Enable skill check for processingTables (Replaces the progressbar)
 Config.SkillCheck = {
@@ -249,56 +318,80 @@ Config.SkillCheck = {
 
 Config.ProcessingTables = { -- Create processing table
     ['weed_processing_table'] = {
-        type = 'weed',
-        model = 'bkr_prop_weed_table_01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        label = 'Weed Processing Table', -- Label for the table
+        model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
-            ['joint'] = {
-                label = 'Joint',
+            ['joint Lemon haze'] = {
+                label = 'Joint lemon haze',
                 ingrediants = {
-                    ['weed_lemonhaze'] = 3,
-                    ['paper'] = 1
+                    ['weed_lemonhaze'] = {amount = 3, remove = true},
+                    ['paper'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['joint'] = 2
                 },
-                processTime = 5,
+                processTime = 15,
                 failChance = 15,
+                showIngrediants = true,
                 animation = {
-                    dict = 'anim@gangops@facility@servers@bodysearch@',
-                    anim = 'player_search',
-                }
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
+                },
+                particlefx = {
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                    color = {r = 255, g = 255, b = 153},
+                    offset = {x = 0.0, y = -1.5, z = 1.0},
+                    scale = 0.5,
+                },
             },
-            -- Add more recipes here like this
-            --[[ ['weedbag'] = {
-                label = 'Weed Bag',
+            ['joint Og'] = {
+                label = 'Joint og kush',
                 ingrediants = {
-                    ['weed_lemonhaze'] = 3,
-                    ['plastic'] = 1
+                    ['weed_og'] = {amount = 3, remove = true},
+                    ['paper'] = {amount = 1, remove = true}
                 },
                 outputs = {
-                    ['weedbag'] = 1
+                    ['joint'] = 2
                 },
-                processTime = 10,
-                failChance = 15
-            } ]]
+                processTime = 15,
+                failChance = 15,
+                showIngrediants = true,
+                animation = {
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
+                },
+                particlefx = {
+                    dict = 'scr_ar_planes',
+                    particle = 'scr_ar_trail_smoke_slow',
+                    color = {r = 255, g = 255, b = 153},
+                    offset = {x = 0.0, y = -1.5, z = 1.0},
+                    scale = 0.5,
+                },
+            },
         }
     },
     
     ['cocaine_processing_table'] = {
-        type = 'cocaine',
-        model = 'bkr_prop_coke_table01a', -- Exanples: bkr_prop_weed_table_01a, bkr_prop_meth_table01a, bkr_prop_coke_table01a
+        label = 'Cocaine Processing Table', -- Label for the table
+        model = 'freeze_it-scripts_coke_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
             ['cocaine'] = {
                 label = 'Cocaine',
                 ingrediants = {
-                    ['coca'] = 3,
-                    ['nitrous'] = 1
+                    ['coca'] = {amount = 3, remove = true},
+                    ['nitrous'] = {amount = 1, remove = true}
                 },
                 outputs = {
                     ['cocaine'] = 2
                 },
                 processTime = 10,
-                failChance = 15
+                failChance = 15,
+                showIngrediants = true,
+                animation = {
+                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
+                    anim = 'idle_a',
+                }
             },
         }
     },
@@ -313,26 +406,7 @@ Config.ProcessingTables = { -- Create processing table
 -- │                  |___/     │
 -- └────────────────────────────┘
 
---[[ Possible Drug Effects:
-    runningSpeedIncrease, 
-    infinateStamina,
-    moreStrength,
-    healthRegen,
-    foodRegen,
-    halfArmor,
-    fullArmor,
-    drunkWalk,
-    psycoWalk,
-    outOfBody,
-    cameraShake,
-    fogEffect,
-    confusionEffect,
-    whiteoutEffect,
-    intenseEffect,
-    focusEffect,
-    superJump,
-    swimming
---]]
+-- Possible Drug Effects: https://help.it-scripts.com/scripts/it-drugs/adjustments/drugs#all-possible-drug-effects
 
 Config.EnableDrugs = true -- Enable drug effects
 Config.Drugs = { -- Create you own drugs
@@ -400,6 +474,15 @@ Config.SellSettings = {
     ['giveBonusOnPolice'] = true, -- Give bonus money if there is police online | 1-2 Cops : x1.2 | 3-6 Cops : x1.5 | 7-10 Cops : x1.7 | +10 Cops : x2.0
 }
 
+Config.SellEverywhere = {
+    ['enabled'] = false, -- Allow selling drugs everywhere
+    drugs = {
+        { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+        { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+        { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+    }
+}
+
 Config.SellZones = {
     ['groove'] = {
         points = {
@@ -411,9 +494,9 @@ Config.SellZones = {
         },
         thickness = 27,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['vinewood'] = {
@@ -432,9 +515,9 @@ Config.SellZones = {
         },
         thickness = 59.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['beach'] = {
@@ -451,14 +534,53 @@ Config.SellZones = {
         },
         thickness = 4.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200)},
-            { item = 'joint', price = math.random(50, 100)},
-            { item = 'weed_lemonhaze', price = math.random(50, 100)}
+            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
+            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
+            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
         }
     },
 }
 
-Config.BlacklistPeds = { 
+
+-- ┌──────────────────────────────────┐
+-- │ ____             _               │
+-- │|  _ \  ___  __ _| | ___ _ __ ___ │
+-- │| | | |/ _ \/ _` | |/ _ \ '__/ __|│
+-- │| |_| |  __/ (_| | |  __/ |  \__ \│
+-- │|____/ \___|\__,_|_|\___|_|  |___/│
+-- └──────────────────────────────────┘
+
+-- The Drug Dealer system is a system that allows you to buy seed from a dealer
+Config.EnableDealers = true -- Enable drug dealer system
+
+Config.DrugDealers = {
+    ['seed_dealer'] = { -- Dealer id (Musst be unique)
+        label = 'Seed Dealer', -- Dealer name
+        locations = { -- Dealer will spawn at one of these locations
+            vector4(-462.8489, 1101.5592, 326.6819, 166.9773),
+            vector4(-49.4244, 1903.6714, 194.3613, 95.7213),
+            vector4(2414.2463, 5003.8462, 45.6655, 40.8932),
+        },
+        ped = 's_m_y_dealer_01', -- Ped model
+        blip = {
+            display = false, -- Display blip on map
+            sprite = 140, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            displayText = 'Seed Dealer',
+        },
+        items = {
+            ['buying'] = { -- Items the dealer buys from you
+                ['weed_lemonhaze'] = {min = 100, max = 200, moneyType = 'cash'}, -- min/max price
+            },
+            ['selling'] = { -- Items the dealer sells to you
+                ['weed_lemonhaze_seed'] = {min = 100, max = 200, moneyType = 'bank'}, -- min/max price
+                ['coca_seed'] = {min = 100, max = 300, moneyType = 'black_money'},
+            },
+        },
+    },
+}
+
+Config.BlacklistPeds = {
     -- Peds you cant sell drugs to
     "mp_m_shopkeep_01",
     "s_m_y_ammucity_01",
@@ -470,40 +592,13 @@ Config.BlacklistPeds = {
     "s_m_m_migrant_01",
 }
 
-function SendPoliceAlert(coords)
-    -- Add You own police alert system here
-    local message = 'Drug Dealer spotted at '..coords
-    TriggerEvent('chat:addMessage', {
-        args = {message}
-    })
-end
-
-function ShowNotification(source, message, type)
-    -- Bridge.Functions.Notify(message, type) are the default Framework notifications
-    -- You can change this to your own notification systems
-    if source ~= nil then -- Server Messages
-        if type == 'error' then
-            it.notify(source, message, "error")
-        elseif type == 'success' then
-            it.notify(source, message, "success")
-        else
-            it.notify(source, message)
-        end
-    else -- Client Messages
-        if type == 'error' then
-            it.notify(message, "error")
-        elseif type == 'success' then
-            it.notify(message, "success")
-        else
-            it.notify(message)
-        end
-    end
-end
-
 --[[
     Debug mode, you can see all kinds of prints/logs using debug,
     but it's only for development.
 ]]
+Config.ManualZoneChecker = false -- Set to true to enable the automatic zone checker
+Config.ManualDatabaseSetup = false -- Set to true to disable the automatic database setup and check
+
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
 Config.Debug = false -- Set to true to enable debug mode

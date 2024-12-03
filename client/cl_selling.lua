@@ -1,31 +1,57 @@
+
 -- \ Locals and tables
 local SoldPeds = {}
 local SellZone = {}
 local currentZone = nil
+local sellZones = {}
 
 -- \ Create Zones for the drug sales
-for k, v in pairs(Config.SellZones) do
-    local coords = {}
-    for _, point in ipairs(v.points) do
-        table.insert(coords, vector3(point.x, point.y, point.z))
-    end
-
-	lib.zones.poly({
-        points = coords,
-        thickness = v.thickness,
-        debug = Config.DebugPoly,
-		onEnter = function(self)
-			CreateSellTarget()
-			currentZone = k
-			if Config.Debug then print("Entered Zone ["..k.."]") end
-		end,
-		onExit = function(self)
-			currentZone = nil
-			RemoveSellTarget()
-			if Config.Debug then print("Exited Zone ["..k.."]") end
+if not Config.SellEverywhere['enabled'] then
+	for k, v in pairs(Config.SellZones) do
+		local coords = {}
+		for _, point in ipairs(v.points) do
+			table.insert(coords, vector3(point.x, point.y, point.z))
 		end
-    })
+
+		sellZones[k] = lib.zones.poly({
+			points = coords,
+			thickness = v.thickness,
+			debug = Config.DebugPoly,
+			onEnter = function()
+				CreateSellingTargets()
+				currentZone = k
+				if Config.Debug then lib.print.info("Entered Zone ["..k.."]") end
+			end,
+			onExit = function()
+				currentZone = nil
+				RemoveSellTarget()
+				if Config.Debug then lib.print.info("Exited Zone ["..k.."]") end
+			end,
+			inside = function()
+				if Config.Debug then lib.print.info("Inside Zone ["..k.."]") end
+			end
+		})
+		if Config.Debug then lib.print.info('Zone Created: '..k) end
+	end
 end
+
+CreateThread(function()
+	if not Config.SellEverywhere['enabled'] and Config.ManualZoneChecker then
+		while true do
+			Wait(1000)
+			local ped = PlayerPedId()
+			local pedCoords = GetEntityCoords(ped)
+			for k, zone in pairs(sellZones) do
+				if zone:contains(pedCoords) then
+					if currentZone ~= k then
+						zone:onEnter()
+					end
+					if Config.Debug then lib.print.info("Inside Zone ["..k.."]") end
+				end
+			end
+		end
+	end
+end)
 
 -- \ Play five animation for both player and ped
 local function PlayGiveAnim(tped)
@@ -81,8 +107,13 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		return
 	end
 
-	if not currentZone then return end
-	local zoneConfig = Config.SellZones[currentZone]
+	local zoneConfig = nil
+	if Config.SellEverywhere['enabled'] then
+		zoneConfig = Config.SellEverywhere
+	else
+		if not currentZone then return end
+		zoneConfig = Config.SellZones[currentZone]
+	end
 
 	local sellAmount = math.random(Config.SellSettings['sellAmount'].min, Config.SellSettings['sellAmount'].max)
 	local sellItemData = nil
@@ -115,7 +146,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 			return
 		end
 	end
-
+	
 	if playerItems < sellAmount then
 		sellAmount = playerItems
 	end

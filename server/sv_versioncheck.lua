@@ -40,7 +40,7 @@ local function checkResourceVersion(err, responseText, headers)
     print('^4Download it now on https://github.com/'..updatePath)
     print("^5======================================^7")
 
-    SendToWebhook(0, 'message', nil, '### [it-drugs] - New update available now!\n **Current Version:** '..currentVersionFile.version..'\n **New Version:** '..remoteVersionFile.version..'\n **Branch:** '..Config.Branch..'\n **Notes:** '..remoteVersionFile.message..'\n **Download it now on:** [GitHub](https://github.com/'..updatePath..')')
+    SendToWebhook(0, 'message', nil, {description = '### [it-drugs] - New update available now!\n **Current Version:** '..currentVersionFile.version..'\n **New Version:** '..remoteVersionFile.version..'\n **Branch:** '..Config.Branch..'\n **Notes:** '..remoteVersionFile.message..'\n **Download it now on:** [GitHub](https://github.com/'..updatePath..')'})
 end
 
 AddEventHandler('onResourceStart', function(resource)

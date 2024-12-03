@@ -1,5 +1,6 @@
 local growZones = {}
 
+--- Create the zones for the plants 
 for k, v in pairs(Config.Zones) do
     local coords = {}
     for _, point in ipairs(v.points) do
@@ -13,7 +14,9 @@ for k, v in pairs(Config.Zones) do
     })
 end
 
--- Functions
+--- Math function to convert rotation to direction
+---@param rot vector3
+---@return vector3
 local RotationToDirection = function(rot)
     local rotZ = math.rad(rot.z)
     local rotX = math.rad(rot.x)
@@ -21,6 +24,12 @@ local RotationToDirection = function(rot)
     return vector3(-math.sin(rotZ) * cosOfRotX, math.cos(rotZ) * cosOfRotX, math.sin(rotX))
 end
 
+--- Create a new raycast camera
+---@param dist number
+---@return boolean|integer: 0 = hit, 1 = no hit
+---@return vector3: end position
+---@return integer: entity hit
+---@return vector3: surface normal
 local RayCastCamera = function(dist)
     local camRot = GetGameplayCamRot()
     local camPos = GetGameplayCamCoord()
@@ -32,38 +41,47 @@ local RayCastCamera = function(dist)
     return hit, endPos, entityHit, surfaceNormal
 end
 
-local GetGroundHash = function(ped)
-    local posped = GetEntityCoords(ped)
-    local num =
-        StartShapeTestCapsule(posped.x, posped.y, posped.z + 4, posped.x, posped.y, posped.z - 2.0, 2, 1, ped, 7)
-    local arg1, arg2, arg3, arg4, arg5 = GetShapeTestResultEx(num)
-    return arg5
+--- Get the ground hash for a location
+---@param coords vector3
+---@return integer
+local GetGroundHash = function(coords)
+    local shapeTestCapsule =
+        StartShapeTestCapsule(coords.x, coords.y, coords.z + 4, coords.x, coords.y, coords.z - 2.0, 2, 1, 0, 7)
+    local _, _, _, _, groundHash = GetShapeTestResultEx(shapeTestCapsule)
+    return groundHash
 end
 
-local getCurrentZone = function(coords, plantItem)
-    for k, v in pairs(growZones) do
-        if growZones[k]:contains(vector3(coords.x, coords.y, coords.z)) then
-            if Config.Debug then lib.print.info('Inside Zone: ', k) end -- DEBUG
-            for _, drug in ipairs(Config.Zones[k].exclusive) do
-                if Config.Debug then lib.print.info('Drugs: ', Config.Zones[k].exclusive) end -- DEBUG
-                if drug == plantItem then
-                    if Config.Debug then lib.print.info('Zone: ', k) end -- DEBUG
-                    return k
+local function checkforZones(coords, targetZones)
+    if not targetZones or #targetZones == 0 then return nil end
+    for _, targetZone in pairs(targetZones) do
+        for id, zone in pairs(growZones) do
+            if zone:contains(vector3(coords.x, coords.y, coords.z)) then
+                if id == targetZone then
+                    return id
                 end
             end
-        end
+        end      
     end
     return nil
 end
 
-local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
+--- Plant a new seed
+---@param ped number: Current player ped
+---@param plant number: Current plant object
+---@param plantInfos table: Plant infos
+---@param plantItem string: Plant item
+---@param coords vector3: Plant coords
+---@param metadata table|nil: Plant metadata
+local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
 
     -- check for near plants
     local plants = lib.callback.await('it-drugs:server:getPlants', false)
 
+    -- Check if the current plant is near another plant
     if plants ~= nil then
-        for k, v in pairs(plants) do
-            if #(vector3(coords.x, coords.y, coords.z) - vector3(v.coords.x, v.coords.y, v.coords.z)) <= Config.PlantDistance then
+        for _, v in pairs(plants) do
+            local distance = #(vector3(coords.x, coords.y, coords.z) - vector3(v.coords.x, v.coords.y, v.coords.z))
+            if distance <= Config.PlantDistance then
                 ShowNotification(nil, _U('NOTIFICATION__TO__NEAR'), "error")
                 DeleteObject(plant)
                 return
@@ -72,7 +90,7 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
     end
 
     if Config.OnlyAllowedGrounds then
-        local groundHash = GetGroundHash(plant)
+        local groundHash = GetGroundHash(coords)
         local canplant = false
         if Config.Debug then lib.print.info('Current Ground Hash: ' .. groundHash) end -- DEBUG 
         for _, ground in pairs(Config.AllowedGrounds) do
@@ -88,8 +106,10 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
         end
     end
 
-    local zone = getCurrentZone(coords, plantItem)
-    if Config.OnlyZones then
+    local zone = checkforZones(coords, plantInfos.zones)
+    if Config.Debug then lib.print.info('[plantSeed] - current Zone:', zone) end -- DEBUG
+    if plantInfos.onlyZone then
+        zone = checkforZones(coords, plantInfos.zones)
         if zone == nil then
             ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
             DeleteObject(plant)
@@ -97,22 +117,48 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
         end
     end
 
+    if plantInfos.reqItems and plantInfos.reqItems["planting"] ~= nil then
+        local givenItems = {}
+        for item, itemData in pairs(plantInfos.reqItems["planting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            if not it.hasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+                DeleteObject(plant)
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        it.giveItem(item)
+                    end
+                end
+
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+                return
+            else
+                if itemData.remove then
+                    if it.removeItem(item, itemData.amount or 1) then
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
+        end
+    end
+
     DeleteObject(plant)
 
     RequestAnimDict('amb@medic@standing@kneel@base')
     RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
-    while 
+    while
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
-    do 
-        Wait(0) 
+    do
+        Wait(0)
     end
 
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
 
-    if lib.progressBar({
+    if ShowProgressBar({
         duration = plantInfos.time,
         label = _U('PROGRESSBAR__SPAWN__PLANT'),
         useWhileDead = false,
@@ -132,23 +178,31 @@ local plantSeed = function(ped, plant, plantInfos, plantItem, coords, metadata)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-
     end
+
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end
 
 -- Events
 RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
 
+    --TODO: Edit debug log
     if Config.Debug then lib.print.info('Planting: ', plantItem) end -- DEBUG 
 
     local ped = PlayerPedId()
     local plantInfos = Config.Plants[plantItem]
+
+    -- Check if the player is in a vehicle
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
         ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
         return
     end
 
-    local ownedPlants = lib.callback.await('it-drugs:server:getPlantsOwned', false)
+    -- Get the player's owned plants
+    local ownedPlants = lib.callback.await('it-drugs:server:getPlantByOwner', false)
+
+    if Config.Debug then lib.print.info('Owned Plants: ', ownedPlants) end-- DEBUG
+
     if ownedPlants ~= nil then
         if #ownedPlants >= Config.PlayerPlantLimit then
             ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "error")
@@ -161,6 +215,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
 
+    -- TODO: Update the text and icon
     lib.showTextUI(_U('INTERACTION__PLACING__TEXT'), {
         position = "left-center",
         icon = "spoon",
@@ -219,26 +274,44 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
                 planted = true
                 lib.hideTextUI()
                 DeleteObject(plant)
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
             end
         end
     end
 end)
 
-RegisterNetEvent('it-drugs:client:checkPlant', function(data)
-    local netId = NetworkGetNetworkIdFromEntity(data.entity)
-    lib.callback('it-drugs:server:getPlantData', false, function(result)
-        if not result then return end
-        if Config.Debug then lib.print.info('Checking Data:', result) end -- DEBUG
-        -- Find event in client/cl_menus.lua
-        TriggerEvent('it-drugs:client:showPlantMenu', result)
-    end, netId)
-end)
-
 RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
 
-    local type = args.type
-    local entity = args.entity
+    local plantData = args.plantData
+    local entity = NetworkGetEntityFromNetworkId(plantData.netId)
+
+    plantData.reqItems = Config.Plants[plantData.seed].reqItems
+
+    if plantData.reqItems and plantData.reqItems["harvesting"] ~= nil then
+        local givenItems = {}
+        for item, itemData in pairs(plantData.reqItems["harvesting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            if not it.hasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        it.giveItem(item)
+                    end
+                end
+
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+                return
+            else
+                if itemData.remove then
+                    if it.removeItem(item, itemData.amount or 1) then
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
+        end
+    end
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
@@ -250,13 +323,13 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
     do 
-        Wait(0) 
+        Wait(0)
     end
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
-    if lib.progressBar({
-        duration = Config.Plants[type].time,
+    if ShowProgressBar({
+        duration = Config.Plants[plantData.seed].time,
         label = _U('PROGRESSBAR__HARVEST__PLANT'),
         useWhileDead = false,
         canCancel = true,
@@ -266,7 +339,7 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:harvestPlant', entity)
+        TriggerServerEvent('it-drugs:server:harvestPlant', plantData.id)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -275,14 +348,15 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 local giveWater = function(args)
     local item = args.item
-    local type = args.type
-    local entity = args.entity
+    local plantData = args.plantData
+
+    local entity = NetworkGetEntityFromNetworkId(plantData.netId)
 
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
@@ -297,8 +371,8 @@ local giveWater = function(args)
     AttachEntityToEntity(created_object, ped, GetPedBoneIndex(ped, 28422), 0.4, 0.1, 0.0, 90.0, 180.0, 0.0, true, true, false, true, 1, true)
     local effect = StartParticleFxLoopedOnEntity('ent_sht_water', created_object, 0.35, 0.0, 0.25, 0.0, 0.0, 0.0, 2.0, false, false, false)
 
-    if lib.progressBar({
-        duration = Config.Plants[type].time,
+    if ShowProgressBar({
+        duration = Config.Plants[plantData.seed].time,
         label = _U('PROGRESSBAR__SOAK__PLANT'),
         useWhileDead = false,
         canCancel = true,
@@ -312,7 +386,7 @@ local giveWater = function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', plantData.id, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
@@ -326,8 +400,9 @@ end
 
 local giveFertilizer = function(args)
     local item = args.item
-    local type = args.type
-    local entity = args.entity
+    local plantData = args.plantData
+
+    local entity = NetworkGetEntityFromNetworkId(plantData.netId)
 
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
@@ -338,9 +413,9 @@ local giveFertilizer = function(args)
     while not HasModelLoaded(model) do Wait(0) end
     local created_object = CreateObject(model, coords.x, coords.y, coords.z, true, true, true)
     AttachEntityToEntity(created_object, ped, GetPedBoneIndex(ped, 28422), 0.3, 0.1, 0.0, 90.0, 180.0, 0.0, true, true, false, true, 1, true)
-    
-    if lib.progressBar({
-        duration = Config.Plants[type].time,
+
+    if ShowProgressBar({
+        duration = Config.Plants[plantData.seed].time,
         label = _U('PROGRESSBAR__FERTILIZE__PLANT'),
         useWhileDead = false,
         canCancel = true,
@@ -354,7 +429,7 @@ local giveFertilizer = function(args)
             clip = 'fire',
         },
     }) then
-        TriggerServerEvent('it-drugs:server:plantTakeCare', entity, item)
+        TriggerServerEvent('it-drugs:server:plantTakeCare', plantData.id, item)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     else
@@ -367,7 +442,7 @@ end
 RegisterNetEvent('it-drugs:client:useItem', function (args)
     local item = args.item
 
-    if not it.hasItem(item, 1 ) then
+    if not it.hasItem(item, 1) then
         ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
         return
     end
@@ -378,12 +453,19 @@ RegisterNetEvent('it-drugs:client:useItem', function (args)
     elseif itemInfos.fertilizer ~= 0 then
         giveFertilizer(args)
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
-
-    local type = args.type
-    local entity = args.entity
+    if not it.hasItem(Config.DestroyItemName, 1) and Config.ItemToDestroyPlant then
+        ShowNotification(nil, _U('NOTIFICATION__NEED_LIGHTER'), "error")
+        TriggerEvent('it-drugs:client:syncRestLoop', false)
+        return
+    end
+        
+    local plantData = args.plantData
+    local type = plantData.seed
+    local entity = NetworkGetEntityFromNetworkId(plantData.netId)
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
@@ -395,12 +477,12 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
     do 
-        Wait(0) 
+        Wait(0)
     end
     TaskPlayAnim(ped, 'amb@medic@standing@kneel@base', 'base', 8.0, 8.0, -1, 1, 0, false, false, false)
-    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
+    TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 49, 0, false, false, false)
 
-    if lib.progressBar({
+    if ShowProgressBar({
         duration = Config.Plants[type].time,
         label = _U('PROGRESSBAR__DESTROY__PLANT'),
         useWhileDead = false,
@@ -411,7 +493,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
             combat = true,
         },
     }) then
-        TriggerServerEvent('it-drugs:server:destroyPlant', {entity = entity})
+        TriggerServerEvent('it-drugs:server:destroyPlant', {plantId = plantData.id})
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -421,6 +503,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     end
+    TriggerEvent('it-drugs:client:syncRestLoop', false)
 end)
 
 RegisterNetEvent('it-drugs:client:startPlantFire', function(coords)

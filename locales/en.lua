@@ -28,6 +28,7 @@ Locales['en'] = {
     ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
 
     
+    
     ['MENU__PROCESSING'] = 'Proccessing',
     ['MENU__RECIPE__DESC'] = 'Process your drugs with this recipe',
 
@@ -39,6 +40,18 @@ Locales['en'] = {
 
     ['MENU__TABLE__REMOVE'] = 'Remove Table',
     ['MENU__TABLE__REMOVE__DESC'] = 'Get this table back',
+
+    ['MENU__DEALER__ACTION'] = "What do you want to do?",
+
+    ['MENU__DEALER__BUY'] = 'Buy',
+    ['MENU__DEALER__BUY__DESC'] = 'Buy items from the dealer',
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Buy %s for $%g per item',
+
+    ['MENU__DEALER_SELL'] = 'Sell',
+    ['MENU__DEALER__SELL_DESC'] = 'Sell items to the dealer',
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Sell %s for $%g per item',
+
+    
 
     ['MENU__SELL'] = 'Sell',
     ['MENU__SELL__DEAL'] = 'Deal',
@@ -101,6 +114,8 @@ Locales['en'] = {
     ['MENU__TABLE__DESTROY'] = 'Destroy Table',
     ['MENU__TABLE__DESTROY__DESC'] = 'Destroy this table',
 
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'You have successfully sold %gx %s for $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'You have successfully bought %gx %s for $%g',
     ['NOTIFICATION__NO__MONEY'] = 'You don´t have enought money on you',
     ['NOTIFICATION__BUY__SUCCESS'] = 'You successfuly bought some %s',
 
@@ -146,6 +161,8 @@ Locales['en'] = {
     ['NOTIFICATION__ADD__BLIP'] = 'Added Blip to Map',
     ['NOTIFICATION__REMOVE__BLIP'] = 'Removed Blip from Map',
 
+    ['NOTIFICATION__NEED_LIGHTER'] = 'You need a lighter to destroy the plant',
+
     ['PROGRESSBAR__SPAWN__PLANT'] = 'Planting...',
     ['PROGRESSBAR__HARVEST__PLANT'] = 'Harvesting...',
     ['PROGRESSBAR__SOAK__PLANT'] = 'Watering...',
@@ -157,6 +174,8 @@ Locales['en'] = {
     ['PROGRESSBAR__PROCESS__DRUG'] = 'Processing...',
 
     ['INTERACTION__PLACING__TEXT'] = '[E] - Place Plant / [G] - Cancel',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Place Table / [G] - Cancel',
+	
     ['INTERACTION__INTERACT_TEXT'] = '[E] - Interact',
 
     ['INPUT__AMOUNT__HEADER'] = 'Processing',

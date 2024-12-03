@@ -1,29 +1,99 @@
-RegisterNetEvent("it-drugs:client:showDealerMenu", function(dealerId)
+RegisterNetEvent('it-drugs:client:showDealerActionMenu', function(dealerId)
+    
+    local dealerData = Config.DrugDealers[dealerId]
+    local dealerName = dealerData.label
+
+    lib.registerContext({
+        id = "it-drugs-dealer-action-menu",
+        title = _U('MENU__DEALER'):format(dealerName),
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
+        options = {
+            {
+                title = _U('MENU__DEALER__ACTION'),
+            },
+            {
+                title = _U('MENU__DEALER__BUY'),
+                description = _U('MENU__DEALER__BUY__DESC'),
+                icon = "shopping-cart",
+                arrow = true,
+                event = "it-drugs:client:showDealerMenu",
+                args = {dealerId = dealerId, action = 'sell'}
+            },
+            {
+                title = _U('MENU__DEALER_SELL'),
+                description = _U('MENU__DEALER__SELL_DESC'),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:showDealerMenu",
+                args = {dealerId = dealerId, action = 'buy'}
+            }
+        }
+    })
+
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
+    lib.showContext("it-drugs-dealer-action-menu")
+end)
+
+RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
     local options = {}
+
+    local dealerId = args.dealerId
+    local action = args.action
 
     local dealerData = Config.DrugDealers[dealerId]
     local dealerName = dealerData.label
 
-    for k, v in pairs(dealerData.items) do
 
-        local itemData = lib.callback.await('it-drugs:server:getDealerItemData', false, dealerId, k)
+    if action == 'buy' then
+        local buyItems = lib.callback.await('it-drugs:server:getDealerBuyItems', false, dealerId)
 
-        table.insert(options, {
-            title = it.getItemLabel(k),
-            description = _U('MENU__DEALER__DESC'):format(itemData.price),
-            icon = "coins",
-            arrow = true,
-            event = "it-drugs:client:handelBuyInteraction",
-            args = {item = k, price = itemData.price, dealerId = dealerId}
-        })
+        for k, v in pairs(buyItems) do
+            table.insert(options, {
+                title = it.getItemLabel(k),
+                description = _U('MENU__DEALER_SELL_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:handleDealerInteraction",
+                args = {item = k, price = v.price, dealerId = dealerId, action = 'sell'}
+            })
+        end
+
+    elseif action == 'sell' then
+
+        local sellItems = lib.callback.await('it-drugs:server:getDealerSellItems', false, dealerId)
+
+        for k, v in pairs(sellItems) do
+            table.insert(options, {
+                title = it.getItemLabel(k),
+                description = _U('MENU__DEALER_BUY_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                icon = "coins",
+                arrow = true,
+                event = "it-drugs:client:handleDealerInteraction",
+                args = {item = k, price = v.price, dealerId = dealerId, action = 'buy'}
+            })
+        end
+
+    else
+        ShowNotification(nil, _U('NOTIFICATION__INVALID__ACTION'), 'error')
+        return
     end
 
     lib.registerContext({
         id = "it-drugs-dealer-menu",
         title = _U('MENU__DEALER'):format(dealerName),
+        menu = 'it-drugs-dealer-action-menu',
+        onBack = function()
+            TriggerEvent('it-drugs:client:showDealerActionMenu', dealerId)
+        end,
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
         options = options
     })
 
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
     lib.showContext("it-drugs-dealer-menu")
 end)
 
@@ -36,13 +106,34 @@ end)
 -- └───────────────────────────────────────────────────┘
 -- Plant Menu
 
-RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
-    local plantName = Config.Plants[plantData.type].label
+--[[
+Plant Data:
+{
+        id = self.id,
+        entity = self.entity,
+        netId = self.netId,
+        coords = self.coords,
+        owner = self.owner,
+        plantType = self.plantType,
+        fertilizer = self.fertilizer,
+        water = self.water,
+        health = self.health,
+        growtime = self.growtime,
+        stage = self.stage
+    }
+]]
 
+RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
+    local plantName = Config.Plants[plantData.seed].label
+
+    --TODO: Update the metadata to show the correct values
     if plantData.health == 0 then
         lib.registerContext({
             id = "it-drugs-dead-plant-menu",
             title = _U('MENU__DEAD__PLANT'),
+            onExit = function()
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+            end,
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),
@@ -69,7 +160,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.fertilizer).. '%',
                     icon = "bucket",
                     metadata = {
-                        _U('MENU__PLANT__STAGE__META')
+                        _U('MENU__PLANT__FERTILIZER__META')
                     },
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange"
@@ -79,7 +170,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = math.floor(plantData.water).. '%',
                     icon = "droplet",
                     metadata = {
-                        _U('MENU__PLANT__STAGE__META')
+                        _U('MENU__PLANT__WATER__META')
                     },
                     progress = math.floor(plantData.water),
                     colorScheme = "blue"
@@ -90,16 +181,20 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     icon = "fire",
                     arrow = true,
                     event = "it-drugs:client:destroyPlant",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    args = {plantData = plantData}
                 }
             }
         })
         lib.showContext("it-drugs-dead-plant-menu")
+        TriggerEvent('it-drugs:client:syncRestLoop', true)
         return
     elseif plantData.growth == 100 then
         lib.registerContext({
             id = "it-drugs-harvest-plant-menu",
             title = _U('MENU__PLANT'):format(plantName),
+            onExit = function()
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+            end,
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),
@@ -147,7 +242,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = _U('MENU__PLANT__HARVEST__DESC'),
                     arrow = true,
                     event = "it-drugs:client:harvestPlant",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    args = {plantData = plantData}
 
                 },
                 {
@@ -156,16 +251,20 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = _U('MENU__PLANT__DESTROY__DESC'),
                     arrow = true,
                     event = "it-drugs:client:destroyPlant",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    args = {plantData = plantData}
                 }
             }
         })
         lib.showContext("it-drugs-harvest-plant-menu")
+        TriggerEvent('it-drugs:client:syncRestLoop', true)
     
     else
         lib.registerContext({
             id = "it-drugs-plant-menu",
             title = _U('MENU__PLANT'):format(plantName),
+            onExit = function()
+                TriggerEvent('it-drugs:client:syncRestLoop', false)
+            end,
             options = {
                 {
                     title = _U('MENU__PLANT__LIFE'),
@@ -198,7 +297,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     progress = math.floor(plantData.fertilizer),
                     colorScheme = "orange",
                     event = "it-drugs:client:showItemMenu",
-                    args = {entity = plantData.entity, type = plantData.type, eventType = "fertilizer"}
+                    args = {plantData = plantData, eventType = "fertilizer"}
                 },
                 {
                     title = _U('MENU__PLANT__WATER'),
@@ -211,7 +310,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     progress = math.floor(plantData.water),
                     colorScheme = "blue",
                     event = "it-drugs:client:showItemMenu",
-                    args = {entity = plantData.entity, type = plantData.type, eventType = "water"}
+                    args = {plantData = plantData, eventType = "water"}
                 },
                 {
                     title = _U('MENU__PLANT__DESTROY'),
@@ -219,17 +318,16 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
                     description = _U('MENU__PLANT__DESTROY__DESC'),
                     arrow = true,
                     event = "it-drugs:client:destroyPlant",
-                    args = {entity = plantData.entity, type = plantData.type}
+                    args = {plantData = plantData}
                 }
             }
         })
         lib.showContext("it-drugs-plant-menu")
+        TriggerEvent('it-drugs:client:syncRestLoop', true)
     end
 end)
 
 RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
-    local entity = data.entity
-    local type = data.type
     local eventType = data.eventType
 
     local options = {}
@@ -245,7 +343,7 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
                     },
                     arrow = true,
                     event = 'it-drugs:client:useItem',
-                    args = {entity = entity, type = type, item = item}
+                    args = {plantData = data.plantData, item = item}
                 })
             end
         end
@@ -261,23 +359,28 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
                     },
                     arrow = true,
                     event = 'it-drugs:client:useItem',
-                    args = {entity = entity, type = type, item = item}
+                    args = {plantData = data.plantData, item = item}
                 })
             end
         end
     end
     if #options == 0 then
         ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
+        TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
 
     lib.registerContext({
         id = "it-drugs-item-menu",
         title = _U('MENU__ITEM'),
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
         options = options
     })
 
     lib.showContext("it-drugs-item-menu")
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
 end)
 
 -- ┌───────────────────────────────────────────────────────────────────────────┐
@@ -291,17 +394,24 @@ end)
 -- Processing Menu
 RegisterNetEvent('it-drugs:client:showRecipesMenu', function(data)
 
-    local tableType = Config.ProcessingTables[data.type]
+    local tableId = data.tableId
+    local recipes = lib.callback.await('it-drugs:server:getTableRecipes', false, tableId)
+
+    if not recipes then
+        ShowNotification(nil, _U('NOTIFICATION__NO__RECIPES'), 'error')
+        return
+    end
+
     local options = {}
 
-    for k, v in pairs(tableType.recipes) do
+    for recipeId, recipeData in pairs(recipes) do
         table.insert(options, {
-            title = v.label,
+            title = recipeData.label,
             description = _U('MENU__RECIPE__DESC'),
             icon = "flask",
             arrow = true,
             event = "it-drugs:client:showProcessingMenu",
-            args = {entity = data.entity, recipe = k, type = data.type}
+            args = {tableId = tableId, recipeId = recipeId}
         })
     end
 
@@ -311,30 +421,34 @@ RegisterNetEvent('it-drugs:client:showRecipesMenu', function(data)
         description = _U('MENU__TABLE__REMOVE__DESC'),
         arrow = true,
         event = "it-drugs:client:removeTable",
-        args = {entity = data.entity, type = data.type}
+        args = {tableId = tableId}
     })
 
     lib.registerContext({
         id = "it-drugs-recipes-menu",
         title = _U('MENU__PROCESSING'),
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
+        end,
         options = options
     })
 
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
     lib.showContext("it-drugs-recipes-menu")
+
 end)
 
 RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
 
-    local tableType = data.type
-    local recipe = Config.ProcessingTables[tableType].recipes[data.recipe]
+    local recipe = lib.callback.await('it-drugs:server:getRecipeById', false, data.tableId, data.recipeId)
 
     local options = {}
-    if not Config.ShowIngrediants then
-        for k, v in pairs(recipe.ingrediants) do
+    if not recipe.showIngrediants then
+        for _, v in pairs(recipe.ingrediants) do
             -- Menu only shows the amount not the name of the item
             table.insert(options, {
                 title = _U('MENU__UNKNOWN__INGREDIANT'),
-                description = _U('MENU__INGREDIANT__DESC'):format(v),
+                description = _U('MENU__INGREDIANT__DESC'):format(v.amount),
                 icon = "flask",
             })
         end
@@ -342,7 +456,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
                 title = it.getItemLabel(k),
-                description = _U('MENU__INGREDIANT__DESC'):format(v), --:replace("{amount}", v),
+                description = _U('MENU__INGREDIANT__DESC'):format(v.amount), --:replace("{amount}", v),
                 icon = "flask",
             })
         end
@@ -354,7 +468,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         description = _U('MENU__TABLE__PROCESS__DESC'),
         arrow = true,
         event = "it-drugs:client:processDrugs",
-        args = {entity = data.entity, type = data.type, recipe = data.recipe}
+        args = {tableId = data.tableId, recipeId = data.recipeId}
     })
 
     lib.registerContext({
@@ -363,9 +477,13 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         options = options,
         menu = 'it-drugs-recipes-menu',
         onBack = function()
-            TriggerEvent('it-drugs:client:showRecipesMenu', {type = data.type, entity = data.entity})
+            TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = data.tableId})
+        end,
+        onExit = function()
+            TriggerEvent('it-drugs:client:syncRestLoop', false)
         end,
     })
+    TriggerEvent('it-drugs:client:syncRestLoop', true)
     lib.showContext("it-drugs-processing-menu")
 end)
 
@@ -632,7 +750,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 icon = "fire",
                 arrow = true,
                 onSelect = function()
-                    TriggerServerEvent('it-drugs:server:destroyPlant', {entity = plantData.entity, extra='admin'})
+                    TriggerServerEvent('it-drugs:server:destroyPlant', {plantId = plantData.id, extra='admin'})
                     ShowNotification(nil, _U('NOTIFICATION__PLANT__DESTROYED'), 'success')
                 end
             }
@@ -690,7 +808,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 icon = "trash",
                 arrow = true,
                 onSelect = function()
-                    TriggerServerEvent('it-drugs:server:removeTable', {entity = tableData.entity, extra='admin'})
+                    TriggerServerEvent('it-drugs:server:removeTable', {tableId = tableData.id, extra='admin'})
                     ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'success')
                 end,
                 

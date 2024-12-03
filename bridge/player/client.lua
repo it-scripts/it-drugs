@@ -1,13 +1,20 @@
 function it.getPlayerData()
+
     if it.core == 'qb-core' then
         return CoreObject.Functions.GetPlayerData()
-    elseif it.core == 'esx' then
+    end
+
+    if it.core == 'esx' then
         return CoreObject.GetPlayerData()
+    end
+
+    if it.core == 'ND_Core' then
+        return CoreObject.getPlayer()
     end
 end
 
 function it.getCitizenId()
-    local citizenId = lib.callback.await('it-drugs:getCitizenId', false)
+    local citizenId = lib.callback.await('it-lib:getCitizenId', false)
     return citizenId
 end
 
@@ -91,16 +98,16 @@ function it.getPlayerName()
     if it.core == 'qb-core' then
         return playerData.charinfo.firstname .. ' ' .. playerData.charinfo.lastname
     elseif it.core == 'esx' then
-        return lib.callback.await('it-drugs:getPlayerName', false)
+        return lib.callback.await('it-lib:getPlayerName', false)
     end
 end
 
 function it.getLicences()
-    local licences = lib.callback.await('it-drugs:getLicences', false)
+    local licences = lib.callback.await('it-lib:getLicences', false)
     return licences
 end
 
 function it.getLicence(licenseType)
-    local licence = lib.callback.await('it-drugs:getLicence', false, licenseType)
+    local licence = lib.callback.await('it-lib:getLicence', false, licenseType)
     return licence
 end

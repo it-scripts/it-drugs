@@ -24,3 +24,11 @@ function it.generateUUID()
         return string.format('%x', v)
     end)
 end
+
+function it.generateCustomID(length)
+    if length == nil then length = 8 end
+    if length == 36 then return it.generateUUID() end
+    if length > 36 then length = 36 end
+    local randomId = it.generateUUID()
+    return string.sub(randomId, 1, length)
+end
