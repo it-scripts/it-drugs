@@ -192,7 +192,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_lemonhaze_seed'] = {
         label = 'Lemon Haze', -- Label for the plant
         plantType = 'plantLemon', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -209,7 +209,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_og_seed'] = {
         label = 'Og Kush', -- Label for the plant
         plantType = 'plantOg', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -226,7 +226,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_purple_haze_seed'] = {
         label = 'Purple Haze', -- Label for the plant
         plantType = 'plantPurple', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -243,7 +243,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_white_widow_seed'] = {
         label = 'White Widow', -- Label for the plant
         plantType = 'plantWhite', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -260,7 +260,7 @@ Config.Plants = { -- Create seeds for drugs
     ['weed_blueberry_seed'] = {
         label = 'Blueberry', -- Label for the plant
         plantType = 'plantBlue', -- Choose plant types from (plant1, plant2, small_plant)
-        growthTime = false, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
         products = { -- Item the plant is going to produce when harvested with the max amount
@@ -275,7 +275,7 @@ Config.Plants = { -- Create seeds for drugs
         time = 3000, -- Time it takes to plant/harvest in miliseconds
     },
     ['coca_seed'] = {
-        growthTime = 45, -- Cutsom growth time in minutes false if you want to use the global growth time
+        growthTime = 45, -- Custom growth time in minutes false if you want to use the global growth time
         onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
         label = 'Coca Plant', -- Label for the plant
         zones = {}, -- Zones where the seed can be planted
@@ -289,6 +289,23 @@ Config.Plants = { -- Create seeds for drugs
             max = 2 -- Max amount of seeds
         },
         time = 3000 -- Time it takes to harvest in miliseconds
+    },
+    ['weed_blueberry_seed'] = {
+        label = 'Blueberry', -- Label for the plant
+        plantType = 'plantBlue', -- Choose plant types from (plant1, plant2, small_plant)
+        growthTime = false, -- Custom growth time in minutes false if you want to use the global growth time
+        onlyZone = false, -- Set to zone id if you want to plant this seed only in a specific zone 
+        zones = {'weed_zone_one', 'weed_zone_two'}, -- Zones where the seed can be planted
+        products = { -- Item the plant is going to produce when harvested with the max amount
+            ['weed_blueberry'] = {min = 1, max = 4},  
+            --['other_item'] = {min = 1, max = 2}
+        },
+        seed = {
+            chance = 50, -- Percent of getting back the seed
+            min = 1, -- Min amount of seeds
+            max = 2 -- Max amount of seeds
+        },
+        time = 3000, -- Time it takes to plant/harvest in miliseconds
     },
 }
 
@@ -570,10 +587,18 @@ Config.DrugDealers = {
         },
         items = {
             ['buying'] = { -- Items the dealer buys from you
-                ['weed_lemonhaze'] = {min = 100, max = 200, moneyType = 'cash'}, -- min/max price
+                ['weed_og'] = {min = 100, max = 200, moneyType = 'cash'}, -- min/max price
+                ['weed_lemonhaze'] = {min = 200, max = 300, moneyType = 'cash'}, -- min/max price
+                ['weed_purple_haze'] = {min = 300, max = 400, moneyType = 'cash'}, -- min/max price
+                ['weed_white_widow'] = {min = 400, max = 500, moneyType = 'cash'}, -- min/max price
+                ['weed_blueberry'] = {min = 500, max = 600, moneyType = 'cash'}, -- min/max price
             },
             ['selling'] = { -- Items the dealer sells to you
-                ['weed_lemonhaze_seed'] = {min = 100, max = 200, moneyType = 'bank'}, -- min/max price
+                ['weed_og_seed'] = {min = 100, max = 200, moneyType = 'bank'}, -- min/max price
+                ['weed_lemonhaze_seed'] = {min = 300, max = 400, moneyType = 'black_money'},
+                ['weed_purple_haze_seed'] = {min = 400, max = 500, moneyType = 'black_money'},
+                ['weed_white_widow_seed'] = {min = 500, max = 600, moneyType = 'black_money'},
+                ['weed_blueberry_seed'] = {min = 600, max = 700, moneyType = 'black_money'},
                 ['coca_seed'] = {min = 100, max = 300, moneyType = 'black_money'},
             },
         },
