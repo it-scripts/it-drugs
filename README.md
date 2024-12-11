@@ -65,7 +65,7 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-[![Drugs Documentation Banner](https://i.imgur.com/x00BnXb.png)](https://help.it-scripts.com/scripts/it-drugs)
+[![Drugs Documentation Banner](https://i.imgur.com/x00BnXb.png)](https://docs.it-scripts.com/)
 
 ## You can find the install guide in the [documentation](https://help.it-scripts.com/scripts/it-drugs)
 <br>
