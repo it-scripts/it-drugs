@@ -52,8 +52,14 @@ RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
     local price = args.price
     local action = args.action
 
+    local _description
+    if action == "buy" then
+        _description = _U('INPUT__BUY__DESCRIPTION'):format(itemLabel)
+    else
+        _description = _U('INPUT__SELL__DESCRIPTION'):format(itemLabel)
+    end
     local input = lib.inputDialog(_U('INPUT__BUY__HEADER'), {
-        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _U('INPUT__BUY__DESCRIPTION'):format(itemLabel), required = true, min = 1}
+        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _description, required = true, min = 1}
     })
 
     if not input then
