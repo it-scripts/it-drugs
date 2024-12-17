@@ -99,9 +99,6 @@ Locales['de'] = {
     ['MENU__TABLE__DESTROY'] = 'Tisch zerstören',
     ['MENU__TABLE__DESTROY__DESC'] = 'Zerstöre diesen Tisch',
 
-    ['NOTIFICATION__NO__MONEY'] = 'Du hast nicht genug Geld dabei!',
-    ['NOTIFICATION__BUY__SUCCESS'] = 'Du hast erfolgreich etwas %s gekauft.',
-
     ['NOTIFICATION__IN__VEHICLE'] = 'Das geht nicht mit einem Fahrzeug',
     ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich ersteinmal um deinen aktuellen Pflanzen',
     ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
@@ -118,6 +115,9 @@ Locales['de'] = {
 
     ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Du hast erflogreich %gx %s für %g verkauft',
     ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Du hast erflogreich %gx %s für %g gekauft',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'Du hast erfolgreich etwas %s gekauft.',
+    ['NOTIFICATION__NO__MONEY'] = 'Du hast nicht genug Geld dabei!',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'Du hast nicht genug Items zum verkaufen!',
 
     ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
     ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist gerade nicht interessiert!',
@@ -166,6 +166,7 @@ Locales['de'] = {
     ['INPUT__BUY__HEADER'] = 'Kaufen',
     ['INPUT__BUY__TEXT'] = 'Anzahl',
     ['INPUT__BUY__DESCRIPTION'] = 'Wie viel %s möchtest du Kaufen?',
+    ['INPUT__SELL__DESCRIPTION'] = 'Wie viel %s möchtest du Verkaufen?',
 
     ['INPUT__AMOUNT__HEADER'] = 'Verarbeiten',
     ['INPUT__AMOUNT__TEXT'] = 'Menge',

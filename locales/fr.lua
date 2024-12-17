@@ -112,8 +112,9 @@ Locales['fr'] = {
 
     ['NOTIFICATION__NO__MONEY'] = 'Vous n\'avez pas assez d\'argent sur vous',
     ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Vous avez vendu %gx %s avec succès pour $%g',
-['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Vous avez acheté %gx %s avec succès pour $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Vous avez acheté %gx %s avec succès pour $%g',
     ['NOTIFICATION__BUY__SUCCESS'] = 'Vous avez acheté avec succès du %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'Vous n´avez pas assez d´articles à vendre',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'Vous ne pouvez pas faire cela dans un véhicule',
     ['NOTIFICATION__CANT__PLACE'] = 'Vous ne pouvez pas faire cela ici',
@@ -179,7 +180,8 @@ Locales['fr'] = {
 
     ['INPUT__BUY__HEADER'] = 'Achat',
     ['INPUT__BUY__TEXT'] = 'Quantité',
-    ['INPUT__BUY__DESCRIPTION'] = 'Combien de %s voulez-vous acheter ?',
+    ['INPUT__BUY__DESCRIPTION'] = 'Combien de %s voulez-vous acheter?',
+    ['INPUT__SELL__DESCRIPTION'] = 'Combien de %s voulez-vous vendre?',
 
     ['TARGET__DEALER__LABLE'] = 'Vérifier le dealer',
     ['TARGET__PLANT__LABEL'] = 'Vérifier la plante',

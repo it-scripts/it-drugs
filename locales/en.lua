@@ -27,8 +27,6 @@ Locales['en'] = {
     ['MENU__ITEM'] = 'Items',
     ['MENU__ITEM__DESC'] = 'Use this item to take care of your plant',
 
-    
-    
     ['MENU__PROCESSING'] = 'Proccessing',
     ['MENU__RECIPE__DESC'] = 'Process your drugs with this recipe',
 
@@ -116,8 +114,9 @@ Locales['en'] = {
 
     ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'You have successfully sold %gx %s for $%g',
     ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'You have successfully bought %gx %s for $%g',
-    ['NOTIFICATION__NO__MONEY'] = 'You don´t have enought money on you',
-    ['NOTIFICATION__BUY__SUCCESS'] = 'You successfuly bought some %s',
+    ['NOTIFICATION__NO__MONEY'] = 'You don`t have enough money on you',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'You successfully bought some %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'You don`t have enough items to sell',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'You can´t do this in a Vehicle',
     ['NOTIFICATION__CANT__PLACE'] = 'You can´t do this here',
@@ -185,6 +184,7 @@ Locales['en'] = {
     ['INPUT__BUY__HEADER'] = 'Buying',
     ['INPUT__BUY__TEXT'] = 'Amount',
     ['INPUT__BUY__DESCRIPTION'] = 'How many %s do you want to buy?',
+    ['INPUT__SELL__DESCRIPTION'] = 'How many %s do you want to sell?',
 
     ['TARGET__DEALER__LABLE'] = 'Check Dealer',
     ['TARGET__PLANT__LABEL'] = 'Check Plant',
