@@ -190,13 +190,3 @@ Locales['he'] = {
 
     ['COMMAND__GROUNDHASH__HELP'] = 'קבל את ה-hash הקרקע הנוכחי'
 }
-
-function _U(string)
-    if Locales[Config.Language] == nil then
-        return "Language not found"
-    end
-    if Locales[Config.Language][string] == nil then
-        return string
-    end
-    return Locales[Config.Language][string]
-end
