@@ -110,13 +110,17 @@ Locales['he'] = {
     ['MENU__TABLE__DESTROY'] = 'השמד שולחן',
     ['MENU__TABLE__DESTROY__DESC'] = 'השמד את השולחן הזה',
 
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'מכרת בהצלחה %gx %s תמורת $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'קנית בהצלחה %gx %s עבור $%g',
+    ['NOTIFICATION__NO__MONEY'] = 'אין לך מספיק כסף עליך',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'קנית בהצלחה כמה %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'אין לך מספיק פריטים למכור',
+
     ['NOTIFICATION__IN__VEHICLE'] = 'אתה לא יכול לעשות את זה ברכב',
     ['NOTIFICATION__CANT__PLACE'] = 'אתה לא יכול לעשות את זה כאן',
     ['NOTIFICATION__TO__NEAR'] = 'אתה לא יכול לשתול את זה ליד צמח אחר',
     ['NOTIFICATION__CANCELED'] = '...בוטל',
     ['NOTIFICATION__NO__ITEMS'] = 'אין לך פריטים לטפל בצמח הזה',
-    ['NOTIFICATION__NO__MONEY'] = 'אין לך מספיק כסף עליך',
-    ['NOTIFICATION__BUY__SUCCESS'] = 'רכשת בהצלחה קצת %s',
     ['NOTIFICATION__DRUG__COOLDOWN'] = 'עליך להמתין לפני שתוכל לקחת שוב את הסם הזה',
     ['NOTIFICATION__NO__AMOUNT'] = 'אתה צריך להזין סכום',
 
@@ -170,9 +174,11 @@ Locales['he'] = {
     ['INPUT__AMOUNT__HEADER'] = 'מעבד',
     ['INPUT__AMOUNT__TEXT'] = 'כמות',
     ['INPUT__AMOUNT__DESCRIPTION'] = '?כמה אתה רוצה לעבד',
+    
     ['INPUT__BUY__HEADER'] = 'רכישה',
     ['INPUT__BUY__TEXT'] = 'כמות',
     ['INPUT__BUY__DESCRIPTION'] = '?כמה %s אתה רוצה לקנות',
+    ['INPUT__SELL__DESCRIPTION'] = 'כמה %s אתה רוצה למכור?',
 
     ['TARGET__PLANT__LABEL'] = 'בדוק צמח',
     ['TARGET__TABLE__LABEL'] = 'השתמש בשולחן',
