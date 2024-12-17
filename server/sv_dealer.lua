@@ -136,7 +136,7 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
             ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__SUCCESS'):format(amount, it.getItemLabel(source, item), total), 'success')
         end
     else
-        ShowNotification(src, _U('NOTIFICATION__NO__ITEM'), 'error')
+        ShowNotification(src, _U('NOTIFICATION__DEALER__NO__ITEM'), 'error')
     end
     TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)
 end)
