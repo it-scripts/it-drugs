@@ -118,6 +118,7 @@ Locales['nl'] = {
     ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Je heb met succes gekocht %gx %s voor $%g',
     ['NOTIFICATION__NO__MONEY'] = 'Je heb niet genoeg geld opzak',
     ['NOTIFICATION__BUY__SUCCESS'] = 'Je heb met succes gekocht %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'U hebt niet genoeg items om te verkopen',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'Je kan dit niet in een auto doen',
     ['NOTIFICATION__CANT__PLACE'] = 'Dit mag je hier niet doen',
@@ -185,6 +186,7 @@ Locales['nl'] = {
     ['INPUT__BUY__HEADER'] = 'Kopen',
     ['INPUT__BUY__TEXT'] = 'Aantal',
     ['INPUT__BUY__DESCRIPTION'] = 'hoeveel %s wil je kopen?',
+    ['INPUT__SELL__DESCRIPTION'] = 'Hoeveel %s wilt u verkopen?',
 
     ['TARGET__DEALER__LABLE'] = 'Check Dealer',
     ['TARGET__PLANT__LABEL'] = 'Check Plant',
@@ -196,13 +198,3 @@ Locales['nl'] = {
 
     ['COMMAND__GROUNDHASH__HELP'] = 'Get the current ground hash'
 }
-
-function _U(string)
-	if Locales[Config.Language] == nil then
-		return "Language not found"
-	end
-	if Locales[Config.Language][string] == nil then
-		return string
-	end
-	return Locales[Config.Language][string]
-end

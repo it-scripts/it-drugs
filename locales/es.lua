@@ -104,6 +104,7 @@ Locales['es'] = {
     ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Has vendido con éxito %gx %s por $%g',
     ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Has comprado %gx %s por $%g',
     ['NOTIFICATION__BUY__SUCCESS'] = 'Has comprado con éxito algunos %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'No tiene suficientes artículos para vender',
 
     ['NOTIFICATION__IN__VEHICLE'] = 'No puedes hacer esto en un vehículo.',
     ['NOTIFICATION__CANT__PLACE'] = 'No puedes hacer esto aquí.',
@@ -169,6 +170,7 @@ Locales['es'] = {
     ['INPUT__BUY__HEADER'] = 'Compra',
     ['INPUT__BUY__TEXT'] = 'Cantidad',
     ['INPUT__BUY__DESCRIPTION'] = '¿Cuántos %s quieres comprar?',
+    ['INPUT__SELL__DESCRIPTION'] = '¿Cuántos %s quiere vender?',
 
     ['TARGET__PLANT__LABEL'] = 'Ver Planta',
     ['TARGET__TABLE__LABEL'] = 'Usar Mesa',

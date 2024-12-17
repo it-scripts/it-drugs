@@ -45,8 +45,13 @@ CreateThread(function()
 				if zone:contains(pedCoords) then
 					if currentZone ~= k then
 						zone:onEnter()
+						if Config.Debug then lib.print.info("Entered Zone ["..k.."]") end
 					end
 					if Config.Debug then lib.print.info("Inside Zone ["..k.."]") end
+				elseif currentZone == k then
+					zone:onExit()
+					currentZone = nil
+					if Config.Debug then lib.print.info("Exited Zone ["..k.."]") end
 				end
 			end
 		end
