@@ -66,7 +66,7 @@ if Config.EnableDrugs then
     else
         for drug, _ in pairs(Config.Drugs) do
             exports(drug, function(event, item, inventory, slot, data)
-                if event == 'usedItem' then
+                if event == 'usedItem' or event == 'usingItem' then -- EVENT MIGHT BE usingItem
                     local src = inventory.id
                     local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
                     if Config.Debug then lib.print.info('currentDrug', currentDrug) end
@@ -79,6 +79,7 @@ if Config.EnableDrugs then
                         end
 
                         TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
+                        exports.ox_inventory:RemoveItem(src, item, 1, nil, slot) -- ADDED THIS ONE TO REMOVE ITEM, on ox_inventory consume = 0
                        
                     else
                         ShowNotification(src, _U('NOTIFICATION__DRUG__ALREADY'), "info")
