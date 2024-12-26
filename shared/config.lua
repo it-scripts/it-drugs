@@ -321,7 +321,7 @@ Config.ProcessingTables = { -- Create processing table
         label = 'Weed Processing Table', -- Label for the table
         model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         recipes = {
-            ['joint Lemon haze'] = {
+            ['joint_lemon_haze'] = {
                 label = 'Joint lemon haze',
                 ingrediants = {
                     ['weed_lemonhaze'] = {amount = 3, remove = true},
@@ -345,7 +345,7 @@ Config.ProcessingTables = { -- Create processing table
                     scale = 0.5,
                 },
             },
-            ['joint Og'] = {
+            ['joint_og'] = {
                 label = 'Joint og kush',
                 ingrediants = {
                     ['weed_og'] = {amount = 3, remove = true},
