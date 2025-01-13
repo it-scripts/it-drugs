@@ -191,7 +191,7 @@ Locales['de'] = {
     ['TARGET__TABLE__LABEL'] = 'Tisch benutzen',
     ['TARGET__SELL__LABEL'] = 'Sprechen',
 
-    ['COMMAND__ADMINMENU'] = 'drogenadmin',
+    ['COMMAND__ADMINMENU'] = 'drugadmin',
     ['COMMAND__GROUNDHASH'] = 'getGroundHash',
 
     ['COMMAND__GROUNDHASH__HELP'] = 'Aktuellen Ground-Hash abrufen'
