@@ -178,6 +178,9 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+        if it.inventory == 'ox' then
+            it.giveItem(plantItem, 1, metadata)
+        end
     end
 
     TriggerEvent('it-drugs:client:syncRestLoop', false)
@@ -253,6 +256,9 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
                 lib.hideTextUI()
                 planted = true
                 DeleteObject(plant)
+                if it.inventory == 'ox' then
+                    it.giveItem(plantItem, 1, metadata)
+                end
                 return
             end
         else
@@ -275,6 +281,9 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
                 lib.hideTextUI()
                 DeleteObject(plant)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
+                if it.inventory == 'ox' then
+                    it.giveItem(plantItem, 1, metadata)
+                end
                 return
             end
         end
