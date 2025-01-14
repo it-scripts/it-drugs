@@ -290,7 +290,7 @@ lib.callback.register('it-drugs:server:getPlantByOwner', function(source)
     end
     
     -- If the player does not own any plants, return nil
-    if #temp == 0 then
+    if next(temp) == nil then
         if Config.Debug then lib.print.info('[getPlantsOwned] - Player:', src, 'does not own any plants') end
         return nil
     end
