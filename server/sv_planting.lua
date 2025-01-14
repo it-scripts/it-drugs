@@ -496,8 +496,13 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
-    if it.removeItem(src, plantItem, 1, metadata) then
-        
+    local itemRemoved = false
+    if it.inventory == 'ox' then
+        itemRemoved = true
+    else
+        itemRemoved = it.removeItem(src, plantItem, 1, metadata)
+    end
+    if itemRemoved then
         local time = os.time()
         local owner = it.getCitizenId(src)
 
