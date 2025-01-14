@@ -52,8 +52,7 @@ function it.hasItem(source, item, amount, metadata)
 	end
 
     -- Error Messages when the function fails --
-    lib.print.error('[' ..it.name..' | hasItem] There was an error while cheching if the player has the item ' .. item .. ' in the inventory. [ERR-INV-01]')
-    lib.print.error('[' ..it.name..' | hasItem] Need more information about this error? Look here https://help.it-scripts.com/errors/inventory')
+    lib.print.error('[' ..it.name..' | hasItem] There was an error while cheching if the player has the item ' .. item .. ' in the inventory.')
     return false
 end
 
@@ -106,8 +105,7 @@ function it.giveItem(source, item, amount, metadata)
 	end
 
     -- Error Messages when the function fails --
-    lib.print.error('[bridge | giveItem] There was an error while giving the player the item ' .. item .. ' in the inventory. [ERR-INV-02]')
-    lib.print.error('[bridge | giveItem] Need more information about this error? Look here https://help.it-scripts.com/errors/inventory')
+    lib.print.error('[bridge | giveItem] There was an error while giving the player the item ' .. item .. ' in the inventory.')
     return false
 end
 
@@ -175,8 +173,7 @@ function it.removeItem(source, item, amount, metadata)
 	end
 
     -- Error Messages when the function fails --
-    lib.print.error('[bridge | removeItem] There was an error while removing the item ' .. item .. ' from the inventory. [ERR-INV-03]')
-    lib.print.error('[bridge | removeItem] Need more information about this error? Look here https://help.it-scripts.com/errors/inventory')
+    lib.print.error('[bridge | removeItem] There was an error while removing the item ' .. item .. ' from the inventory.')
     return false
 end
 
@@ -226,7 +223,7 @@ function it.getItemCount(source, item, metadata)
     if it.inventory == 'ox' then
         local itemData = ox_inventory:GetItem(source, item, nil, true)
         if itemData then return itemData else
-            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory. [ERR-INV-04]')
+            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory.')
             return 0
         end
     end
@@ -234,7 +231,7 @@ function it.getItemCount(source, item, metadata)
     if it.inventory == 'origen' then
         local itemCount = origen_inventory:GetItemCount(source, item, metadata or nil, true)
         if itemCount then return itemCount else
-            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory. [ERR-INV-05]')
+            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory.')
             return 0
         end
     end
@@ -242,7 +239,7 @@ function it.getItemCount(source, item, metadata)
     if it.inventory == 'codem' then
         local itemCount = exports['codem-inventory']:GetItemAmount(source, item)
         if itemCount then return itemCount else
-            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory. [ERR-INV-06]')
+            lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory.')
             return 0
         end
     end
@@ -262,7 +259,7 @@ function it.getItemCount(source, item, metadata)
 		if itemData then return itemData.count else return 0 end
 	end
 
-    lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory. [ERR-INV-07]')
+    lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory.')
     return 0
 end
 

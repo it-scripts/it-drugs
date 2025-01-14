@@ -56,3 +56,14 @@ function ShowProgressBar(progressBarData)
         return false
     end
 end
+
+--- Regenerates player food
+function FoodRegen()
+    -- QBCore Example
+    -- TriggerEvent("QBCore:Server:SetMetaData", "hunger", 40000)
+    --TriggerEvent("QBCore:Server:SetMetaData", "thirst", 20000)
+
+    -- ESX Example
+    -- TriggerEvent('esx_status:set', 'hunger', 1000000)
+    -- TriggerEvent('esx_status:set', 'thirst', 1000000)
+end

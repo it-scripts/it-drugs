@@ -290,7 +290,7 @@ lib.callback.register('it-drugs:server:getPlantByOwner', function(source)
     end
     
     -- If the player does not own any plants, return nil
-    if #temp == 0 then
+    if next(temp) == nil then
         if Config.Debug then lib.print.info('[getPlantsOwned] - Player:', src, 'does not own any plants') end
         return nil
     end
@@ -496,8 +496,13 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
-    if it.removeItem(src, plantItem, 1, metadata) then
-        
+    local itemRemoved = false
+    if it.inventory == 'ox' then
+        itemRemoved = true
+    else
+        itemRemoved = it.removeItem(src, plantItem, 1, metadata)
+    end
+    if itemRemoved then
         local time = os.time()
         local owner = it.getCitizenId(src)
 

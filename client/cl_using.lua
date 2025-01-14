@@ -7,8 +7,7 @@ local drugEffects = {
     ['moreStrength'] = false,
     ['healthRegen'] = false,
     ['foodRegen'] = false,
-    ['fullArmor'] = false,
-    ['halfArmor'] = false,
+    ['armor'] = false,
     ['drunkWalk'] = false,
     ['psycoWalk'] = false,
     ['outOfBody'] = false,
@@ -34,6 +33,10 @@ local setDrugEffects = function(effects)
     if Config.Debug then lib.print.info('Drug Effects:', effects) end
     local ped = PlayerPedId()
     for _, effect in pairs(effects) do
+
+        -- regex 'armor-([0-9]+)' to get the armor value
+        local armor = effect:match('armor%-([0-9]+)') -- armor-99
+        if armor then effect = 'armor' end
 
         if drugEffects[effect] == nil then if Config.Debug then lib.print.error('[setDrugEffects] | unable to find effect', effect) end return end
         drugEffects[effect] = true
@@ -85,10 +88,10 @@ local setDrugEffects = function(effects)
             CreateThread(function()
                 AnimpostfxPlay("FocusIn", 100000, true)
             end)
-        elseif effect == "halfArmor" then
-            SetPedArmour(ped, GetPedArmour(ped) + 50)
-        elseif effect == "fullArmor" then
-            SetPedArmour(ped, 100)
+        elseif effect == "armor" then
+            -- get armor value from the effect
+            local armorValue = tonumber(armor)
+            SetPedArmour(ped, GetPedArmour(ped) + armorValue)
         end
     end
     if Config.Debug then lib.print.info('Drug Effects:', drugEffects) end
@@ -219,15 +222,7 @@ end)
 CreateThread(function()
     while true do
         if drugEffects['foodRegen'] then
-            if it.getCoreName() == "qb-core" then
-                TriggerEvent("QBCore:Server:SetMetaData", "hunger", 40000)
-                TriggerEvent("QBCore:Server:SetMetaData", "thirst", 20000)
-                Wait(4000)
-            elseif it.getCoreName() == "esx" then
-                TriggerEvent("esx_status:set", "hunger", 100000)
-                TriggerEvent("esx_status:set", "thirst", 100000)
-                Wait(4000)
-            end
+            FoodRegen()
         else
             Wait(5000)
         end
