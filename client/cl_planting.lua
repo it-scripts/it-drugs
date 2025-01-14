@@ -207,8 +207,19 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
     if Config.Debug then lib.print.info('Owned Plants: ', ownedPlants) end-- DEBUG
 
     if ownedPlants ~= nil then
-        if #ownedPlants >= Config.PlayerPlantLimit then
+
+        local plantCount = 0
+        for _, plant in pairs(ownedPlants) do
+            if plant.seed == plantItem then
+                plantCount = plantCount + 1
+            end
+        end
+
+        if plantCount >= Config.PlayerPlantLimit then
             ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "error")
+            if it.inventory == 'ox' then
+                it.giveItem(plantItem, 1, metadata)
+            end
             return
         end
     end
