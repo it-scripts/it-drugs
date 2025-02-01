@@ -59,7 +59,7 @@ RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
         _description = _U('INPUT__SELL__DESCRIPTION'):format(itemLabel)
     end
     local input = lib.inputDialog(_U('INPUT__BUY__HEADER'), {
-        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _description, required = true, min = 1}
+        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _description, required = true, min = 1, default = 1, max = 10}
     })
 
     if not input then
