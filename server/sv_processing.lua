@@ -406,13 +406,8 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
 
     if not player then if Config.Debug then lib.print.error("No Player") end return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
-    local itemRemoved = false
-    if it.inventory == 'ox' then
-        itemRemoved = true
-    else
-        itemRemoved = it.removeItem(src, type, 1, metadata)
-    end
-    if itemRemoved then
+    
+    if it.removeItem(src, type, 1, metadata) then
 
         local id = it.generateCustomID(8)
         while processingTables[id] do

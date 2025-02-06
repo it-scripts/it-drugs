@@ -61,9 +61,6 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-        if it.inventory == 'ox' then
-            it.giveItem(tableItem, 1, metadata)
-        end
     end
     TriggerEvent('it-drugs:client:syncRestLoop', false)
 end
@@ -132,9 +129,6 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
                 lib.hideTextUI()
                 DeleteObject(table)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
-                if it.inventory == 'ox' then
-                    it.giveItem(tableItem, 1, metadata)
-                end
                 return
             end
         else
@@ -160,9 +154,6 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
                 lib.hideTextUI()
                 DeleteObject(table)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
-                if it.inventory == 'ox' then
-                    it.giveItem(tableItem, 1, metadata)
-                end
                 return
             end
         end
