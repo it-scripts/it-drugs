@@ -109,7 +109,6 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     local zone = checkforZones(coords, plantInfos.zones)
     if Config.Debug then lib.print.info('[plantSeed] - current Zone:', zone) end -- DEBUG
     if plantInfos.onlyZone then
-        zone = checkforZones(coords, plantInfos.zones)
         if zone == nil then
             ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "Error")
             DeleteObject(plant)
