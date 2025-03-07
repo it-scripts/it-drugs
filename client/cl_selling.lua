@@ -126,9 +126,9 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 
 	if Config.SellSettings['onlyAvailableItems'] then
 		local availabeItems = {}
-		for _, itemData in pairs(zoneConfig.drugs) do
-			if exports.it_bridge:HasItem(itemData.item)then
-				table.insert(availabeItems, itemData)
+		for itemName, itemData in pairs(zoneConfig.drugs) do
+			if exports.it_bridge:HasItem(itemName)then
+				table.insert(availabeItems, {item = itemName, price = itemData.price, moneyType = itemData.moneyType})
 			end
 		end
 
@@ -141,17 +141,31 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		-- seed math random
 		math.randomseed(GetGameTimer())
 		sellItemData = availabeItems[math.random(1, #availabeItems)]
-		playerItems = exports.it_bridge:HasItem(sellItemData.item)
+		playerItems = exports.it_bridge:GetItemCount(sellItemData.item)
 	else
-		sellItemData = zoneConfig.drugs[math.random(1, #zoneConfig.drugs)]
-		playerItems = exports.it_bridge:HasItem(sellItemData.item)
+		-- Function to get a random key from a table
+		local function getRandomTableKey(tbl)
+			local keys = {}
+			for k in pairs(tbl) do
+				table.insert(keys, k)
+			end
+			return keys[math.random(1, #keys)]
+		end
+		-- Select a random drug from the zone's available drugs
+		local randomDrugKey = getRandomTableKey(zoneConfig.drugs)
+		sellItemData = {
+			item = randomDrugKey,
+			price = zoneConfig.drugs[randomDrugKey].price,
+			moneyType = zoneConfig.drugs[randomDrugKey].moneyType
+		}
+
+		playerItems = exports.it_bridge:GetItemCount(sellItemData.item)
 		if playerItems == 0 then
 			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'Error')
 			SetPedAsNoLongerNeeded(entity)
 			return
 		end
 	end
-	
 	if playerItems < sellAmount then
 		sellAmount = playerItems
 	end
@@ -172,6 +186,7 @@ end)
 
 -- \ event handler to server (execute server side)
 RegisterNetEvent('it-drugs:client:salesInitiate', function(cad)
+	cad.zone = currentZone
 	AddSoldPed(cad.tped)
 	if cad.type == 'close' then
 		ShowNotification(nil, _U('NOTIFICATION__OFFER__REJECTED'), 'Error')

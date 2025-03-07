@@ -171,7 +171,6 @@ Config.PlantTypes = {
 }
 
 Config.Plants = { -- Create seeds for drugs
-
     ['weed_lemonhaze_seed'] = {
         label = 'Lemon Haze', -- Label for the plant
         plantType = 'plantLemon', -- Choose plant types from (plant1, plant2, small_plant)
@@ -460,9 +459,9 @@ Config.SellSettings = {
 Config.SellEverywhere = {
     ['enabled'] = false, -- Allow selling drugs everywhere
     drugs = {
-        { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-        { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-        { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+        ['cocaine'] = {price = math.random(100, 200), moneyType = 'bank'},
+        ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+        ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
     }
 }
 
@@ -477,9 +476,9 @@ Config.SellZones = {
         },
         thickness = 27,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['vinewood'] = {
@@ -498,9 +497,9 @@ Config.SellZones = {
         },
         thickness = 59.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['beach'] = {
@@ -517,9 +516,9 @@ Config.SellZones = {
         },
         thickness = 4.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
 }
@@ -592,5 +591,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = true -- Set to true to enable debug mode
+Config.Debug = false -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

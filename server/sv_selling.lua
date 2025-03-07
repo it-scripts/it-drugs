@@ -1,14 +1,21 @@
 local getCopsAmount = function()
 	local copsAmount = 0
 	local onlinePlayers = exports.it_bridge:GetPlayers()
+	if Config.Debug then lib.print.info('Online Players: ', #onlinePlayers) end
 	for i=1, #onlinePlayers do
 		local player = exports.it_bridge:GetPlayer(onlinePlayers[i])
 		if player then
 			local job = exports.it_bridge:GetPlayerJob(player)
+			if Config.Debug then lib.print.info('Player', onlinePlayers[i],  'Job: ', job.name) end
 			for _, v in pairs(Config.PoliceJobs) do
 				if job.name == v then
-					if Config.OnlyCopsOnDuty and not job.onduty then return end
-					copsAmount = copsAmount + 1
+					if Config.OnlyCopsOnDuty then
+						if job.onDuty then
+							copsAmount = copsAmount + 1
+						end
+					else
+						copsAmount = copsAmount + 1
+					end
 				end
 			end
 		end
@@ -41,7 +48,14 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 				if stealChance < Config.SellSettings['stealChance'] then
 					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'Error')
 				else
-					exports.it_bridge:AddMoney(src, "cash", price, "Money from Drug Selling")
+					local moneyType = 'cash'
+					if Config.SellEverywhere['enabled'] then
+						moneyType = Config.SellEverywhere.drugs[cad.item].moneyType or 'cash'
+					else
+						moneyType = Config.SellZones[cad.zone].drugs[cad.item].moneyType or 'cash'
+					end
+
+					exports.it_bridge:AddMoney(src, moneyType, price, "Money from Drug Selling")
 					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'Success')
 				end
 				local coords = GetEntityCoords(GetPlayerPed(src))
@@ -57,6 +71,5 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 end)
 
 lib.callback.register('it-drugs:server:getCopsAmount', function(source)
-	local copsAmount = getCopsAmount()
-	return copsAmount
+	return getCopsAmount()
 end)
