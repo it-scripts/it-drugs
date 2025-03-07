@@ -10,23 +10,6 @@ Locales = Locales or {}
 -- └───────────────────────────────────┘
 
 --[[
-    Overwelmed by the amount of settings? Don't worry, we got you covered.
-    Here is a quick guide to get you started with the configuration of the script.
-    https://help.it-scripts.com/scripts/it-drugs/installation
-]]
-
---[[
-    The first thing to do is to set which framework, inventory and target system the server uses
-    The system will automatically detect the framework, inventory and target system if you set it to 'autodetect'
-    If you are using a custom framework, inventory or target system contact the developer or add support yourself by creating a pull request
-    If you need need more information about this configuration, you can read the documentation here: https://help.it-scripts.com/scripts/it-drugs
-]]
-
-Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
-Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
-Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
-
---[[
     Here you can set the language for the script, you can choose between 'en', 'es', 'de'
     If you want to add more languages, you can do this in the server/locales folder. 
     Feel free to share them with us so we can add them to the script for everyone to use.
@@ -609,5 +592,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = false -- Set to true to enable debug mode
+Config.Debug = true -- Set to true to enable debug mode
 Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

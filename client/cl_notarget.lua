@@ -69,7 +69,7 @@ RegisterNetEvent('it-drugs:client:syncTables', function(tableList)
     processingTables = tableList
 end)
 
-if Config.Target then return end
+if exports.it_bridge:GetServerInteraction() then return end
 CreateThread(function()
 
     plants = lib.callback.await('it-drugs:server:getPlants', false)
@@ -85,20 +85,20 @@ CreateThread(function()
             local closestDealer, dealerDistance = getClosestDealer(coords)
 
             if closestDealer and dealerDistance <= 2.0 then
-                it.DrawText3D(closestDealer.position.x, closestDealer.position.y, closestDealer.position.z + 0.5, 'Press ~g~E~w~ to interact with dealer')
+                DrawText3D(closestDealer.position.x, closestDealer.position.y, closestDealer.position.z + 0.5, _U('3DTEXT__DEALER__LABLE'))
                 if IsControlJustPressed(0, 38) then
                     TriggerEvent('it-drugs:client:showDealerActionMenu', closestDealer.id)
                 end
             else
                 if plantDistance > tableDistance then
                     if closestTable and tableDistance <= 2.0 then
-                        it.DrawText3D(closestTable.coords.x, closestTable.coords.y, closestTable.coords.z + 0.5, 'Press ~g~E~w~ to interact with table')
+                        DrawText3D(closestTable.coords.x, closestTable.coords.y, closestTable.coords.z + 0.5, _U('3DTEXT__TABLE__LABLE'))
                         if IsControlJustPressed(0, 38) then
                             TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = closestTable.id})
                         end
                     end
                 elseif closestPlant and plantDistance <= 2.0 then
-                    it.DrawText3D(closestPlant.coords.x, closestPlant.coords.y, closestPlant.coords.z + 0.5, 'Press ~g~E~w~ to interact with plant')
+                    DrawText3D(closestPlant.coords.x, closestPlant.coords.y, closestPlant.coords.z + 0.5, _U('3DTEXT__PLANT__LABLE'))
                     if IsControlJustPressed(0, 38) then
                         TriggerEvent('it-drugs:client:showPlantMenu', closestPlant)
                     end

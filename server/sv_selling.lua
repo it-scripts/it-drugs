@@ -1,13 +1,13 @@
 local getCopsAmount = function()
 	local copsAmount = 0
-	local onlinePlayers = it.getPlayers()
+	local onlinePlayers = exports.it_bridge:GetPlayers()
 	for i=1, #onlinePlayers do
-		local player = it.getPlayer(onlinePlayers[i])
+		local player = exports.it_bridge:GetPlayer(onlinePlayers[i])
 		if player then
-			local job = it.getPlayerJob(player)
+			local job = exports.it_bridge:GetPlayerJob(player)
 			for _, v in pairs(Config.PoliceJobs) do
 				if job.name == v then
-					if it.getCoreName() == "qb-core" and Config.OnlyCopsOnDuty and not job.onduty then return end
+					if Config.OnlyCopsOnDuty and not job.onduty then return end
 					copsAmount = copsAmount + 1
 				end
 			end
@@ -18,7 +18,7 @@ end
 
 RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 	local src = source
-	local Player = it.getPlayer(src)
+	local Player = exports.it_bridge:GetPlayer(src)
 	if Player then
 		local price = cad.price * cad.amount
 		if Config.SellSettings['giveBonusOnPolice'] then
@@ -34,24 +34,24 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 			end
 		end
 		price = math.floor(price)
-		if it.hasItem(src, cad.item, cad.amount) then
-			if it.removeItem(src, tostring(cad.item), cad.amount) then
+		if exports.it_bridge:HasItem(src, cad.item, cad.amount) then
+			if exports.it_bridge:RemoveItem(src, tostring(cad.item), cad.amount) then
 				math.randomseed(GetGameTimer())
 				local stealChance = math.random(0, 100)
 				if stealChance < Config.SellSettings['stealChance'] then
-					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'error')
+					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'Error')
 				else
-					it.addMoney(src, "cash", price, "Money from Drug Selling")
-					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'success')
+					exports.it_bridge:AddMoney(src, "cash", price, "Money from Drug Selling")
+					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'Success')
 				end
 				local coords = GetEntityCoords(GetPlayerPed(src))
 				SendToWebhook(src, 'sell', nil, ({item = cad.item, amount = cad.amount, price = price, coords = coords}))
 				if Config.Debug then print('You got ' .. cad.amount .. ' ' .. cad.item .. ' for $' .. price) end
 			else
-				ShowNotification(src, _U('NOTIFICATION__SELL__FAIL'):format(cad.item), 'error')
+				ShowNotification(src, _U('NOTIFICATION__SELL__FAIL'):format(cad.item), 'Error')
 			end
 		else
-			ShowNotification(src, _U('NOTIFICATION__NO__ITEM__LEFT'):format(cad.item), 'error')
+			ShowNotification(src, _U('NOTIFICATION__NO__ITEM__LEFT'):format(cad.item), 'Error')
 		end
 	end
 end)

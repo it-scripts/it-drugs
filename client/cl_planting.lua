@@ -82,7 +82,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         for _, v in pairs(plants) do
             local distance = #(vector3(coords.x, coords.y, coords.z) - vector3(v.coords.x, v.coords.y, v.coords.z))
             if distance <= Config.PlantDistance then
-                ShowNotification(nil, _U('NOTIFICATION__TO__NEAR'), "error")
+                ShowNotification(nil, _U('NOTIFICATION__TO__NEAR'), "Error")
                 DeleteObject(plant)
                 return
             end
@@ -100,7 +100,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         end
 
         if not canplant then
-            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
+            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "Error")
             DeleteObject(plant)
             return
         end
@@ -111,7 +111,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     if plantInfos.onlyZone then
         zone = checkforZones(coords, plantInfos.zones)
         if zone == nil then
-            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "error")
+            ShowNotification(nil, _U('NOTIFICATION__CANT__PLACE'), "Error")
             DeleteObject(plant)
             return
         end
@@ -121,13 +121,13 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         local givenItems = {}
         for item, itemData in pairs(plantInfos.reqItems["planting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            if not it.hasItem(item, itemData.amount or 1) then
-                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+            if not exports.it_bridge:HasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
                 DeleteObject(plant)
 
                 if #givenItems > 0 then
                     for _, item in pairs(givenItems) do
-                        it.giveItem(item)
+                        exports.it_bridge:GiveItem(item)
                     end
                 end
 
@@ -135,7 +135,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
                 return
             else
                 if itemData.remove then
-                    if it.removeItem(item, itemData.amount or 1) then
+                    if exports.it_bridge:RemoveItem(item, itemData.amount or 1) then
                         table.insert(givenItems, item)
                     end
                 end
@@ -174,7 +174,7 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -194,7 +194,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
 
     -- Check if the player is in a vehicle
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
-        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "Error")
         return
     end
 
@@ -213,11 +213,8 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
         end
 
         if plantCount >= Config.PlayerPlantLimit then
-            ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "error")
-            if it.inventory == 'ox' then
-                it.giveItem(plantItem, 1, metadata)
-            end
-            return
+            ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "Error")
+            
         end
     end
 
@@ -226,10 +223,11 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
 
-    -- TODO: Update the text and icon
-    lib.showTextUI(_U('INTERACTION__PLACING__TEXT'), {
-        position = "left-center",
-        icon = "spoon",
+    exports.it_bridge:ShowTextUI(_U('INTERACTION__PLACING__TEXT'), {
+        position = "left",
+        icon = "cannabis",
+        color = "info",
+        playSound = false,
     })
 
     -- Placing the plant on the ground and waiting for the player to press [E] to plant it
@@ -252,7 +250,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
             if IsControlJustPressed(0, 38) then
                 if Config.Debug then lib.print.info('Control 38 pressed') end -- DEBUG 
                 planted = true
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING__TEXT'))
 
                 plantSeed(ped, plant, plantInfos, plantItem, dest, metadata)
                 return
@@ -261,7 +259,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
             -- [G] To destroy plant
             if IsControlJustPressed(0, 47) then
                 if Config.Debug then lib.print.info('Control 47 pressed') end -- DEBUG
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING__TEXT'))
                 planted = true
                 DeleteObject(plant)
                 return
@@ -277,13 +275,13 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
                 planted = true
                 local coords = GetEntityCoords(plant)
                 plantSeed(ped, plant, plantInfos, plantItem, vector3(coords.x, coords.y, coords.z + (math.abs(customOffset))), metadata)
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING__TEXT'))
                 return
             end
             if IsControlJustPressed(0, 47) then
                 if Config.Debug then lib.print.info('Control 47 pressed') end -- DEBUG
                 planted = true
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING__TEXT'))
                 DeleteObject(plant)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
@@ -303,12 +301,12 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         local givenItems = {}
         for item, itemData in pairs(plantData.reqItems["harvesting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            if not it.hasItem(item, itemData.amount or 1) then
-                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+            if not exports.it_bridge:HasItem(item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
 
                 if #givenItems > 0 then
                     for _, item in pairs(givenItems) do
-                        it.giveItem(item)
+                        exports.it_bridge:GiveItem(item)
                     end
                 end
 
@@ -316,7 +314,7 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
                 return
             else
                 if itemData.remove then
-                    if it.removeItem(item, itemData.amount or 1) then
+                    if exports.it_bridge:RemoveItem(item, itemData.amount or 1) then
                         table.insert(givenItems, item)
                     end
                 end
@@ -355,7 +353,7 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -402,7 +400,7 @@ local giveWater = function(args)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
     else
-        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
@@ -444,7 +442,7 @@ local giveFertilizer = function(args)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     else
-        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     end
@@ -453,8 +451,8 @@ end
 RegisterNetEvent('it-drugs:client:useItem', function (args)
     local item = args.item
 
-    if not it.hasItem(item, 1) then
-        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "error")
+    if not exports.it_bridge:HasItem(item, 1) then
+        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
         return
     end
 
@@ -468,8 +466,8 @@ RegisterNetEvent('it-drugs:client:useItem', function (args)
 end)
 
 RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
-    if Config.ItemToDestroyPlant and not it.hasItem(Config.DestroyItemName, 1) then
-        ShowNotification(nil, _U('NOTIFICATION__NEED_LIGHTER'), "error")
+    if Config.ItemToDestroyPlant and not exports.it_bridge:HasItem(Config.DestroyItemName, 1) then
+        ShowNotification(nil, _U('NOTIFICATION__NEED_LIGHTER'), "Error")
         TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
@@ -509,7 +507,7 @@ RegisterNetEvent('it-drugs:client:destroyPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')

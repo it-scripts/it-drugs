@@ -126,17 +126,17 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
     local serverPrice = buyItemData.price * amount
 
     if total ~= serverPrice then
-        ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'error')
+        ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'Error')
         return
     end
 
-    if it.hasItem(src, item, amount) then
-        if it.removeItem(src, item, amount) then
-            it.addMoney(src, buyItemData.moneyType, total)
-            ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__SUCCESS'):format(amount, it.getItemLabel(source, item), total), 'success')
+    if exports.it_bridge:HasItem(src, item, amount) then
+        if exports.it_bridge:RemoveItem(src, item, amount) then
+            exports.it_bridge:AddMoney(src, buyItemData.moneyType, total)
+            ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__Success'):format(amount, exports.it_bridge:GetItemLabel(item), total), 'success')
         end
     else
-        ShowNotification(src, _U('NOTIFICATION__DEALER__NO__ITEM'), 'error')
+        ShowNotification(src, _U('NOTIFICATION__DEALER__NO__ITEM'), 'Error')
     end
     TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)
 end)
@@ -153,18 +153,18 @@ RegisterNetEvent('it-drugs:server:buyItemsFromDealer', function(dealerID, item, 
     local serverPrice = sellItemData.price * amount
 
     if total ~= serverPrice then
-        ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'error')
+        ShowNotification(src, _U('NOTIFICATION__PRICE__MISMATCH'), 'Error')
         return
     end
 
-    if it.getMoney(src, sellItemData.moneyType) < total then
-        ShowNotification(src, _U('NOTIFICATION__NO__MONEY'), 'error')
+    if exports.it_bridge:GetMoney(src, sellItemData.moneyType) < total then
+        ShowNotification(src, _U('NOTIFICATION__NO__MONEY'), 'Error')
         return
     end
 
-    if it.removeMoney(src, sellItemData.moneyType, total) then
-        it.giveItem(src, item, amount)
-        ShowNotification(src, _U('NOTIFICATION__DEALER__BUY__SUCCESS'):format(amount, it.getItemLabel(source, item), total), 'success')
+    if exports.it_bridge:RemoveMoney(src, sellItemData.moneyType, total) then
+        exports.it_bridge:GiveItem(src, item, amount)
+        ShowNotification(src, _U('NOTIFICATION__DEALER__BUY__SUCCESS'):format(amount, exports.it_bridge:GetItemLabel(item), total), 'Success')
     end
 
     TriggerClientEvent('it-drugs:client:syncRestLoop', source, false)

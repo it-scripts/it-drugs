@@ -81,14 +81,14 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	local copsAmount = lib.callback.await('it-drugs:server:getCopsAmount', false)
 
 	if copsAmount < Config.MinimumCops then
-		ShowNotification(nil, _U('NOTIFICATION__NOT__INTERESTED'), 'error')
+		ShowNotification(nil, _U('NOTIFICATION__NOT__INTERESTED'), 'Error')
 		if Config.Debug then lib.print.info('Not Enough Cops Online') end
 		return
 	end
 	
 	local isSoldtoPed = HasSoldPed(entity)
 	if isSoldtoPed then
-		ShowNotification(nil, _U('NOTIFICATION__ALLREADY__SPOKE'), 'error')
+		ShowNotification(nil, _U('NOTIFICATION__ALLREADY__SPOKE'), 'Error')
 		return
 	end
 
@@ -101,7 +101,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	local sellChance = math.random(0, 100)
 
 	if sellChance > Config.SellSettings['sellChance'] then
-		ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'error')
+		ShowNotification(nil, _U('NOTIFICATION__CALLING__COPS'), 'Error')
 		TaskUseMobilePhoneTimed(entity, 8000)
 		SetPedAsNoLongerNeeded(entity)
 		ClearPedTasks(PlayerPedId())
@@ -127,13 +127,13 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 	if Config.SellSettings['onlyAvailableItems'] then
 		local availabeItems = {}
 		for _, itemData in pairs(zoneConfig.drugs) do
-			if it.hasItem(itemData.item)then
+			if exports.it_bridge:HasItem(itemData.item)then
 				table.insert(availabeItems, itemData)
 			end
 		end
 
 		if #availabeItems == 0 then
-			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
+			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'Error')
 			SetPedAsNoLongerNeeded(entity)
 			return
 		end
@@ -141,12 +141,12 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		-- seed math random
 		math.randomseed(GetGameTimer())
 		sellItemData = availabeItems[math.random(1, #availabeItems)]
-		playerItems = it.getItemCount(sellItemData.item)
+		playerItems = exports.it_bridge:HasItem(sellItemData.item)
 	else
 		sellItemData = zoneConfig.drugs[math.random(1, #zoneConfig.drugs)]
-		playerItems = it.getItemCount(sellItemData.item)
+		playerItems = exports.it_bridge:HasItem(sellItemData.item)
 		if playerItems == 0 then
-			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'error')
+			ShowNotification(nil, _U('NOTIFICATION__NO__DRUGS'), 'Error')
 			SetPedAsNoLongerNeeded(entity)
 			return
 		end
@@ -162,7 +162,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		if lib.getOpenContextMenu() ~= nil then
 			local currentMenu = lib.getOpenContextMenu()
 			if currentMenu == 'it-drugs-sell-menu' then
-				ShowNotification(nil, _U('NOTIFICATION__TO__LONG'), 'error')
+				ShowNotification(nil, _U('NOTIFICATION__TO__LONG'), 'Error')
 				lib.hideContext(false)
 				SetPedAsNoLongerNeeded(entity)
 			end
@@ -174,7 +174,7 @@ end)
 RegisterNetEvent('it-drugs:client:salesInitiate', function(cad)
 	AddSoldPed(cad.tped)
 	if cad.type == 'close' then
-		ShowNotification(nil, _U('NOTIFICATION__OFFER__REJECTED'), 'error')
+		ShowNotification(nil, _U('NOTIFICATION__OFFER__REJECTED'), 'Error')
 		SetPedAsNoLongerNeeded(cad.tped)
 	else
 		PlayGiveAnim(cad.tped)

@@ -57,7 +57,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -68,18 +68,21 @@ end
 RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, metadata)
     local ped = PlayerPedId()
     if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
-        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "Error")
         return
     end
 
     local hashModel = GetHashKey(Config.ProcessingTables[tableItem].model)
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
-    
-    lib.showTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
-        position = "left-center",
-        icon = "spoon",
+
+    exports.it_bridge:ShowTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
+        position = 'left',
+        icon = 'fa-info',
+        color = 'info',
+        playSound = true,
     })
+    
 
     -- Placing Table allways on the ground
     local hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
@@ -117,7 +120,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
 
             if IsControlJustPressed(0, 38) then
                 placed = true
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
 
                 DeleteObject(table)
                 placeProcessingTable(ped, tableItem, dest, rotation, metadata)
@@ -126,7 +129,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
 
             if IsControlJustPressed(0, 47) then
                 placed = true
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
                 DeleteObject(table)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
@@ -143,7 +146,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
             if IsControlJustPressed(0, 38) then
                 placed = true
                 local coords = GetEntityCoords(table)
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
                 DeleteObject(table)
                 placeProcessingTable(ped, tableItem, coords, heading, metadata)
                 return
@@ -151,7 +154,7 @@ RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, met
 
             if IsControlJustPressed(0, 47) then
                 placed = true
-                lib.hideTextUI()
+                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
                 DeleteObject(table)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
@@ -171,14 +174,14 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     })
 
     if not input then
-        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'Error')
         return
     end
 
     local amount = tonumber(input[1])
     for item, itemData in pairs(recipe.ingrediants) do
-        if not it.hasItem(item, itemData.amount * amount) then
-            ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+        if not exports.it_bridge:HasItem(item, itemData.amount * amount) then
+            ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'Error')
             proccessing = false
             TriggerEvent('it-drugs:client:syncRestLoop', false)
             return
@@ -207,11 +210,11 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         for i = 1, amount do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then
-                ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
+                ShowNotification(nil, _U('NOTIFICATION__SKILL__Success'), 'Success')
                 TriggerServerEvent('it-drugs:server:processDrugs', {tableId = args.tableId, recipeId = args.recipeId})
             else
                 proccessing = false
-                ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
+                ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'Error')
                 ClearPedTasks(ped)
                 RemoveAnimDict(recipe.animation.dict)
                 return
@@ -236,7 +239,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
             }) then
                 TriggerServerEvent('it-drugs:server:processDrugs', {tableId = args.tableId, recipeId = args.recipeId})
             else
-                ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+                ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
                 ClearPedTasks(ped)
                 RemoveAnimDict(recipe.animation.dict)
                 proccessing = false
@@ -293,7 +296,7 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')

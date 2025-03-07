@@ -18,21 +18,44 @@ function ShowNotification(source, message, type)
     -- Bridge.Functions.Notify(message, type) are the default Framework notifications
     -- You can change this to your own notification systems
     if source ~= nil then -- Server Messages
-        if type == 'error' then
-            it.notify(source, message, "error")
-        elseif type == 'success' then
-            it.notify(source, message, "success")
+        if type == 'Error' then
+            exports.it_bridge:SendNotification(source, 'it-drugs', message, 5000, "Error", true)
+        elseif type == 'Success' then
+            exports.it_bridge:SendNotification(source, 'it-drugs', message, 5000, "Success", true)
         else
-            it.notify(source, message)
+            exports.it_bridge:SendNotification(source, 'it-drugs', message, 5000, "Info", false)
         end
     else -- Client Messages
-        if type == 'error' then
-            it.notify(message, "error")
-        elseif type == 'success' then
-            it.notify(message, "success")
+        if type == 'Error' then
+            exports.it_bridge:SendNotification('it-drugs', message, 5000, "Error", true)
+        elseif type == 'Success' then
+            exports.it_bridge:SendNotification('it-drugs', message, 5000, "Success", true)
         else
-            it.notify(message)
+            exports.it_bridge:SendNotification('it-drugs', message, 5000, "Info", false)
         end
+    end
+end
+
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local px, py, pz = table.unpack(GetGameplayCamCoord())
+    local dist = GetDistanceBetweenCoords(px, py, pz, x, y, z, 1)
+    local scale = (1 / dist) * 2
+    local fov = (1 / GetGameplayCamFov()) * 100
+    local scale = scale * fov
+    if onScreen then
+        SetTextScale(0.0, 0.35)
+        SetTextFont(4)
+        SetTextProportional(1)
+        SetTextColour(255, 255, 255, 215)
+        SetTextDropshadow(0, 0, 0, 0, 255)
+        SetTextEdge(2, 0, 0, 0, 150)
+        SetTextDropShadow()
+        SetTextOutline()
+        SetTextEntry('STRING')
+        SetTextCentre(1)
+        AddTextComponentString(text)
+        DrawText(_x, _y)
     end
 end
 

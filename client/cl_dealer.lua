@@ -47,7 +47,7 @@ end)
 RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
 
     local item = args.item
-    local itemLabel = it.getItemLabel(item)
+    local itemLabel = exports.it_bridge:GetItemLabel(item)
     local dealerId = args.dealerId
     local price = args.price
     local action = args.action
@@ -63,7 +63,7 @@ RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
     })
 
     if not input then
-        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'Error')
         return
     end
 

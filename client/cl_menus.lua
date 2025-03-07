@@ -51,8 +51,8 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
 
         for k, v in pairs(buyItems) do
             table.insert(options, {
-                title = it.getItemLabel(k),
-                description = _U('MENU__DEALER_SELL_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                title = exports.it_bridge:GetItemLabel(k),
+                description = _U('MENU__DEALER_SELL_ITEM__DESC'):format(exports.it_bridge:GetItemLabel(k), v.price),
                 icon = "coins",
                 arrow = true,
                 event = "it-drugs:client:handleDealerInteraction",
@@ -66,8 +66,8 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
 
         for k, v in pairs(sellItems) do
             table.insert(options, {
-                title = it.getItemLabel(k),
-                description = _U('MENU__DEALER_BUY_ITEM__DESC'):format(it.getItemLabel(k), v.price),
+                title = exports.it_bridge:GetItemLabel(k),
+                description = _U('MENU__DEALER_BUY_ITEM__DESC'):format(exports.it_bridge:GetItemLabel(k), v.price),
                 icon = "coins",
                 arrow = true,
                 event = "it-drugs:client:handleDealerInteraction",
@@ -76,7 +76,7 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
         end
 
     else
-        ShowNotification(nil, _U('NOTIFICATION__INVALID__ACTION'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__INVALID__ACTION'), 'Error')
         return
     end
 
@@ -333,9 +333,9 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
     local options = {}
     if eventType == 'water' then
         for item, itemData in pairs(Config.Items) do
-            if it.hasItem(item, 1) and itemData.water ~= 0 then
+            if exports.it_bridge:HasItem(item, 1) and itemData.water ~= 0 then
                 table.insert(options, {
-                    title = it.getItemLabel(item),
+                    title = exports.it_bridge:GetItemLabel(item),
                     description = _U('MENU__ITEM__DESC'),
                     metadata = {
                         {label = _U('MENU__PLANT__WATER'), value = itemData.water},
@@ -349,9 +349,9 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
         end
     elseif eventType == 'fertilizer' then
         for item, itemData in pairs(Config.Items) do
-            if it.hasItem(item, 1) and itemData.fertilizer ~= 0 then
+            if exports.it_bridge:HasItem(item, 1) and itemData.fertilizer ~= 0 then
                 table.insert(options, {
-                    title = it.getItemLabel(item),
+                    title = exports.it_bridge:GetItemLabel(item),
                     description = _U('MENU__ITEM__DESC'),
                     metadata = {
                         {label = _U('MENU__PLANT__WATER'), value = itemData.water},
@@ -365,7 +365,7 @@ RegisterNetEvent('it-drugs:client:showItemMenu', function(data)
         end
     end
     if #options == 0 then
-        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), 'Error')
         TriggerEvent('it-drugs:client:syncRestLoop', false)
         return
     end
@@ -398,7 +398,7 @@ RegisterNetEvent('it-drugs:client:showRecipesMenu', function(data)
     local recipes = lib.callback.await('it-drugs:server:getTableRecipes', false, tableId)
 
     if not recipes then
-        ShowNotification(nil, _U('NOTIFICATION__NO__RECIPES'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__RECIPES'), 'Error')
         return
     end
 
@@ -455,7 +455,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
     else
         for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
-                title = it.getItemLabel(k),
+                title = exports.it_bridge:GetItemLabel(k),
                 description = _U('MENU__INGREDIANT__DESC'):format(v.amount), --:replace("{amount}", v),
                 icon = "flask",
             })
@@ -502,7 +502,7 @@ RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
     local price = data.price
     local ped = data.entity
 
-    local itemLabel = it.getItemLabel(item)
+    local itemLabel = exports.it_bridge:GetItemLabel(item)
 
     lib.registerContext({
         id = "it-drugs-sell-menu",
@@ -640,7 +640,7 @@ RegisterNetEvent('it-drugs:client:showPlantListMenu', function(data)
     for _, v in ipairs(plantList) do
         table.insert(options, {
             title = v.label,
-            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            description = _U('MENU__DIST'):format(math.round(v.distance, 2)),
             icon = "seedling",
             arrow = true,
             event = "it-drugs:client:showPlantAdminMenu",
@@ -669,7 +669,7 @@ RegisterNetEvent('it-drugs:client:showTableListMenu', function(data)
     for _, v in ipairs(tableList) do
         table.insert(options, {
             title = v.label,
-            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            description = _U('MENU__DIST'):format(math.round(v.distance, 2)),
             icon = "flask-vial",
             arrow = true,
             event = "it-drugs:client:showTableAdminMenu",
@@ -711,7 +711,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 },
                 onSelect = function()
                     lib.setClipboard(plantData.owner)
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format(plantData.owner), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format(plantData.owner), 'Success')
                 end
             },
             {
@@ -723,7 +723,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 icon = "map-marker",
                 onSelect = function()
                     lib.setClipboard('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')')
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')'), 'Success')
                 end
             },
             {
@@ -733,7 +733,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 arrow = true,
                 onSelect = function()
                     SetEntityCoords(PlayerPedId(), plantData.coords.x, plantData.coords.y, plantData.coords.z)
-                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'Success')
                 end
             },
             {
@@ -751,7 +751,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 arrow = true,
                 onSelect = function()
                     TriggerServerEvent('it-drugs:server:destroyPlant', {plantId = plantData.id, extra='admin'})
-                    ShowNotification(nil, _U('NOTIFICATION__PLANT__DESTROYED'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__PLANT__DESTROYED'), 'Success')
                 end
             }
         }
@@ -781,7 +781,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 icon = "map-marker",
                 onSelect = function()
                     lib.setClipboard('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')')
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'Success')
                 end
             },
             {
@@ -791,7 +791,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 arrow = true,
                 onSelect = function()
                     SetEntityCoords(PlayerPedId(), tableData.coords.x, tableData.coords.y, tableData.coords.z)
-                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'Success')
                 end
             },
             {
@@ -809,7 +809,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 arrow = true,
                 onSelect = function()
                     TriggerServerEvent('it-drugs:server:removeTable', {tableId = tableData.id, extra='admin'})
-                    ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'success')
+                    ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'Success')
                 end,
                 
             }

@@ -3,7 +3,7 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
-version 'v1.3.2'
+version 'v1.4.0'
 
 identifier 'it-drugs'
 
@@ -11,20 +11,18 @@ shared_script {
     '@ox_lib/init.lua'
 }
 
+ox_libs {
+    'math',
+}
+
 shared_scripts {
     'shared/config.lua',
-    'bridge/init.lua',
     'shared/functions.lua',
     'locales/en.lua',
     'locales/*.lua',
-    'bridge/**/shared.lua',
-    '@es_extended/imports.lua',
 }
 
 client_scripts {
-
-    'bridge/**/client.lua',
-
     'client/cl_notarget.lua',
 
     'client/cl_admin.lua',
@@ -41,9 +39,6 @@ client_scripts {
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
 
-    'bridge/**/server.lua',
-    'bridge/**/server/*.lua',
-    
     'server/sv_admin.lua',
     'server/sv_dealer.lua',
     'server/sv_planting.lua',
@@ -120,7 +115,8 @@ data_file 'DLC_ITYP_REQUEST' 'stream/an_weed_blue+hi.ytd'
 
 dependencies {
     'ox_lib',
-    'oxmysql'
+    'oxmysql',
+    'it_bridge'
 }
 
 lua54 'yes'
