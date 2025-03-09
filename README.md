@@ -33,6 +33,7 @@ it-drugs is a drug script for FiveM, offering a fully immersive and interactive 
 
 ### Dependencys
 - `⚙️` **| [ox_lib](https://github.com/overextended/ox_lib)**
+- `⚙️` **| [it_bridge](https://it-scripts.tebex.io/package/6706602)**
 - `⚙️` **| [oxmysql](https://github.com/overextended/oxmysql)**
 - `⚙️` **| [ox_target](https://github.com/overextended/ox_target)** *
 - `⚙️` **| [qb-target](https://github.com/qbcore-framework/qb-target)** *
