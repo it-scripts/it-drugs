@@ -39,7 +39,6 @@ for _, v in pairs(Config.PlantTypes) do
                 distance = 1.5
             }
         })
-        lib.print.info('Plant Options: ', plantOptions)
     end
 end
 
