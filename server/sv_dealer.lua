@@ -171,6 +171,7 @@ RegisterNetEvent('it-drugs:server:buyItemsFromDealer', function(dealerID, item, 
 end)
 
 CreateThread(function()
+    local webhookString = ''
     local dealer = Config.DrugDealers
     for dealerId, dealerData in pairs(dealer) do
         if Config.Debug then lib.print.info("Create Dealer", dealerId) end
@@ -188,5 +189,14 @@ CreateThread(function()
                 dealers[dealerId]:generateSellItemData(item)
             end
         end
+
+        -- Append the dealer id and position to the webhook string
+        local dealerPosition = dealers[dealerId]:getPosition()
+        local positionString = '{x : ' .. string.format("%.2f", dealerPosition.x) .. ', y : ' .. string.format("%.2f", dealerPosition.y) .. ', z : ' .. string.format("%.2f", dealerPosition.z) .. '}'
+        webhookString = webhookString .. '**'..dealerId .. '** - `' .. positionString .. '`\n'
     end
+
+    SendToWebhook(nil, 'message', nil, {
+        description = '### Dealers have been created\n' .. webhookString
+    })
 end)
