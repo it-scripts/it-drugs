@@ -1,28 +1,31 @@
+local serverInventory = exports.it_bridge:GetServerInventory()
+local serverFramework = exports.it_bridge:GetServerFramework()
+
 local getMetadata = function(itemData)
     if not itemData then return nil end
-    local encodedData = json.encode(itemData)
-    if it.inventory == 'ox' then
+    if serverFramework == 'ox' then
         return itemData.metadata or nil
-    elseif it.core == "qb-core" then
+    elseif serverFramework == "qb-core" then
         return itemData.info or nil
-    elseif it.core == "esx" then
+    elseif serverFramework == "esx" then
         return itemData.metadata or nil
     end
+
+    return nil
 end
-
-
-if it.inventory == 'ox' then
+if serverInventory == 'ox_inventory' then
     exports('useSeed', function(event, item, inventory, slot, data)
-
         if Config.Debug then lib.print.info('useSeed', item) end
-
         local plant = item.name
+
         if event == 'usingItem' then
             local src = inventory.id
-            if it.hasItem(src, plant, 1) then
+            if exports.it_bridge:HasItem(src, plant, 1) then
                 local metadata = nil
                 if Config.Debug then lib.print.info('Plant metadata', metadata) end
                 TriggerClientEvent('it-drugs:client:useSeed', src, plant, metadata)
+            else
+                if Config.Debug then lib.print.error('Failed to use seed', src, exports.it_bridge:HasItem(src, plant, 1)) end
             end
         end
     end)
@@ -35,7 +38,7 @@ if it.inventory == 'ox' then
             local prTable = item.name
             if event == 'usingItem' then
                 local src = inventory.id
-                if it.hasItem(src, prTable, 1) then
+                if exports.it_bridge:HasItem(src, prTable, 1) then
                     local metadata = getMetadata(prTable)
                     if Config.Debug then lib.print.info('Table metadata', metadata) end
                     TriggerClientEvent('it-drugs:client:placeProcessingTable', src, prTable, metadata)
@@ -73,9 +76,9 @@ if it.inventory == 'ox' then
     end
 else
     for plant, _ in pairs(Config.Plants) do
-        it.createUsableItem(plant, function(source, data)
+        exports.it_bridge:CreateUsableItem(plant, function(source, data)
             local src = source
-            if it.hasItem(src, plant, 1) then
+            if exports.it_bridge:HasItem(src, plant, 1) then
                 local metadata = getMetadata(data)
                 if Config.Debug then lib.print.info('Plant metadata', metadata) end
                 TriggerClientEvent('it-drugs:client:useSeed', src, plant, metadata)
@@ -85,9 +88,9 @@ else
 
     if Config.EnableProcessing then
         for prTable, _ in pairs(Config.ProcessingTables) do
-            it.createUsableItem(prTable, function(source, data)
+            exports.it_bridge:CreateUsableItem(prTable, function(source, data)
                 local src = source
-                if it.hasItem(src, prTable, 1) then
+                if exports.it_bridge:HasItem(src, prTable, 1) then
                     local metadata = getMetadata(data)
                     if Config.Debug then lib.print.info('Table metadata', metadata) end
                     TriggerClientEvent('it-drugs:client:placeProcessingTable', src, prTable, metadata)
@@ -98,9 +101,9 @@ else
 
     if Config.EnableDrugs then
         for drug, _ in pairs(Config.Drugs) do
-            it.createUsableItem(drug, function(source, data)
+            exports.it_bridge:CreateUsableItem(drug, function(source, data)
                 local src = source
-                if it.hasItem(src, drug, 1) then
+                if exports.it_bridge:HasItem(src, drug, 1) then
                     local currentDrug = lib.callback.await('it-drugs:client:getCurrentDrugEffect', src)
                     if Config.Debug then lib.print.info('currentDrug', currentDrug) end
                     if not currentDrug then
@@ -112,7 +115,7 @@ else
                         end
 
                         local metadata = getMetadata(data)
-                        if it.removeItem(src, drug, 1, metadata) then
+                        if exports.it_bridge:RemoveItem(src, drug, 1, metadata) then
                             TriggerClientEvent('it-drugs:client:takeDrug', src, drug)
                         else
                             if Config.Debug then lib.print.error('Failed to remove item') end

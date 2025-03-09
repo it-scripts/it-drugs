@@ -194,5 +194,9 @@ Locales['de'] = {
     ['COMMAND__ADMINMENU'] = 'drugadmin',
     ['COMMAND__GROUNDHASH'] = 'getGroundHash',
 
-    ['COMMAND__GROUNDHASH__HELP'] = 'Aktuellen Ground-Hash abrufen'
+    ['COMMAND__GROUNDHASH__HELP'] = 'Aktuellen Ground-Hash abrufen',
+
+    ['3DTEXT__PLANT__LABLE'] = 'Drücke ~g~E~w~, um mit der Pflanze zu interagieren',
+    ['3DTEXT__TABLE__LABLE'] = 'Drücke ~g~E~w~, um mit dem Tisch zu interagieren',
+    ['3DTEXT__DEALER__LABLE'] = 'Drücke ~g~E~w~, um mit dem Dealer zu interagieren',
 }

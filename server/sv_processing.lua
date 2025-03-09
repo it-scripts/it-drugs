@@ -75,6 +75,8 @@ function ProcessingTable:constructor(id, tableData)
     self.coords = tableData.coords
     ---@type number: The rotation of the processing table
     self.rotation = tableData.rotation
+    ---@type number: The dimension of the processing table
+    self.dimension = tableData.dimension
     ---@type string: The owner of the processing table
     self.owner = tableData.owner
     ---@type string: The type of the processing table
@@ -101,6 +103,7 @@ function ProcessingTable:spawn()
     local tableEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z, true, true, false)
     Wait(20)
     SetEntityHeading(tableEntity, self.rotation)
+    SetEntityRoutingBucket(tableEntity, self.dimension)
     FreezeEntityPosition(tableEntity, true)
 
     self.entity = tableEntity
@@ -130,6 +133,7 @@ function ProcessingTable:getData()
         netId = self.netId,
         coords = self.coords,
         rotation = self.rotation,
+        dimension = self.dimension,
         owner = self.owner,
         tableType = self.tableType,
         recipes = self.recipes
@@ -214,7 +218,7 @@ lib.callback.register('it-drugs:server:getTableByOwner', function(source)
     if Config.Debug then lib.print.info('[getTableByOwner] - Try to get Table with Owner:', source) end
 
     local src = source
-    local citId = it.getCitizenId(src)
+    local citId = exports.it_bridge:GetCitizenId(src)
 
     local temp = {}
 
@@ -340,28 +344,24 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(data)
     local recipe = processingTable:getRecipeData(data.recipeId)
     if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
 
-    local player = it.getPlayer(source)
-    --local tableInfos = Config.ProcessingTables[processingTables[entity].type]
-
-    if not player then return end
     local givenItems = {}
 
     local failChance = math.random(1, 100)
     if failChance <= recipe.failChance then
-        ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'error')
+        ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'Error')
         for k,v in pairs(recipe.ingrediants) do
-            it.removeItem(source, k, v.amount)
+            exports.it_bridge:RemoveItem(source, k, v.amount)
         end
         return
     end
 
     for k, v in pairs(recipe.ingrediants) do
         if v.remove then
-            if not it.removeItem(source, k, v.amount) then
-                ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+            if not exports.it_bridge:RemoveItem(source, k, v.amount) then
+                ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'Error')
                 if #givenItems > 0 then
                     for _, x in pairs(givenItems) do
-                        it.giveItem(source, x.name, x.amount)
+                        exports.it_bridge:GiveItem(source, x.name, x.amount)
                     end
                 end
                 return
@@ -373,7 +373,7 @@ RegisterNetEvent('it-drugs:server:processDrugs', function(data)
     SendToWebhook(source, 'table', 'process', processingTable:getData())
     
     for k, v in pairs(recipe.outputs) do
-        it.giveItem(source, k, v)
+        exports.it_bridge:GiveItem(source, k, v)
     end
 end)
 
@@ -386,7 +386,7 @@ RegisterNetEvent('it-drugs:server:removeTable', function(args)
 
     if not args.extra then
         if #(GetEntityCoords(GetPlayerPed(source)) - processingTable.coords) > 10 then return end
-        it.giveItem(source, processingTable.tableType, 1)
+        exports.it_bridge:GiveItem(source, processingTable.tableType, 1)
     end
 
     MySQL.query('DELETE from drug_processing WHERE id = :id', {
@@ -402,35 +402,31 @@ end)
 
 RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotation, metadata)
     local src = source
-    local player = it.getPlayer(src)
-
-    if not player then if Config.Debug then lib.print.error("No Player") end return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
-    local itemRemoved = false
-    if it.inventory == 'ox' then
-        itemRemoved = true
-    else
-        itemRemoved = it.removeItem(src, type, 1, metadata)
-    end
-    if itemRemoved then
+    
+    if exports.it_bridge:RemoveItem(src, type, 1, metadata) then
 
-        local id = it.generateCustomID(8)
+        local id = exports.it_bridge:GenerateCustomID(8)
         while processingTables[id] do
-            id = it.generateCustomID(8)
+            id = exports.it_bridge:GenerateCustomID(8)
         end
+
+        local currentDimension = GetPlayerRoutingBucket(src)
         
-        MySQL.insert('INSERT INTO `drug_processing` (id, coords, type, rotation, owner) VALUES (:id, :coords, :type, :rotation, :owner)', {
+        MySQL.insert('INSERT INTO `drug_processing` (id, coords, type, rotation, dimension, owner) VALUES (:id, :coords, :type, :rotation, :dimension, :owner)', {
             ['id'] = id,
             ['coords'] = json.encode(coords),
             ['type'] = type,
             ['rotation'] = rotation,
-            ['owner'] = it.getCitizenId(src)
+            ['dimension'] = currentDimension,
+            ['owner'] = exports.it_bridge:GetCitizenId(src)
         }, function()
             local currentTable = ProcessingTable:new(id, {
                 entity = nil,
                 coords = coords,
                 rotation = rotation,
-                owner = it.getCitizenId(src),
+                dimension = currentDimension,
+                owner = exports.it_bridge:GetCitizenId(src),
                 tableType = type
             })
 

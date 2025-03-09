@@ -1,3 +1,4 @@
+math = lib.math
 ---@type table: List of all the plants
 local plants = {}
 
@@ -23,6 +24,8 @@ function Plant:constructor(id, plantData)
     self.netId = nil
     ---@type vector3: the plant coords
     self.coords = plantData.coords
+    ---@type number:
+    self.dimension = nil
     ---@type string: the plant owner
     self.owner = plantData.owner
     ---@type number: the plant time
@@ -63,7 +66,7 @@ function Plant:spawn()
 
     ---@type number: the plant stage
     local stage = self:calcStage()
-    
+
     ---@type string: the plant type
     local plantType = self.plantType
 
@@ -75,6 +78,7 @@ function Plant:spawn()
 
     ---@type number: the plant entity
     local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
+    SetEntityRoutingBucket(plantEntity, self.dimension)
     FreezeEntityPosition(plantEntity, true)
 
     self.entity = plantEntity
@@ -164,6 +168,7 @@ function Plant:getData()
         entity = self.entity,
         netId = self.netId,
         coords = self.coords,
+        dimension = self.dimension,
         owner = self.owner,
         plantType = self.plantType,
         seed = self.seed,
@@ -216,7 +221,7 @@ function Plant:calcGrowth()
     ---@type number: the progress
     local progress = os.difftime(current_time, self.plantTime)
     ---@type number: the local growth
-    local growth = it.round(progress * 100 / growTime, 2)
+    local growth = math.round(progress * 100 / growTime, 2)
     ---@type number: the return value
     local retval = math.min(growth, 100.00)
     return retval
@@ -278,7 +283,7 @@ lib.callback.register('it-drugs:server:getPlantByOwner', function(source)
     ---@type number: the player citizen ID
     local src = source
     ---@type number: the player citizen ID 
-    local citId = it.getCitizenId(src)
+    local citId = exports.it_bridge:GetCitizenId(src)
     ---@type table: the temporary table to store the plants
     local temp = {}
 
@@ -355,6 +360,7 @@ local setupPlants = function()
                     local currentPlant = Plant:new(v.id, {
                             entity = nil,
                             coords = vector3(coords.x, coords.y, coords.z),
+                            dimension = v.dimension,
                             owner = v.owner,
                             plantTime = v.time,
                             plantType = Config.Plants[v.type].plantType,
@@ -373,6 +379,7 @@ local setupPlants = function()
                         entity = nil,
                         coords = vector3(coords.x, coords.y, coords.z),
                         owner = v.owner,
+                        dimension = v.dimension,
                         plantTime = v.time,
                         plantType = Config.Plants[v.type].plantType,
                         fertilizer = v.fertilizer,
@@ -407,13 +414,13 @@ updatePlantNeeds = function ()
         if elapsed >= 60 then
             if Config.Debug then lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'is ready to be updated') end
             if fertilizer - Config.FertilizerDecay >= 0 then
-                plant:updateFertilizer(it.round(fertilizer - Config.FertilizerDecay, 2))
+                plant:updateFertilizer(math.round(fertilizer - Config.FertilizerDecay, 2))
             else
                 plant:updateFertilizer(0)
             end
     
             if water - Config.WaterDecay >= 0 then
-                plant:updateWater(it.round(water - Config.WaterDecay, 2))
+                plant:updateWater(math.round(water - Config.WaterDecay, 2))
             else
                 plant:updateWater(0)
             end
@@ -490,21 +497,13 @@ end)
 ---@param metadata table | nil: the plant metadata
 RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone, metadata)
     local src = source
-    local player = it.getPlayer(src)
     local plantInfos = Config.Plants[plantItem]
-
-    if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
-    local itemRemoved = false
-    if it.inventory == 'ox' then
-        itemRemoved = true
-    else
-        itemRemoved = it.removeItem(src, plantItem, 1, metadata)
-    end
-    if itemRemoved then
+
+    if exports.it_bridge:RemoveItem(src, plantItem, 1, metadata) then
         local time = os.time()
-        local owner = it.getCitizenId(src)
+        local owner = exports.it_bridge:GetCitizenId(src)
 
         local growTime = Config.GlobalGrowTime
         if plantInfos.growthTime then
@@ -514,15 +513,18 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
             growTime = (growTime / Config.Zones[zone].growMultiplier)
         end
 
-        local id = it.generateCustomID(8)
+        local id = exports.it_bridge:GenerateCustomID(8)
         while plants[id] do
-            id = it.generateCustomID(8)
+            id = exports.it_bridge:GenerateCustomID(8)
         end
 
-        MySQL.insert('INSERT INTO `drug_plants` (id, owner, coords, time, type, water, fertilizer, health, growtime) VALUES (:id, :owner, :coords, :time, :type, :water, :fertilizer, :health, :growtime)', {
+        local currentDimension = GetPlayerRoutingBucket(src)
+
+        MySQL.insert('INSERT INTO `drug_plants` (id, owner, coords, dimension, time, type, water, fertilizer, health, growtime) VALUES (:id, :owner, :coords, :dimension, :time, :type, :water, :fertilizer, :health, :growtime)', {
             ['id'] = id,
             ['owner'] = owner,
             ['coords'] = json.encode(coords),
+            ['dimension'] = currentDimension,
             ['time'] = time,
             ['type'] = plantItem,
             ['water'] = 0.0,
@@ -532,6 +534,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         }, function()
             local currentPlant = Plant:new(id, {
                 coords = coords,
+                dimension = currentDimension,
                 owner = owner,
                 plantTime = time,
                 plantType = Config.Plants[plantItem].plantType,
@@ -559,11 +562,9 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
     local plantData = plant:getData()
 
     local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - plantData.coords) > 10 then return end
 
-    if it.removeItem(src, item, 1) then
+    if exports.it_bridge:RemoveItem(src, item, 1) then
         local itemData = Config.Items[item]
         if itemData.water ~= 0 then
             local itemStrength = itemData.water
@@ -601,7 +602,7 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
             SendToWebhook(src, 'plant', 'fertilize', plantData)
         end
         if itemData.itemBack ~= nil then
-            it.giveItem(src, itemData.itemBack, 1)
+            exports.it_bridge:GiveItem(src, itemData.itemBack, 1)
         end
     end
 end)
@@ -615,8 +616,6 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
     local plantData = plant:getData()
     
     local src = source
-    local player = it.getPlayer(src)
-    if not player then return end
     if #(GetEntityCoords(GetPlayerPed(src)) - plantData.coords) > 10 then return end
     if plant:calcGrowth() ~= 100 then return end
 
@@ -626,14 +625,14 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
             local minAmount = v.min
             local maxAmount = v.max
             local amount = math.random(minAmount, maxAmount)
-            it.giveItem(src, product, amount)
+            exports.it_bridge:GiveItem(src, product, amount)
         end
         if math.random(1, 100) <= Config.Plants[plantData.seed].seed.chance then
             local seed = plantData.type
 
             if Config.Plants[plantData.seed].seed.max > 1 then
                 local seedAmount = math.random(Config.Plants[plantData.seed].seed.min, Config.Plants[plantData.seed].seed.max)
-                it.giveItem(src, plantData.seed, seedAmount)
+                exports.it_bridge:GiveItem(src, plantData.seed, seedAmount)
             end
         end
   

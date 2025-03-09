@@ -188,5 +188,9 @@ Locales['he'] = {
     ['COMMAND__ADMINMENU'] = 'drugadmin',
     ['COMMAND__GROUNDHASH'] = 'getGroundHash',
 
-    ['COMMAND__GROUNDHASH__HELP'] = 'קבל את ה-hash הקרקע הנוכחי'
+    ['COMMAND__GROUNDHASH__HELP'] = 'קבל את ה-hash הקרקע הנוכחי',
+
+    ['3DTEXT__PLANT__LABLE'] = 'לחץ ~g~E~w~ כדי לתקשר עם הצמח',
+    ['3DTEXT__TABLE__LABLE'] = 'לחץ ~g~E~w~ כדי לתקשר עם השולחן',
+    ['3DTEXT__DEALER__LABLE'] = 'לחץ ~g~E~w~ כדי לתקשר עם הסוחר',
 }

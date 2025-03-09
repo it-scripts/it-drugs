@@ -47,7 +47,7 @@ end)
 RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
 
     local item = args.item
-    local itemLabel = it.getItemLabel(item)
+    local itemLabel = exports.it_bridge:GetItemLabel(item)
     local dealerId = args.dealerId
     local price = args.price
     local action = args.action
@@ -59,11 +59,11 @@ RegisterNetEvent('it-drugs:client:handleDealerInteraction', function(args)
         _description = _U('INPUT__SELL__DESCRIPTION'):format(itemLabel)
     end
     local input = lib.inputDialog(_U('INPUT__BUY__HEADER'), {
-        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _description, required = true, min = 1}
+        {type = 'number', label = _U('INPUT__BUY__TEXT'), description = _description, required = true, min = 1, default = 1, max = 10}
     })
 
     if not input then
-        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'Error')
         return
     end
 

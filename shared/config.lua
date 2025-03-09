@@ -10,23 +10,6 @@ Locales = Locales or {}
 -- └───────────────────────────────────┘
 
 --[[
-    Overwelmed by the amount of settings? Don't worry, we got you covered.
-    Here is a quick guide to get you started with the configuration of the script.
-    https://help.it-scripts.com/scripts/it-drugs/installation
-]]
-
---[[
-    The first thing to do is to set which framework, inventory and target system the server uses
-    The system will automatically detect the framework, inventory and target system if you set it to 'autodetect'
-    If you are using a custom framework, inventory or target system contact the developer or add support yourself by creating a pull request
-    If you need need more information about this configuration, you can read the documentation here: https://help.it-scripts.com/scripts/it-drugs
-]]
-
-Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
-Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
-Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
-
---[[
     Here you can set the language for the script, you can choose between 'en', 'es', 'de'
     If you want to add more languages, you can do this in the server/locales folder. 
     Feel free to share them with us so we can add them to the script for everyone to use.
@@ -188,7 +171,6 @@ Config.PlantTypes = {
 }
 
 Config.Plants = { -- Create seeds for drugs
-
     ['weed_lemonhaze_seed'] = {
         label = 'Lemon Haze', -- Label for the plant
         plantType = 'plantLemon', -- Choose plant types from (plant1, plant2, small_plant)
@@ -337,13 +319,6 @@ Config.ProcessingTables = { -- Create processing table
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
                 },
-                particlefx = {
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
-                },
             },
             ['joint_og'] = {
                 label = 'Joint og kush',
@@ -360,13 +335,6 @@ Config.ProcessingTables = { -- Create processing table
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
-                },
-                particlefx = {
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
                 },
             },
         }
@@ -477,9 +445,9 @@ Config.SellSettings = {
 Config.SellEverywhere = {
     ['enabled'] = false, -- Allow selling drugs everywhere
     drugs = {
-        { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-        { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-        { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+        ['cocaine'] = {price = math.random(100, 200), moneyType = 'bank'},
+        ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+        ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
     }
 }
 
@@ -494,9 +462,9 @@ Config.SellZones = {
         },
         thickness = 27,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['vinewood'] = {
@@ -515,9 +483,9 @@ Config.SellZones = {
         },
         thickness = 59.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
     ['beach'] = {
@@ -534,9 +502,9 @@ Config.SellZones = {
         },
         thickness = 4.0,
         drugs = {
-            { item = 'cocaine', price = math.random(100, 200), moneyType = 'cash'},
-            { item = 'joint', price = math.random(50, 100), moneyType = 'cash'},
-            { item = 'weed_lemonhaze', price = math.random(50, 100), moneyType = 'cash'},
+            ['cocaine'] = {price = math.random(100, 200), moneyType = 'cash'},
+            ['joint'] = {price = math.random(50, 100), moneyType = 'cash'},
+            ['weed_lemonhaze'] = {price = math.random(50, 100), moneyType = 'cash'},
         }
     },
 }

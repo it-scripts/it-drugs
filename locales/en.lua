@@ -194,7 +194,11 @@ Locales['en'] = {
     ['COMMAND__ADMINMENU'] = 'drugadmin',
     ['COMMAND__GROUNDHASH'] = 'getGroundHash',
 
-    ['COMMAND__GROUNDHASH__HELP'] = 'Get the current ground hash'
+    ['COMMAND__GROUNDHASH__HELP'] = 'Get the current ground hash',
+
+    ['3DTEXT__PLANT__LABLE'] = 'Press ~g~E~w~ to interact with plant',
+    ['3DTEXT__TABLE__LABLE'] = 'Press ~g~E~w~ to interact with table',
+    ['3DTEXT__DEALER__LABLE'] = 'Press ~g~E~w~ to interact with dealer',
 }
 
 function _U(string)
