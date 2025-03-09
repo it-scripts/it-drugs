@@ -319,13 +319,6 @@ Config.ProcessingTables = { -- Create processing table
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
                 },
-                particlefx = {
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
-                },
             },
             ['joint_og'] = {
                 label = 'Joint og kush',
@@ -342,13 +335,6 @@ Config.ProcessingTables = { -- Create processing table
                 animation = {
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
-                },
-                particlefx = {
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
                 },
             },
         }
