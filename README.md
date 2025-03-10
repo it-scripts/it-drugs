@@ -19,11 +19,12 @@ it-drugs is a drug script for FiveM, offering a fully immersive and interactive 
 - `✅` **| [ESX](https://github.com/esx-framework/esx_core)**
 - `✅` **| [QbCore](https://github.com/qbcore-framework/qb-core)**
 - `✅` **| [QBox](https://github.com/qbcore-framework/qb-core)**
-- `🔧` **| [ND_Core](https://github.com/ND-Framework/ND_Core)**
+- `✅` **| [ND_Core](https://github.com/ND-Framework/ND_Core)**
 
 ### Suported Inventorys
 - `✅` **| [esx_inventory](https://github.com/esx-framework/esx_core)**
 - `✅` **| [qb_inventory](https://github.com/qbcore-framework/qb-inventory)**
+- `✅` **| [ps_inventory](https://github.com/Project-Sloth/ps-inventory)**
 - `✅` **| [ox_inventory](https://github.com/overextended/ox_inventory)**
 - `✅` **| [qs_inventory](https://www.quasar-store.com/de/package/6304046?image=0)**
 - `✅` **| [mInventory](https://codem.tebex.io/package/5900973)**
