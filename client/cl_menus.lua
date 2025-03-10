@@ -501,35 +501,62 @@ RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
     local amount = data.amount
     local price = data.price
     local ped = data.entity
+    local rewardItems = data.rewardItems
 
     local itemLabel = exports.it_bridge:GetItemLabel(item)
+
+
+    local options = {}
+    if price > 0 then
+        table.insert(options, {
+            title = _U('MENU__SELL__DEAL'),
+            description = _U('MENU__SELL__DESC'):format(itemLabel, amount, amount * price),
+            icon = "coins",
+        })
+    else
+        table.insert(options, {
+            title = _U('MENU__SELL__DEAL'),
+            description = _U('MENU__SEEL__DESC__ZERO'):format(itemLabel, amount),
+            icon = "coins",
+        })
+    end
+
+    if rewardItems then
+        table.insert(options, {
+            title = _U('MENU__SELL__REWARD'),
+            icon = "gift",
+        })
+        for _, itemData in pairs(rewardItems) do
+            table.insert(options, {
+                title = exports.it_bridge:GetItemLabel(itemData.name),
+                description = _U('MENU__SELL_REWARD_DESC'):format(itemData.amount * amount),
+                icon = "coins",
+            })
+        end
+    end
+
+    table.insert(options, {
+        title = _U('MENU__SELL__ACCEPT'),
+        icon = "circle-check",
+        description = _U('MENU__SELL__ACCEPT__DESC'),
+        arrow = true,
+        event = "it-drugs:client:salesInitiate",
+        args = {type = 'buy', item = item, price = price, amount = amount, tped = ped}
+    })
+
+    table.insert(options, {
+        title = _U('MENU__SELL__REJECT'),
+        icon = "circle-xmark",
+        description = _U('MENU__SELL__REJECT__DESC'),
+        arrow = true,
+        event = "it-drugs:client:salesInitiate",
+        args = {type = 'close', tped = ped}
+    })
 
     lib.registerContext({
         id = "it-drugs-sell-menu",
         title = _U('MENU__SELL'),
-        options = {
-            {
-                title = _U('MENU__SELL__DEAL'),
-                description = _U('MENU__SELL__DESC'):format(itemLabel, amount, amount * price),
-                icon = "coins",
-            },
-            {
-                title = _U('MENU__SELL__ACCEPT'),
-                icon = "circle-check",
-                description = _U('MENU__SELL__ACCEPT__DESC'),
-                arrow = true,
-                event = "it-drugs:client:salesInitiate",
-                args = {type = 'buy', item = item, price = price, amount = amount, tped = ped}
-            },
-            {
-                title = _U('MENU__SELL__REJECT'),
-                icon = "circle-xmark",
-                description = _U('MENU__SELL__REJECT__DESC'),
-                arrow = true,
-                event = "it-drugs:client:salesInitiate",
-                args = {type = 'close', tped = ped}
-            }
-        }
+        options = options,
     })
     lib.showContext("it-drugs-sell-menu")
 end)

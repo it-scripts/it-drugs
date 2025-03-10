@@ -54,6 +54,10 @@ Locales['he'] = {
     ['MENU__SELL'] = 'מכירה',
     ['MENU__SELL__DEAL'] = 'עסקה',
     ['MENU__SELL__DESC'] = 'מכור %s (x%g) תמורת ₪%g',
+    ['MENU__SEEL__DESC__ZERO'] = 'מכור %s (x%g) ותקבל:',
+
+    ['MENU__SELL__REWARD'] = 'פריטים:',
+    ['MENU__SELL_REWARD_DESC'] = 'תקבל x%g',
 
     ['MENU__SELL__ACCEPT'] = 'קבל הצעה',
     ['MENU__SELL__ACCEPT__DESC'] = 'קבל את ההצעה הנוכחית',
