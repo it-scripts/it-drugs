@@ -371,9 +371,9 @@ local giveWater = function(args)
     local model = 'prop_wateringcan'
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(200)
-    RequestModel(model)
-    RequestNamedPtfxAsset('core')
-    while not HasModelLoaded(model) or not HasNamedPtfxAssetLoaded('core') do Wait(0) end
+    lib.requestModel(model)
+    lib.requestNamedPtfxAsset('core')
+
     SetPtfxAssetNextCall('core')
     local created_object = CreateObject(model, coords.x, coords.y, coords.z, true, true, true)
     AttachEntityToEntity(created_object, ped, GetPedBoneIndex(ped, 28422), 0.4, 0.1, 0.0, 90.0, 180.0, 0.0, true, true, false, true, 1, true)
@@ -404,6 +404,8 @@ local giveWater = function(args)
         DeleteEntity(created_object)
         StopParticleFxLooped(effect, 0)
     end
+    SetModelAsNoLongerNeeded(model)
+    RemoveNamedPtfxAsset('core')
 end
 
 local giveFertilizer = function(args)
@@ -414,11 +416,12 @@ local giveFertilizer = function(args)
 
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
-    local model = 'w_am_jerrycan_sf'
+    -- Get FiveM Server DLC version
+    local gameBuild = GetGameBuildNumber()
+    local model = gameBuild < 2545 and 'w_am_jerrycan' or 'w_am_jerrycan_sf'
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(200)
-    RequestModel(model)
-    while not HasModelLoaded(model) do Wait(0) end
+    lib.requestModel(model)
     local created_object = CreateObject(model, coords.x, coords.y, coords.z, true, true, true)
     AttachEntityToEntity(created_object, ped, GetPedBoneIndex(ped, 28422), 0.3, 0.1, 0.0, 90.0, 180.0, 0.0, true, true, false, true, 1, true)
 
@@ -445,6 +448,8 @@ local giveFertilizer = function(args)
         ClearPedTasks(ped)
         DeleteEntity(created_object)
     end
+    -- Unload the model
+    SetModelAsNoLongerNeeded(model)
 end
 
 RegisterNetEvent('it-drugs:client:useItem', function (args)
