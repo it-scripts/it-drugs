@@ -27,8 +27,6 @@ Locales['nl'] = {
     ['MENU__ITEM'] = 'Items',
     ['MENU__ITEM__DESC'] = 'Gebnuikt dit item om je plant te verzorgen',
 
-    
-    
     ['MENU__PROCESSING'] = 'Verwerk',
     ['MENU__RECIPE__DESC'] = 'Verwerk je drugs met dit recept',
 
@@ -51,11 +49,13 @@ Locales['nl'] = {
     ['MENU__DEALER__SELL_DESC'] = 'Verkoop items aan dealer',
     ['MENU__DEALER_SELL_ITEM__DESC'] = 'verkoop %s voor $%g per item',
 
-    
-
     ['MENU__SELL'] = 'Verkoop',
     ['MENU__SELL__DEAL'] = 'Deal',
     ['MENU__SELL__DESC'] = 'Verkoop %s (x%g) voor $%g',
+    ['MENU__SEEL__DESC__ZERO'] = 'Verkoop %s (x%g) en krijg:',
+
+    ['MENU__SELL__REWARD'] = 'Items:',
+    ['MENU__SELL_REWARD_DESC'] = 'Je krijgt x%g',
 
     ['MENU__SELL__ACCEPT'] = 'Accepteer offer',
     ['MENU__SELL__ACCEPT__DESC'] = 'Accepteer het huidig offer',

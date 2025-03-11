@@ -49,11 +49,13 @@ Locales['it'] = {
     ['MENU__DEALER__SELL_DESC'] = 'Vendi oggetti al trafficante',
     ['MENU__DEALER_SELL_ITEM__DESC'] = 'Vendi %s a $%g al pezzo',
 
-
-
     ['MENU__SELL'] = 'Vendi',
     ['MENU__SELL__DEAL'] = 'Affare',
     ['MENU__SELL__DESC'] = 'Vendi %s (x%g) per $%g',
+    ['MENU__SEEL__DESC__ZERO'] = 'Vendi %s (x%g) e ottieni:',
+
+    ['MENU__SELL__REWARD'] = 'Oggetti:',
+    ['MENU__SELL_REWARD_DESC'] = 'Otterrai x%g',
 
     ['MENU__SELL__ACCEPT'] = 'Accetta offerta',
     ['MENU__SELL__ACCEPT__DESC'] = 'Accetta l\'offerta corrente',

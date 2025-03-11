@@ -56,13 +56,21 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 					ShowNotification(src, _U('NOTIFICATION__STOLEN__DRUG'), 'Error')
 				else
 					local moneyType = 'cash'
+					local rewardItems = nil
 					if Config.SellEverywhere['enabled'] then
 						moneyType = Config.SellEverywhere.drugs[cad.item].moneyType or 'cash'
+						rewardItems = Config.SellEverywhere.drugs[cad.item].rewardItems
 					else
 						moneyType = Config.SellZones[cad.zone].drugs[cad.item].moneyType or 'cash'
+						rewardItems = Config.SellZones[cad.zone].drugs[cad.item].rewardItems
 					end
 
 					exports.it_bridge:AddMoney(src, moneyType, price, "Money from Drug Selling")
+					if rewardItems then
+						for _, v in pairs(rewardItems) do
+							exports.it_bridge:GiveItem(src, v.name, (v.amount * cad.amount))
+						end
+					end
 					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'Success')
 				end
 				local coords = GetEntityCoords(GetPlayerPed(src))

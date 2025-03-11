@@ -128,7 +128,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		local availabeItems = {}
 		for itemName, itemData in pairs(zoneConfig.drugs) do
 			if exports.it_bridge:HasItem(itemName)then
-				table.insert(availabeItems, {item = itemName, price = itemData.price, moneyType = itemData.moneyType})
+				table.insert(availabeItems, {item = itemName, price = itemData.price, moneyType = itemData.moneyType, rewardItems = itemData.rewardItems})
 			end
 		end
 
@@ -156,7 +156,8 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		sellItemData = {
 			item = randomDrugKey,
 			price = zoneConfig.drugs[randomDrugKey].price,
-			moneyType = zoneConfig.drugs[randomDrugKey].moneyType
+			moneyType = zoneConfig.drugs[randomDrugKey].moneyType,
+			rewardItems = zoneConfig.drugs[randomDrugKey].rewardItems
 		}
 
 		playerItems = exports.it_bridge:GetItemCount(sellItemData.item)
@@ -170,7 +171,7 @@ RegisterNetEvent('it-drugs:client:checkSellOffer', function(entity)
 		sellAmount = playerItems
 	end
 
-	TriggerEvent('it-drugs:client:showSellMenu', {item = sellItemData.item, price = sellItemData.price, amount = sellAmount, entity = entity})
+	TriggerEvent('it-drugs:client:showSellMenu', {item = sellItemData.item, price = sellItemData.price, amount = sellAmount, entity = entity, rewardItems = sellItemData.rewardItems})
 	SetTimeout(Config.SellSettings['sellTimeout']*1000, function()
 		if Config.Debug then lib.print.info('Sell Menu Timeout... Current Menu', lib.getOpenContextMenu()) end
 		if lib.getOpenContextMenu() ~= nil then

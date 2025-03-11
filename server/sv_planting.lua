@@ -40,6 +40,8 @@ function Plant:constructor(id, plantData)
     self.water = plantData.water
     ---@type number: the plant health
     self.health = plantData.health
+    ---@type number: the plant growth
+    self.growth = self:calcGrowth()
 
     self.growtime = plantData.growtime
     self.stage = self:calcStage()
@@ -198,10 +200,12 @@ function Plant:calcHealth()
 
     -- If the plant has no fertilizer and water, decrease the health
     if fertilizer_amount == 0 or water_amount == 0 then
-    health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
+        health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
         health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
     end
+
+    health = math.max(health, 0.0)
 
     self.health = health
     -- Return the health value with a minimum of 0
@@ -213,7 +217,7 @@ end
 function Plant:calcGrowth()
     if not plants[self.id] then return 0 end
     -- If the plant is dead the growth doesnt change anymore
-    if self.health <= 0 then return 0 end
+    if self.health <= 0 then return self.growth end
     ---@type number: the current time
     local current_time = os.time()
     ---@type number: the grow time
@@ -224,6 +228,7 @@ function Plant:calcGrowth()
     local growth = math.round(progress * 100 / growTime, 2)
     ---@type number: the return value
     local retval = math.min(growth, 100.00)
+    self.growth = retval
     return retval
 end
 
