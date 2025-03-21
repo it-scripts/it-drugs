@@ -21,9 +21,8 @@ if serverInventory == 'ox_inventory' then
         if event == 'usingItem' then
             local src = inventory.id
             if exports.it_bridge:HasItem(src, plant, 1) then
-                local metadata = nil
-                if Config.Debug then lib.print.info('Plant metadata', metadata) end
-                TriggerClientEvent('it-drugs:client:useSeed', src, plant, metadata)
+                if Config.Debug then lib.print.info('Plant metadata', inventory.items[slot].metadata) end
+                TriggerClientEvent('it-drugs:client:useSeed', src, plant, inventory.items[slot].metadata)
             else
                 if Config.Debug then lib.print.error('Failed to use seed', src, exports.it_bridge:HasItem(src, plant, 1)) end
             end
