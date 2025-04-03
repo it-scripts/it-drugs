@@ -57,7 +57,7 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "Error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
@@ -170,7 +170,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     if proccessing then return end
 
     local input = lib.inputDialog(_U('INPUT__AMOUNT__HEADER'), {
-        {type = 'number', text = _U('INPUT__AMOUNT__TEXT'), desciption = _U('INPUT__AMOUNT__DESCRIPTION'), require = true, min = 1}
+        {type = 'number', label = _U('INPUT__AMOUNT__TEXT'), description = _U('INPUT__AMOUNT__DESCRIPTION'), require = true, min = 1}
     })
 
     if not input then
@@ -210,7 +210,7 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         for i = 1, amount do
             local success = lib.skillCheck(Config.SkillCheck.difficulty, Config.SkillCheck.keys)
             if success then
-                ShowNotification(nil, _U('NOTIFICATION__SKILL__Success'), 'Success')
+                ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'Success')
                 TriggerServerEvent('it-drugs:server:processDrugs', {tableId = args.tableId, recipeId = args.recipeId})
             else
                 proccessing = false

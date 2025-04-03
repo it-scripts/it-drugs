@@ -133,7 +133,7 @@ RegisterNetEvent('it-drugs:server:sellItemsToDealer', function (dealerID, item, 
     if exports.it_bridge:HasItem(src, item, amount) then
         if exports.it_bridge:RemoveItem(src, item, amount) then
             exports.it_bridge:AddMoney(src, buyItemData.moneyType, total)
-            ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__Success'):format(amount, exports.it_bridge:GetItemLabel(item), total), 'success')
+            ShowNotification(src, _U('NOTIFICATION__DEALER__SELL__SUCCESS'):format(amount, exports.it_bridge:GetItemLabel(item), total), 'success')
         end
     else
         ShowNotification(src, _U('NOTIFICATION__DEALER__NO__ITEM'), 'Error')

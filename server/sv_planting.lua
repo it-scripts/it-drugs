@@ -506,6 +506,30 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
 
 
+    -- Remove reqItems on the server side instead of client side
+    if plantInfos.reqItems and plantInfos.reqItems['planting'] ~= nil then
+        local givenItems = {}
+        for item, itemData in pairs(plantInfos.reqItems["planting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            if not exports.it_bridge:HasItem(source, item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        exports.it_bridge:GiveItem(source, item)
+                    end
+                end
+                return
+            else
+                if itemData.remove then
+                    if exports.it_bridge:RemoveItem(source, item, itemData.amount or 1) then
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
+        end
+    end
+
     if exports.it_bridge:RemoveItem(src, plantItem, 1, metadata) then
         local time = os.time()
         local owner = exports.it_bridge:GetCitizenId(src)
@@ -623,6 +647,31 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
     local src = source
     if #(GetEntityCoords(GetPlayerPed(src)) - plantData.coords) > 10 then return end
     if plant:calcGrowth() ~= 100 then return end
+
+    local extendedPlantData = Config.Plants[plantData.seed]
+
+    if extendedPlantData.reqItems and extendedPlantData.reqItems["harvesting"] ~= nil then
+        local givenItems = {}
+        for item, itemData in pairs(extendedPlantData.reqItems["harvesting"]) do
+            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+            if not exports.it_bridge:HasItem(source, item, itemData.amount or 1) then
+                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
+
+                if #givenItems > 0 then
+                    for _, item in pairs(givenItems) do
+                        exports.it_bridge:GiveItem(source, item)
+                    end
+                end
+                return
+            else
+                if itemData.remove then
+                    if exports.it_bridge:RemoveItem(source, item, itemData.amount or 1) then
+                        table.insert(givenItems, item)
+                    end
+                end
+            end
+        end
+    end
 
     if DoesEntityExist(plantData.entity) then
         for k, v in pairs(Config.Plants[plantData.seed].products) do

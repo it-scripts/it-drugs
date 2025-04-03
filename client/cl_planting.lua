@@ -117,27 +117,13 @@ local function plantSeed(ped, plant, plantInfos, plantItem, coords, metadata)
     end
 
     if plantInfos.reqItems and plantInfos.reqItems["planting"] ~= nil then
-        local givenItems = {}
         for item, itemData in pairs(plantInfos.reqItems["planting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
             if not exports.it_bridge:HasItem(item, itemData.amount or 1) then
                 ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
                 DeleteObject(plant)
-
-                if #givenItems > 0 then
-                    for _, item in pairs(givenItems) do
-                        exports.it_bridge:GiveItem(item)
-                    end
-                end
-
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
-            else
-                if itemData.remove then
-                    if exports.it_bridge:RemoveItem(item, itemData.amount or 1) then
-                        table.insert(givenItems, item)
-                    end
-                end
             end
         end
     end
@@ -297,26 +283,12 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
     plantData.reqItems = Config.Plants[plantData.seed].reqItems
 
     if plantData.reqItems and plantData.reqItems["harvesting"] ~= nil then
-        local givenItems = {}
         for item, itemData in pairs(plantData.reqItems["harvesting"]) do
             if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
             if not exports.it_bridge:HasItem(item, itemData.amount or 1) then
                 ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
-
-                if #givenItems > 0 then
-                    for _, item in pairs(givenItems) do
-                        exports.it_bridge:GiveItem(item)
-                    end
-                end
-
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
                 return
-            else
-                if itemData.remove then
-                    if exports.it_bridge:RemoveItem(item, itemData.amount or 1) then
-                        table.insert(givenItems, item)
-                    end
-                end
             end
         end
     end
@@ -352,7 +324,7 @@ RegisterNetEvent('it-drugs:client:harvestPlant', function(args)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
-        ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "Error")
+        ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "Error")
         ClearPedTasks(ped)
         RemoveAnimDict('amb@medic@standing@kneel@base')
         RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
