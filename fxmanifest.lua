@@ -3,7 +3,7 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Advanced Drug System for FiveM'
-version 'v1.4.2'
+version 'v1.4.3'
 
 identifier 'it-drugs'
 

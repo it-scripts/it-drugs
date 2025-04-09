@@ -1,4 +1,4 @@
 {
-    "version": "v1.4.2",
-    "message": "Update for the bridge version 1.0.4"
+    "version": "v1.4.3",
+    "message": "Fix getPlayerJob error"
 }
