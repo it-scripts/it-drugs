@@ -1,3 +1,10 @@
+﻿--[[
+    https://github.com/it-scripts/it-drugs
+
+    This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
+
+    Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
+]]
 local serverFramework = exports.it_bridge:GetServerFramework()
 
 local getCopsAmount = function()
@@ -6,14 +13,13 @@ local getCopsAmount = function()
 	if Config.Debug then lib.print.info('Online Players: ', #onlinePlayers) end
 	for i=1, #onlinePlayers do
 		local player = nil
-		local playerId = nil
 		if serverFramework == 'qb-core' or serverFramework == 'es_extended' then
 			player = exports.it_bridge:GetPlayer(onlinePlayers[i])
 		else
 			player = exports.it_bridge:GetPlayer(onlinePlayers[i].source)
 		end
-		if player and playerId then
-			local job = exports.it_bridge:GetPlayerJob(player.source)
+		if player then
+			local job = exports.it_bridge:GetPlayerJob(i)
 			if Config.Debug then lib.print.info('Player', onlinePlayers[i],  'Job: ', job.name) end
 			for _, v in pairs(Config.PoliceJobs) do
 				if job.name == v then

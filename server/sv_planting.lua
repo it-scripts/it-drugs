@@ -1,334 +1,11 @@
+﻿--[[
+    https://github.com/it-scripts/it-drugs
+
+    This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
+
+    Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
+]]
 math = lib.math
----@type table: List of all the plants
-local plants = {}
-
----@section Plant Class
--- Class to handle the plant object and its methods
-
---- @class Plant : OxClass
---- @field id string
-Plant = lib.class('Plant')
-
---- Plant constructor
----@param id string
----@param plantData table
-function Plant:constructor(id, plantData)
-
-    if Config.Debug then lib.print.info('[Plant:constructor] - Start constructing plant with ID:', id) end
-
-    ---@type string: the plant ID
-    self.id = id
-    ---@type number | nil: the plant entity
-    self.entity = nil
-    ---@type number | nil: the plant Network ID
-    self.netId = nil
-    ---@type vector3: the plant coords
-    self.coords = plantData.coords
-    ---@type number:
-    self.dimension = nil
-    ---@type string: the plant owner
-    self.owner = plantData.owner
-    ---@type number: the plant time
-    self.plantTime = plantData.plantTime
-    ---@type string: the plant type
-    self.plantType = plantData.plantType
-    ---@type string: the plant seed
-    self.seed = plantData.seed
-    ---@type number: the plant fertilizer
-    self.fertilizer = plantData.fertilizer
-    ---@type number: the plant water
-    self.water = plantData.water
-    ---@type number: the plant health
-    self.health = plantData.health
-    ---@type number: the plant growth
-    self.growth = self:calcGrowth()
-
-    self.growtime = plantData.growtime
-    self.stage = self:calcStage()
-
-    plants[self.id] = self
-
-    --self.metadata = plantData.metadata -- Experimental feature / can only used with ox_inventory
-
-    if Config.Debug then lib.print.info('[Plant:constructor] - Plant constructed with ID:', id) end
-end
-
---- Method to delete the plant object
----@return nil
-function Plant:delete()
-    self:destroyProp()
-    plants[self.id] = nil
-end
-
---- Method to update the plant prop on the map
----@return nil
-function Plant:spawn()
-
-    if Config.Debug then lib.print.info('[Plant:spawn] - Try to spawning plant with ID:', self.id) end
-
-    ---@type number: the plant stage
-    local stage = self:calcStage()
-
-    ---@type string: the plant type
-    local plantType = self.plantType
-
-    ---@type string: the plant model hash
-    local modelHash = Config.PlantTypes[plantType][stage][1]
-
-    ---@type number: the plant z offset
-    local zOffest = Config.PlantTypes[plantType][stage][2]
-
-    ---@type number: the plant entity
-    local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
-    SetEntityRoutingBucket(plantEntity, self.dimension)
-    FreezeEntityPosition(plantEntity, true)
-
-    self.entity = plantEntity
-    self.netId = NetworkGetNetworkIdFromEntity(plantEntity)
-    plants[self.id] = self
-
-    if Config.Debug then lib.print.info('[Plant:spawn] - Plant spawned with ID:', self.id) end
-end
-
---- Method to destroy the plant prop on the map
----@return nil
-function Plant:destroyProp()
-    if not DoesEntityExist(self.entity) then return end
-    DeleteEntity(self.entity)
-
-    self.entity = nil
-    self.netId = nil
-
-    plants[self.id] = self
-end
-
---- Method to update the plant prop on the map
----@return nil
-function Plant:updateProps()
-    local stage = self:calcStage()
-    local plantType = self.plantType
-
-    ---@type string: the plant model hash
-    local modelHash = Config.PlantTypes[plantType][stage][1]
-
-    ---@type number: the plant z offset
-    local zOffest = Config.PlantTypes[plantType][stage][2]
-
-    DeleteEntity(self.entity)
-
-    ---@type number: the plant entity
-    local plantEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z + zOffest, true, true, false)
-    FreezeEntityPosition(plantEntity, true)
-
-    self.stage = stage
-    self.entity = plantEntity
-    self.netId = NetworkGetNetworkIdFromEntity(plantEntity)
-    plants[self.id] = self
-end
-
---- Method to update the plant fertilizer
----@param fertilizer number
----@return nil
-function Plant:updateFertilizer(fertilizer)
-    self.fertilizer = fertilizer
-
-    -- Update the plant fertilizer in the plants table
-    plants[self.id].fertilizer = fertilizer
-end
-
---- Method to update the plant water
----@param water number
----@return nil
-function Plant:updateWater(water)
-    self.water = water
-
-    -- Update the plant water in the plants table
-    plants[self.id].water = water
-end
-
---- Method to update the plant health
----@param health number
----@return nil
-function Plant:updateHealth(health)
-    self.health = health
-
-    -- Update the plant health in the plants table
-    plants[self.id].health = health
-
-    -- Send data to database
-    MySQL.update('UPDATE drug_plants SET health = (:health) WHERE id = (:id)', {
-        ['health'] = health,
-        ['id'] = self.id,
-    })
-end
-
---- Method to get the plant data
----@return table
-function Plant:getData()
-    return {
-        id = self.id,
-        entity = self.entity,
-        netId = self.netId,
-        coords = self.coords,
-        dimension = self.dimension,
-        owner = self.owner,
-        plantType = self.plantType,
-        seed = self.seed,
-        plantTime = self.plantTime,
-        fertilizer = self.fertilizer,
-        water = self.water,
-        health = self.health,
-        growtime = self.growtime,
-        stage = self.stage,
-        growth = self:calcGrowth()
-    }
-end
-
--- Method to calculate the health percentage for a given WeedPlants index
----@return integer: health percentage
-function Plant:calcHealth()
-
-    if not plants[self.id] then return 0 end
-
-    -- Getting plant data to calculate current plant health
-    ---@type number
-    local health = self.health
-    ---@type number
-    local fertilizer_amount = self.fertilizer
-    ---@type number
-    local water_amount = self.water
-
-    -- If the plant has no fertilizer and water, decrease the health
-    if fertilizer_amount == 0 or water_amount == 0 then
-        health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-    elseif fertilizer_amount < Config.FertilizerThreshold or water_amount < Config.WaterThreshold then
-        health = health - math.random(Config.HealthBaseDecay[1], Config.HealthBaseDecay[2])
-    end
-
-    health = math.max(health, 0.0)
-
-    self.health = health
-    -- Return the health value with a minimum of 0
-    return math.max(health, 0.0)
-end
-
---- Method to calculate the growth percentage for a given WeedPlants index
----@return integer: growth percentage
-function Plant:calcGrowth()
-    if not plants[self.id] then return 0 end
-    -- If the plant is dead the growth doesnt change anymore
-    if self.health <= 0 then return self.growth end
-    ---@type number: the current time
-    local current_time = os.time()
-    ---@type number: the grow time
-    local growTime = self.growtime * 60
-    ---@type number: the progress
-    local progress = os.difftime(current_time, self.plantTime)
-    ---@type number: the local growth
-    local growth = math.round(progress * 100 / growTime, 2)
-    ---@type number: the return value
-    local retval = math.min(growth, 100.00)
-    self.growth = retval
-    return retval
-end
-
---- Method to calculate the growth stage for a given WeedPlants index
----@return integer: growth stage
-function Plant:calcStage()
-    local growth = self:calcGrowth()
-    local stage = math.floor(growth / 33) + 1
-    if stage > 3 then stage = 3 end
-    return stage
-end
-
-
---- Callback to get the plant data by ID
----@param source number | nil: the source player
----@param plantId string: the plant ID
----@return Plant | nil: the plant object
-lib.callback.register('it-drugs:server:getPlantById', function(source, plantId)
-
-    if Config.Debug then lib.print.info('[getPlantById] - Try to get plant with ID:', plantId) end
-
-    if not plants[plantId] then
-        lib.print.error('[getPlantById] - Plant with ID:', plantId, 'does not exist')
-        return nil
-    end
-
-    if Config.Debug then lib.print.info('[getPlantById] - Successfully get Plant with ID:', plantId) end
-    return plants[plantId]:getData()
-end)
-
---- Callback to get the plant data by entity
----@param source number | nil: the source player
----@param netId number: the net ID of the plant
----@return Plant | nil: the plant object
-lib.callback.register('it-drugs:server:getPlantByNetId', function(source, netId)
-
-    if Config.Debug then lib.print.info('[getPlantByNetId] - Try to get plant with netId:', netId) end
-   
-    for _, v in pairs(plants) do
-        if v.netId == netId then
-            if Config.Debug then lib.print.info('[getPlantByNetId] - Successfully get Plant with netId:', netId) end
-            return v:getData()
-        end
-    end
-
-    lib.print.error('[getPlantByNetId] - Plant with netId:', netId, 'does not exist')
-    return nil
-end)
-
---- Callback to get all plants owned by a player
----@param source number: the source player
----@return table | nil: the list of plants
-lib.callback.register('it-drugs:server:getPlantByOwner', function(source)
-
-    if Config.Debug then lib.print.info('[getPlantByOwner] - Try to get all plants owned by player:', source) end
-
-    ---@type number: the player citizen ID
-    local src = source
-    ---@type number: the player citizen ID 
-    local citId = exports.it_bridge:GetCitizenId(src)
-    ---@type table: the temporary table to store the plants
-    local temp = {}
-
-    -- Loop through all the plants and check if the player owns them
-    for k, v in pairs(plants) do
-        if v.owner == citId then
-            temp[k] = v:getData()
-        end
-    end
-    
-    -- If the player does not own any plants, return nil
-    if next(temp) == nil then
-        if Config.Debug then lib.print.info('[getPlantsOwned] - Player:', src, 'does not own any plants') end
-        return nil
-    end
-
-    if Config.Debug then lib.print.info('[getPlantsOwned] - Successfully get all plants owned by player:', src) end
-    return temp
-
-end)
-
---- Callback to get all plants
----@param source number: the source player
----@return table | nil: the list of plants
-lib.callback.register('it-drugs:server:getPlants', function(source)
-
-    if Config.Debug then lib.print.info('[getPlants] - Try to get all plants') end
-
-    ---@type table: the temporary table to store the plants
-    local temp = {}
-
-    -- Loop through all the plants and add them to the temporary table
-    for k, v in pairs(plants) do
-        temp[k] = v:getData()
-    end
-
-    if Config.Debug then lib.print.info('[getPlants] - Successfully get all plants') end
-    return temp
-end)
-
 --- Method to setup all the weedplants, fetched from the database
 --- @return boolean
 local setupPlants = function()
@@ -362,8 +39,7 @@ local setupPlants = function()
                     end)
                 else
                     local coords = json.decode(v.coords)
-                    local currentPlant = Plant:new(v.id, {
-                            entity = nil,
+                    Plant:new(v.id, {
                             coords = vector3(coords.x, coords.y, coords.z),
                             dimension = v.dimension,
                             owner = v.owner,
@@ -376,12 +52,10 @@ local setupPlants = function()
                             seed = v.type,
                         }
                     )
-                    currentPlant:spawn()
                 end
             else
                 local coords = json.decode(v.coords)
-                local currentPlant = Plant:new(v.id, {
-                        entity = nil,
+                Plant:new(v.id, {
                         coords = vector3(coords.x, coords.y, coords.z),
                         owner = v.owner,
                         dimension = v.dimension,
@@ -394,17 +68,16 @@ local setupPlants = function()
                         seed = v.type,
                     }
                 )
-                currentPlant:spawn()
             end
         end
     end
-    TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+    TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
     return true
 end
 
 --- Function to update the plant stats (fertilizer, water, health) every minute
 updatePlantNeeds = function ()
-    for plantId, plant in pairs(plants) do
+    for plantId, plant in pairs(Plants) do
         local plantData = plant:getData()
         local fertilizer = plantData.fertilizer
         local water = plantData.water
@@ -448,7 +121,7 @@ updatePlantNeeds = function ()
 
         local stage = plant:calcStage()
             if stage ~= plantData.stage then
-                plant:updateProps()
+                TriggerClientEvent('it-drugs:client:it-drugs:client:plantUpdate', -1, plantId)
             end
     end
 
@@ -467,7 +140,7 @@ AddEventHandler('onResourceStart', function(resource)
     while not setupPlants do
         Wait(100)
     end
-    TriggerClientEvent('it-drugs:client:syncPlantList', -1)
+    TriggerClientEvent('it-drugs:client:syncPlants', -1)
     SendToWebhook(0, 'message', nil, {description = 'Started '..GetCurrentResourceName()..' logger'})
     updatePlantNeeds()
 
@@ -478,7 +151,7 @@ end)
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     
-    for plantId, plant in pairs(plants) do
+    for plantId, plant in pairs(Plants) do
         local plantData = plant:getData()
         MySQL.update('UPDATE drug_plants SET health = (:health), water = (:water), fertilizer = (:fertilizer) WHERE id = (:id)', {
             ['health'] = plant:calcHealth(),
@@ -488,7 +161,7 @@ AddEventHandler('onResourceStop', function(resource)
         })
     end
 
-    for _, plant in pairs(plants) do
+    for _, plant in pairs(Plants) do
         plant:delete()
     end
 end)
@@ -543,7 +216,7 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
         end
 
         local id = exports.it_bridge:GenerateCustomID(8)
-        while plants[id] do
+        while Plants[id] do
             id = exports.it_bridge:GenerateCustomID(8)
         end
 
@@ -575,8 +248,8 @@ RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, z
 
             })
             currentPlant:spawn()
-            TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
-            SendToWebhook(src, 'plant', 'plant', plants[id]:getData())
+            TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
+            SendToWebhook(src, 'plant', 'plant', Plants[id]:getData())
         end)
     end
 end)
@@ -586,8 +259,8 @@ end)
 ---@param item string: name of the item used
 RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
 
-    if not plants[plantId] then return end
-    local plant = plants[plantId]
+    if not Plants[plantId] then return end
+    local plant = Plants[plantId]
     local plantData = plant:getData()
 
     local src = source
@@ -603,13 +276,6 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
             else
                 plant:updateWater(currentWater + itemStrength)
             end
-
-            plantData = plant:getData()
-
-            MySQL.update('UPDATE drug_plants SET water = (:water) WHERE id = (:id)', {
-                ['water'] = json.encode(plantData.water),
-                ['id'] = plantData.id,
-            })
             SendToWebhook(src, 'plant', 'water', plantData)
         end
 
@@ -622,12 +288,6 @@ RegisterNetEvent('it-drugs:server:plantTakeCare', function(plantId, item)
                 plant:updateFertilizer(currentFertilizer + itemStrength)
             end
 
-            plantData = plant:getData()
-
-            MySQL.update('UPDATE drug_plants SET fertilizer = (:fertilizer) WHERE id = (:id)', {
-                ['fertilizer'] = json.encode(plantData.fertilizer),
-                ['id'] = plantData.id,
-            })
             SendToWebhook(src, 'plant', 'fertilize', plantData)
         end
         if itemData.itemBack ~= nil then
@@ -639,9 +299,8 @@ end)
 --- Event to harvest a plant
 ---@param plantId string: the plant Id
 RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
-
-    if not plants[plantId] then return end
-    local plant = plants[plantId]
+    if not Plants[plantId] then return end
+    local plant = Plants[plantId]
     local plantData = plant:getData()
     
     local src = source
@@ -695,7 +354,7 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
         })
 
         plant:delete()
-        TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+        TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
         SendToWebhook(src, 'plant', 'harvest', plantData)
     end
 end)
@@ -703,7 +362,7 @@ end)
 --- Event to destroy a plant
 ---@param args table: the event arguments
 RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
-    local plant = plants[args.plantId]
+    local plant = Plants[args.plantId]
     if not plant then return end
     
     if not args.extra then
@@ -722,6 +381,6 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
             ['id'] = plant.id
         })
         plant:delete()
-        TriggerClientEvent('it-drugs:client:syncPlantList', -1, plants)
+        TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
     end
 end)
