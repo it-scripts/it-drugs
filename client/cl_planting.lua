@@ -199,7 +199,7 @@ RegisterNetEvent('it-drugs:client:useSeed', function(plantItem, metadata)
 
         if plantCount >= Config.PlayerPlantLimit then
             ShowNotification(nil, _U('NOTIFICATION__MAX__PLANTS'), "Error")
-            
+            return
         end
     end
 
