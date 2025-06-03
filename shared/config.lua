@@ -17,12 +17,14 @@ Locales = Locales or {}
 
 Config.Language = 'en' -- Choose your language from the locales folder
 
-
 --[[
     Here you can set some generale settings regarding to the some features of the script.
     You can set the distance for the raycasting, the time a fire will burn and if the script should clear dead plants on start-up.
     You can also set the player plant limit, this is the maximum amount of plants a player can have simultaneously.
 ]]
+Config.MinPropDistance = 50
+Config.CheckFrequency = 5000 -- in ms
+
 Config.rayCastingDistance = 7.0 -- distance in meters
 Config.FireTime = 10000 -- in ms
 Config.ClearOnStartup = true -- Clear dead plants on script start-up

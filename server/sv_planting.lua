@@ -1,4 +1,4 @@
-﻿--[[
+--[[
     https://github.com/it-scripts/it-drugs
 
     This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
@@ -111,18 +111,10 @@ updatePlantNeeds = function ()
             })
         end
 
-        local entity = plantData.entity
-
-        if not DoesEntityExist(entity) then
-            if Config.Debug then lib.print.info('[updatePlantNeeds] - Plant with ID:', plantId, 'does not exist try to respawn the plant') end
-            -- Respawn the plant
-            plant:spawn()
-        end
-
         local stage = plant:calcStage()
-            if stage ~= plantData.stage then
-                TriggerClientEvent('it-drugs:client:it-drugs:client:plantUpdate', -1, plantId)
-            end
+        if stage ~= plantData.stage then
+            TriggerClientEvent('it-drugs:client:plantUpdate', -1, plantId)
+        end
     end
 
     SetTimeout(60 * 1000, updatePlantNeeds)
@@ -166,92 +158,112 @@ AddEventHandler('onResourceStop', function(resource)
     end
 end)
 
---- Events
-
---- Event to create a new plant
+--- Function to create a new plant
+---@param playerId number: the player ID
 ---@param coords vector3: the plant coords
----@param plantItem string: name of the plant item
----@param zone string | nil: the plant zone
----@param metadata table | nil: the plant metadata
-RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone, metadata)
-    local src = source
+---@param plantItem string: name of item that where use to plant
+---@param zone string | nil: name of the zone where the plant is planted
+---@param metadata? table | nil: metadata of the plantItem
+local function createNewPlant(playerId, coords, plantItem, zone, metadata, removeItems)
     local plantInfos = Config.Plants[plantItem]
-    if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
-
+    if not plantInfos then
+        lib.print.error('Invalid plant item: ' .. plantItem)
+        return
+    end
 
     -- Remove reqItems on the server side instead of client side
-    if plantInfos.reqItems and plantInfos.reqItems['planting'] ~= nil then
-        local givenItems = {}
-        for item, itemData in pairs(plantInfos.reqItems["planting"]) do
-            if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
-            if not exports.it_bridge:HasItem(source, item, itemData.amount or 1) then
-                ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
+    if removeItems then
+        if plantInfos.reqItems and plantInfos.reqItems['planting'] ~= nil then
+            local givenItems = {}
+            for item, itemData in pairs(plantInfos.reqItems["planting"]) do
+                if Config.Debug then lib.print.info('Checking for item: ' .. item) end -- DEBUG
+                if not exports.it_bridge:HasItem(source, item, itemData.amount or 1) then
+                    ShowNotification(nil, _U('NOTIFICATION__NO__ITEMS'), "Error")
 
-                if #givenItems > 0 then
-                    for _, item in pairs(givenItems) do
-                        exports.it_bridge:GiveItem(source, item)
+                    if #givenItems > 0 then
+                        for _, item in pairs(givenItems) do
+                            exports.it_bridge:GiveItem(source, item)
+                        end
                     end
-                end
-                return
-            else
-                if itemData.remove then
-                    if exports.it_bridge:RemoveItem(source, item, itemData.amount or 1) then
-                        table.insert(givenItems, item)
+                    return
+                else
+                    if itemData.remove then
+                        if exports.it_bridge:RemoveItem(source, item, itemData.amount or 1) then
+                            table.insert(givenItems, item)
+                        end
                     end
                 end
             end
         end
+
+        if not exports.it_bridge:RemoveItem(playerId, plantItem, 1, metadata) then
+            return nil
+        end
     end
 
-    if exports.it_bridge:RemoveItem(src, plantItem, 1, metadata) then
-        local time = os.time()
-        local owner = exports.it_bridge:GetCitizenId(src)
+    local time = os.time()
+    local owner = exports.it_bridge:GetCitizenId(playerId)
 
-        local growTime = Config.GlobalGrowTime
-        if plantInfos.growthTime then
-            growTime = plantInfos.growthTime
-        end
-        if Config.Zones[zone] ~= nil and Config.Zones[zone].growMultiplier then
-            growTime = (growTime / Config.Zones[zone].growMultiplier)
-        end
-
-        local id = exports.it_bridge:GenerateCustomID(8)
-        while Plants[id] do
-            id = exports.it_bridge:GenerateCustomID(8)
-        end
-
-        local currentDimension = GetPlayerRoutingBucket(src)
-
-        MySQL.insert('INSERT INTO `drug_plants` (id, owner, coords, dimension, time, type, water, fertilizer, health, growtime) VALUES (:id, :owner, :coords, :dimension, :time, :type, :water, :fertilizer, :health, :growtime)', {
-            ['id'] = id,
-            ['owner'] = owner,
-            ['coords'] = json.encode(coords),
-            ['dimension'] = currentDimension,
-            ['time'] = time,
-            ['type'] = plantItem,
-            ['water'] = 0.0,
-            ['fertilizer'] = 0.0,
-            ['health'] = 100.0,
-            ['growtime'] = growTime,
-        }, function()
-            local currentPlant = Plant:new(id, {
-                coords = coords,
-                dimension = currentDimension,
-                owner = owner,
-                plantTime = time,
-                plantType = Config.Plants[plantItem].plantType,
-                fertilizer = 0.0,
-                water = 0.0,
-                health = 100.0,
-                growtime = growTime,
-                seed = plantItem,
-
-            })
-            currentPlant:spawn()
-            TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
-            SendToWebhook(src, 'plant', 'plant', Plants[id]:getData())
-        end)
+    local growTime = Config.GlobalGrowTime
+    if plantInfos.growthTime then
+        growTime = plantInfos.growthTime
     end
+    if Config.Zones[zone] ~= nil and Config.Zones[zone].growMultiplier then
+        growTime = (growTime / Config.Zones[zone].growMultiplier)
+    end
+
+    local id = exports.it_bridge:GenerateCustomID(8)
+    while Plants[id] do
+        id = exports.it_bridge:GenerateCustomID(8)
+    end
+
+    local currentDimension = GetPlayerRoutingBucket(string.tostringall(playerId))
+
+    MySQL.insert('INSERT INTO `drug_plants` (id, owner, coords, dimension, time, type, water, fertilizer, health, growtime) VALUES (:id, :owner, :coords, :dimension, :time, :type, :water, :fertilizer, :health, :growtime)', {
+        ['id'] = id,
+        ['owner'] = owner,
+        ['coords'] = json.encode(coords),
+        ['dimension'] = currentDimension,
+        ['time'] = time,
+        ['type'] = plantItem,
+        ['water'] = 0.0,
+        ['fertilizer'] = 0.0,
+        ['health'] = 100.0,
+        ['growtime'] = growTime,
+    }, function()
+        Plant:new(id, {
+            coords = coords,
+            dimension = currentDimension,
+            owner = owner,
+            plantTime = time,
+            plantType = Config.Plants[plantItem].plantType,
+            fertilizer = 0.0,
+            water = 0.0,
+            health = 100.0,
+            growtime = growTime,
+            seed = plantItem,
+
+        })
+        TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
+        SendToWebhook(playerId, 'plant', 'plant', Plants[id]:getData())
+    end)
+    return id
+end
+
+RegisterNetEvent('it-drugs:server:createNewPlant', function(coords, plantItem, zone, metadata)
+    local src = source
+    if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
+
+    createNewPlant(src, coords, plantItem, zone, metadata, true)
+end)
+
+exports('createNewPlant', function (playerId, coords, plantItem, zone, metadata, removeItems)
+    if not playerId or not coords or not plantItem then
+        lib.print.error('Invalid arguments for createNewPlant')
+        return nil
+    end
+
+    return createNewPlant(playerId, coords, plantItem, zone, metadata, removeItems)
 end)
 
 --- Event to take care of a plant (Gets triggered when the player uses a item on the plant)
@@ -332,31 +344,28 @@ RegisterNetEvent('it-drugs:server:harvestPlant', function(plantId)
         end
     end
 
-    if DoesEntityExist(plantData.entity) then
-        for k, v in pairs(Config.Plants[plantData.seed].products) do
-            local product = k
-            local minAmount = v.min
-            local maxAmount = v.max
-            local amount = math.random(minAmount, maxAmount)
-            exports.it_bridge:GiveItem(src, product, amount)
-        end
-        if math.random(1, 100) <= Config.Plants[plantData.seed].seed.chance then
-            local seed = plantData.type
-
-            if Config.Plants[plantData.seed].seed.max > 1 then
-                local seedAmount = math.random(Config.Plants[plantData.seed].seed.min, Config.Plants[plantData.seed].seed.max)
-                exports.it_bridge:GiveItem(src, plantData.seed, seedAmount)
-            end
-        end
-  
-        MySQL.query('DELETE from drug_plants WHERE id = :id', {
-            ['id'] = plantData.id
-        })
-
-        plant:delete()
-        TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
-        SendToWebhook(src, 'plant', 'harvest', plantData)
+    for k, v in pairs(Config.Plants[plantData.seed].products) do
+        local product = k
+        local minAmount = v.min
+        local maxAmount = v.max
+        local amount = math.random(minAmount, maxAmount)
+        exports.it_bridge:GiveItem(src, product, amount)
     end
+    if math.random(1, 100) <= Config.Plants[plantData.seed].seed.chance then
+        if Config.Plants[plantData.seed].seed.max > 1 then
+            local seedAmount = math.random(Config.Plants[plantData.seed].seed.min, Config.Plants[plantData.seed].seed.max)
+            exports.it_bridge:GiveItem(src, plantData.seed, seedAmount)
+        end
+    end
+
+    MySQL.query('DELETE from drug_plants WHERE id = :id', {
+        ['id'] = plantData.id
+    })
+
+    plant:delete()
+    TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
+    SendToWebhook(src, 'plant', 'harvest', plantData)
+    
 end)
 
 --- Event to destroy a plant
@@ -370,17 +379,15 @@ RegisterNetEvent('it-drugs:server:destroyPlant', function(args)
     end
     
     SendToWebhook(source, 'plant', 'destroy', plant:getData())
-    if DoesEntityExist(plant.entity) then
-      
-        TriggerClientEvent('it-drugs:client:startPlantFire', -1, plant.coords)
-        Wait(Config.FireTime / 2)
+    
+    TriggerClientEvent('it-drugs:client:startPlantFire', -1, plant.coords)
+    Wait(Config.FireTime / 2)
 
-        plant:delete()
+    plant:delete()
 
-        MySQL.query('DELETE from drug_plants WHERE id = :id', {
-            ['id'] = plant.id
-        })
-        plant:delete()
-        TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
-    end
+    MySQL.query('DELETE from drug_plants WHERE id = :id', {
+        ['id'] = plant.id
+    })
+    plant:delete()
+    TriggerClientEvent('it-drugs:client:syncPlants', -1, Plants)
 end)
