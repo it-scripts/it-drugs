@@ -1,4 +1,4 @@
-﻿--[[
+--[[
     https://github.com/it-scripts/it-drugs
 
     This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
@@ -7,7 +7,6 @@
 ]]
 if not exports.it_bridge:GetServerInteraction() then return end
 
-local tableOptions = nil
 local dealerOptions = nil
 local sellOptions = nil
 -- ┌────────────────────────────────────────────────────────┐
@@ -28,7 +27,7 @@ function CreatePlantBoxTarget(targetData)
             label = _U('TARGET__PLANT__LABEL'),
             name = 'it-drugs-check-plant',
             icon = 'fas fa-eye',
-            onSelect = function(data)
+            onSelect = function(_)
                 lib.callback("it-drugs:server:getPlantById", false, function(plantData)
                     if not plantData then
                         lib.print.error('[TargetSystem] - Unable to find plant with ID:', targetData.id)
@@ -36,7 +35,7 @@ function CreatePlantBoxTarget(targetData)
                         if Config.Debug then
                             lib.print.info('[TargetSystem] - Current plant data: ', plantData)
                         end
-                        TriggerEvent('it-drugs:client:showPlantMenu', targetData.id)
+                        TriggerEvent('it-drugs:client:showPlantMenu', plantData)
                     end
                 end, targetData.id)
             end,
@@ -44,10 +43,12 @@ function CreatePlantBoxTarget(targetData)
         }
     }
 
+    local zoneId = 'it-drugs-plant-'..targetData.id
     local plantBox = exports.it_bridge:CreateBoxZone({
+        id = zoneId,
         coords = vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z),
         size = targetData.size,
-        rotation = (targetData.rotation + targetData.zoneRotation),
+        rotation = targetData.rotation,
         debug = Config.DebugPoly,
         drawSprite = targetData.drawSprite,
         distance = targetData.interactDistance or 1.5,
@@ -55,10 +56,49 @@ function CreatePlantBoxTarget(targetData)
         minZ = targetData.coords.z,
     }, options)
 
+    table.insert(plantZones, plantBox)
     return plantBox
 end
 
+local tableZones = {}
+function CreateTableBoxTarget(targetData)
+    local options = {
+        {
+            label = _U('TARGET__TABLE__LABEL'),
+            name = 'it-drugs-use-table',
+            icon = 'fas fa-eye',
+            onSelect = function(_)
+                lib.callback("it-drugs:server:getTableById", false, function(tableData)
+                    if not tableData then
+                        lib.print.error('[TargetSystem] - Unable to find plant with ID:', targetData.id)
+                    else
+                        if Config.Debug then
+                            lib.print.info('[TargetSystem] - Current plant data: ', tableData)
+                        end
+                        TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = tableData.id})
+                    end
+                end, targetData.id)
+            end,
+            distance = targetData.distance or 1.5,
+        }
+    }
 
+    local zoneId = 'it-drugs-table-'..targetData.id
+    local tableBox = exports.it_bridge:CreateBoxZone({
+        id = zoneId,
+        coords = vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z),
+        size = targetData.size,
+        rotation = targetData.rotation,
+        debug = Config.DebugPoly,
+        drawSprite = targetData.drawSprite,
+        distance = targetData.interactDistance or 1.5,
+        maxZ = targetData.coords.z + (targetData.size.z / 2),
+        minZ = targetData.coords.z,
+    }, options)
+
+    table.insert(plantZones, tableBox)
+    return tableBox
+end
 
 local function createDealerTargets()
     for k, v in pairs(Config.DrugDealers) do
@@ -70,46 +110,6 @@ local function createDealerTargets()
                     icon = 'fas fa-eye',
                     onSelect = function(_)
                         TriggerEvent('it-drugs:client:showDealerActionMenu', k)
-                    end,
-                    canInteract = function(_, _)
-                        return true
-                    end,
-                    distance = 1.5
-                }
-            })
-        end
-    end
-end
-
--- ┌────────────────────────────────────────────────────────────────────────────────────┐
--- │ ____                                  _               _____                    _   │
--- │|  _ \ _ __ ___   ___ ___ ___  ___ ___(_)_ __   __ _  |_   _|_ _ _ __ __ _  ___| |_ │
--- │| |_) | '__/ _ \ / __/ __/ _ \/ __/ __| | '_ \ / _` |   | |/ _` | '__/ _` |/ _ \ __|│
--- │|  __/| | | (_) | (_| (_|  __/\__ \__ \ | | | | (_| |   | | (_| | | | (_| |  __/ |_ │
--- │|_|   |_|  \___/ \___\___\___||___/___/_|_| |_|\__, |   |_|\__,_|_|  \__, |\___|\__|│
--- │                                               |___/                 |___/          │
--- └────────────────────────────────────────────────────────────────────────────────────┘
--- Proccesing Target
-local function createProccessingTargets()
-    for _, v in pairs(Config.ProcessingTables) do
-        if v.model ~= nil then
-            tableOptions = exports.it_bridge:AddTargetModel(v.model, {
-                {
-                    label = _U('TARGET__TABLE__LABEL'),
-                    name = 'it-drugs-use-table',
-                    icon = 'fas fa-eye',
-                    onSelect = function(entity)
-                        local networkId = NetworkGetNetworkIdFromEntity(entity)
-                        lib.callback("it-drugs:server:getTableByNetId", false, function(tableData)
-                            if not tableData then
-                                lib.print.error('[it-drugs] Unable to get table data by network id')
-                            else
-                                if Config.Debug then
-                                    lib.print.info('[createProccessingTargets] Current table data: ', tableData)
-                                end
-                                TriggerEvent('it-drugs:client:showRecipesMenu', {tableId = tableData.id})
-                            end
-                        end, networkId)
                     end,
                     canInteract = function(_, _)
                         return true
@@ -162,9 +162,6 @@ end
 if Config.EnableDealers then
     createDealerTargets()
 end
-if Config.EnableProcessing then
-    createProccessingTargets()
-end
 
 for _, dealerData in pairs(Config.DrugDealers) do
     if dealerData.ped ~= nil then
@@ -183,18 +180,13 @@ end
 -- Remove all Targets
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
-    for _, v in pairs(Config.PlantTypes) do
-        for _, plant in pairs(v) do
-            exports.it_bridge:RemoveTargetModel(plant[1], plantOptions)
-            
-        end
+    for _, v in pairs(plantZones) do
+        exports.it_bridge:RemoveBoxZone(v)
     end
     
     if Config.EnableProcessing then
-        for _, v in pairs(Config.ProcessingTables) do
-            if v.model ~= nil then
-                exports.it_bridge:RemoveTargetModel(v.model, tableOptions)
-            end
+        for _, v in pairs(tableZones) do
+            exports.it_bridge:RemoveBoxZone(v)
         end
     end
 

@@ -5,7 +5,6 @@
 
     Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
 ]]
--- Setup the Database from the it_drugs.sql file
 DatabaseSetuped = false
 
 -- Define table structures

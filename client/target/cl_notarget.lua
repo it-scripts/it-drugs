@@ -1,4 +1,4 @@
-﻿--[[
+--[[
     https://github.com/it-scripts/it-drugs
 
     This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
@@ -66,12 +66,12 @@ RegisterNetEvent('it-drugs:client:syncRestLoop', function(status)
     restLoop = status
 end)
 
-RegisterNetEvent('it-drugs:client:syncPlants', function(plantList)
+AddEventHandler('it-drugs:client:syncPlants', function(plantList)
     if Config.Debug then lib.print.info('Syncing plants', plantList) end
     plants = plantList
 end)
 
-RegisterNetEvent('it-drugs:client:syncTables', function(tableList)
+AddEventHandler('it-drugs:client:syncTables', function(tableList)
     if Config.Debug then lib.print.info('Syncing tables', tableList) end
     processingTables = tableList
 end)
