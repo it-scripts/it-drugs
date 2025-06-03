@@ -1,4 +1,4 @@
-﻿--[[
+--[[
     https://github.com/it-scripts/it-drugs
 
     This file is licensed under GPL-3.0 or higher <https://www.gnu.org/licenses/gpl-3.0.en.html>
@@ -7,33 +7,12 @@
 ]]
 if not Config.EnableProcessing then return end
 
-local tablePlacing = false
 local proccessing = false
 
 local processingFx = {}
 
-local RotationToDirection = function(rot)
-    local rotZ = math.rad(rot.z)
-    local rotX = math.rad(rot.x)
-    local cosOfRotX = math.abs(math.cos(rotX))
-    return vector3(-math.sin(rotZ) * cosOfRotX, math.cos(rotZ) * cosOfRotX, math.sin(rotX))
-end
 
-local RayCastCamera = function(dist)
-    local camRot = GetGameplayCamRot()
-    local camPos = GetGameplayCamCoord()
-    local dir = RotationToDirection(camRot)
-    local dest = camPos + (dir * dist)
-    local ray = StartShapeTestRay(camPos, dest, 17, -1, 0)
-    local _, hit, endPos, surfaceNormal, entityHit = GetShapeTestResult(ray)
-    if hit == 0 then endPos = dest end
-    return hit, endPos, entityHit, surfaceNormal
-end
-
-
-local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata)
-
-
+function PlaceProcessingTable(ped, tableItem, coords, rotation, metadata)
     RequestAnimDict('amb@medic@standing@kneel@base')
     RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
     while 
@@ -72,104 +51,6 @@ local placeProcessingTable = function(ped, tableItem, coords, rotation, metadata
     TriggerEvent('it-drugs:client:syncRestLoop', false)
 end
 
-RegisterNetEvent('it-drugs:client:placeProcessingTable', function(tableItem, metadata)
-    local ped = PlayerPedId()
-    if GetVehiclePedIsIn(PlayerPedId(), false) ~= 0 then
-        ShowNotification(nil, _U('NOTIFICATION__IN__VEHICLE'), "Error")
-        return
-    end
-
-    local hashModel = GetHashKey(Config.ProcessingTables[tableItem].model)
-    RequestModel(hashModel)
-    while not HasModelLoaded(hashModel) do Wait(0) end
-
-    exports.it_bridge:ShowTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
-        position = 'left',
-        icon = 'fa-info',
-        color = 'info',
-        playSound = true,
-    })
-    
-
-    -- Placing Table allways on the ground
-    local hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-    local coords = GetEntityCoords(ped)
-    local _, groundZ = GetGroundZFor_3dCoord(coords.x, coords.y, coords.z, true)
-
-    local table = CreateObject(hashModel, coords.x, coords.y, groundZ, false, false, false)
-    SetEntityCollision(table, false, false)
-    SetEntityAlpha(table, 150, true)
-    SetEntityHeading(table, 0.0)
-
-    local placed = false
-    local rotation = 0.0
-    while not placed do
-        Wait(0)
-        hit, dest, _, _ = RayCastCamera(Config.rayCastingDistance)
-        if hit == 1 then
-            SetEntityCoords(table, dest.x, dest.y, dest.z)
-
-            if IsControlJustPressed(0, 14) or IsControlJustPressed(0, 16) then
-                rotation = rotation + 1.0
-                if rotation >= 360.0 then
-                    rotation = 0.0
-                end
-                SetEntityHeading(table, rotation)
-            end
-
-            if IsControlJustPressed(0, 15) or IsControlJustPressed(0, 17) then
-                rotation = rotation - 1.0
-                if rotation <= 0.0 then
-                    rotation = 360.0
-                end
-                SetEntityHeading(table, rotation)
-            end
-
-            if IsControlJustPressed(0, 38) then
-                placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
-
-                DeleteObject(table)
-                placeProcessingTable(ped, tableItem, dest, rotation, metadata)
-                return
-            end
-
-            if IsControlJustPressed(0, 47) then
-                placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
-                DeleteObject(table)
-                TriggerEvent('it-drugs:client:syncRestLoop', false)
-                return
-            end
-        else
-            coords = GetEntityCoords(ped)
-            local heading = GetEntityHeading(ped)
-            rotation = heading -- Update the rotation to the player heading when not hitting anything
-            local forardVector = GetEntityForwardVector(ped)
-            _, groundZ = GetGroundZFor_3dCoord(coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), coords.z + (forardVector.z * .5), true)
-
-            SetEntityCoords(table, coords.x + (forardVector.x * .5), coords.y + (forardVector.y * .5), groundZ)
-            SetEntityHeading(table, heading)
-            if IsControlJustPressed(0, 38) then
-                placed = true
-                local coords = GetEntityCoords(table)
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
-                DeleteObject(table)
-                placeProcessingTable(ped, tableItem, coords, heading, metadata)
-                return
-            end
-
-            if IsControlJustPressed(0, 47) then
-                placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
-                DeleteObject(table)
-                TriggerEvent('it-drugs:client:syncRestLoop', false)
-                return
-            end
-        end
-    end
-end)
-
 RegisterNetEvent('it-drugs:client:processDrugs', function(args)
     
     local tableData = lib.callback.await('it-drugs:server:getTableById', false, args.tableId)
@@ -195,7 +76,8 @@ RegisterNetEvent('it-drugs:client:processDrugs', function(args)
         end
     end
 
-    local entity = NetworkGetEntityFromNetworkId(tableData.netId)
+    local clientData = GetTableData(tableData.id)
+    local entity = clientData.entity
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)
     Wait(200)
@@ -270,7 +152,8 @@ RegisterNetEvent('it-drugs:client:removeTable', function(args)
     local tableData = lib.callback.await('it-drugs:server:getTableById', false, args.tableId)
 
 
-    local entity = NetworkGetEntityFromNetworkId(tableData.netId)
+    local clientData = GetTableData(tableData.id)
+    local entity = clientData.entity
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)

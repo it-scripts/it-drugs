@@ -30,7 +30,7 @@ if serverInventory == 'ox_inventory' then
             if exports.it_bridge:HasItem(src, plant, 1) then
                 local metadata = nil
                 if Config.Debug then lib.print.info('Plant metadata', metadata) end
-                TriggerClientEvent('it-drugs:client:useSeed', src, plant, metadata)
+                TriggerClientEvent('it-drugs:client:placeProp', src, 'plant', plant, metadata)
             else
                 if Config.Debug then lib.print.error('Failed to use seed', src, exports.it_bridge:HasItem(src, plant, 1)) end
             end
@@ -48,7 +48,7 @@ if serverInventory == 'ox_inventory' then
                 if exports.it_bridge:HasItem(src, prTable, 1) then
                     local metadata = getMetadata(prTable)
                     if Config.Debug then lib.print.info('Table metadata', metadata) end
-                    TriggerClientEvent('it-drugs:client:placeProcessingTable', src, prTable, metadata)
+                    TriggerClientEvent('it-drugs:client:placeProp', src, 'table', prTable, metadata)
                 end
             end
         end)
