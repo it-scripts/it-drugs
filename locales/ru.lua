@@ -1,0 +1,204 @@
+Locales['ru'] = {
+
+    ['MENU__DEALER'] = 'Дилер: %s',
+    ['MENU__DEALER__DESC'] = 'Приобрести за $%g за штуку',
+
+    ['MENU__PLANT'] = '%s',
+    ['MENU__DEAD__PLANT'] = 'Мертвое растение',
+
+    ['MENU__PLANT__LIFE'] = 'Здоровье',
+    ['MENU__PLANT__LIFE__META'] = 'Состояние здоровья растения; при достижении 0 растение погибнет',
+    
+    ['MENU__PLANT__STAGE'] = 'Стадия',
+    ['MENU__PLANT__STAGE__META'] = 'Стадия роста растения; при достижении 100 растение можно собрать',
+
+    ['MENU__PLANT__FERTILIZER'] = 'Удобрение',
+    ['MENU__PLANT__FERTILIZER__META'] = 'Каждому растению необходимо питательные вещества для роста, удобрите Ваше растение',
+    
+    ['MENU__PLANT__WATER'] = 'Вода',
+    ['MENU__PLANT__WATER__META'] = 'Убедитесь, что у Вашего растения всегда есть немного воды',
+
+    ['MENU__PLANT__DESTROY'] = 'Уничтожить',
+    ['MENU__PLANT__DESTROY__DESC'] = 'Уничтожить растение',
+
+    ['MENU__PLANT__HARVEST'] = 'Урожай',
+    ['MENU__PLANT__HARVEST__DESC'] = 'Собрать урожай с растения',
+
+    ['MENU__ITEM'] = 'Предметы',
+    ['MENU__ITEM__DESC'] = 'Использовать данный предмет для ухода за Вашим растением',
+
+    ['MENU__PROCESSING'] = 'Обработка',
+    ['MENU__RECIPE__DESC'] = 'Обработать Ваши наркотики по данному рецепту',
+
+    ['MENU__UNKNOWN__INGREDIANT'] = 'Неизвестный ингредиент',
+    ['MENU__INGREDIANT__DESC'] = 'Вам потребуется %g данного ингредиента',
+
+    ['MENU__TABLE__PROCESS'] = 'Обработать наркотики',
+    ['MENU__TABLE__PROCESS__DESC'] = 'Начать обработку наркотиков',
+
+    ['MENU__TABLE__REMOVE'] = 'Убрать стол',
+    ['MENU__TABLE__REMOVE__DESC'] = 'Вернуть данный стол',
+
+    ['MENU__DEALER__ACTION'] = "Что Вы желаете сделать?",
+
+    ['MENU__DEALER__BUY'] = 'Купить',
+    ['MENU__DEALER__BUY__DESC'] = 'Купить предметы у дилера',
+    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Купить %s за $%g за штуку',
+
+    ['MENU__DEALER_SELL'] = 'Продать',
+    ['MENU__DEALER__SELL_DESC'] = 'Продать предметы дилеру',
+    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Продать %s за $%g за штуку',
+
+    ['MENU__SELL'] = 'Продать',
+    ['MENU__SELL__DEAL'] = 'Сделка',
+    ['MENU__SELL__DESC'] = 'Продать %s (x%g) за $%g',
+    ['MENU__SEEL__DESC__ZERO'] = 'Продать %s (x%g) и получить:',
+
+    ['MENU__SELL__REWARD'] = 'Предметы:',
+    ['MENU__SELL_REWARD_DESC'] = 'Вы получите x%g',
+
+    ['MENU__SELL__ACCEPT'] = 'Принять предложение',
+    ['MENU__SELL__ACCEPT__DESC'] = 'Принять aктуальное предложение',
+
+    ['MENU__SELL__REJECT'] = 'Отклонить предложение',
+    ['MENU__SELL__REJECT__DESC'] = 'Отклонить aктуальное предложение',
+
+    ['MENU__ADMIN__PLANT__MAIN'] = 'Управление растениями',
+    ['MENU__ADMIN__TABLE__MAIN'] = 'Управление столами',
+    
+    ['MENU__PLANT__COUNT'] = 'Всего растений',
+    ['MENU__PLANT__COUNT__DESC'] = 'В настоящее время %g активных растений',
+
+    ['MENU__TABLE__COUNT'] = 'Всего столов',
+    ['MENU__TABLE__COUNT__DESC'] = 'В настоящее время %g активных столов',
+
+    ['MENU__LIST__PLANTS'] = 'Показать растения по расстоянию',
+    ['MENU__LIST__PLANTS__DESC'] = 'Показать подробную информацию о каждом растении',
+
+    ['MENU__LIST__TABLES'] = 'Показать столы по расстоянию',
+    ['MENU__LIST__TABLES__DESC'] = 'Показать подробную информацию о каждом столе',
+
+    ['MENU__ADD__BLIPS'] = 'Добавить метки на карту',
+    ['MENU__ADD__PLANT__BLIPS__DESC'] = 'Показать все местоположения растений на карте',
+    ['MENU__ADD_TABLE__BLIPS__DESC'] = 'Показать все местоположения столов на карте',
+
+    ['MENU__REMOVE__BLIPS'] = 'Убрать метки с карты',
+    ['MENU__REMOVE__PLANT__BLIPS__DESC'] = 'Убрать все местоположения растений с карты',
+    ['MENU__REMOVE__TABLE__BLIPS__DESC'] = 'Убрать все местоположения столов с карты',
+
+    ['MENU__PLANT__LIST'] = 'Все растения',
+    ['MENU__TABLE__LIST'] = 'Все столы',
+
+    ['MENU__DIST'] = 'Расстояние: %gм',
+
+    ['MENU__PLANT__ID'] = 'Растение: %s',
+    ['MENU__TABLE__ID'] = 'Стол: %s',
+
+    ['MENU__OWNER'] = 'Владелец',
+    ['MENU__OWNER__META'] = 'Нажмите, чтобы скопировать ID владельца',
+
+    ['MENU__PLANT__LOCATION'] = 'Местоположение',
+    ['MENU__LOCATION__DESC'] = 'Улица: %s | Координаты: (%g, %g, %g)',
+    ['MENU__LOCATION__META'] = 'Нажмите, чтобы скопировать координаты',
+
+    ['MENU__PLANT__TELEPORT'] = 'Телепортироваться к растению',
+    ['MENU__PLANT__TELEPORT__DESC'] = 'Телепортироваться к местоположению растения',
+
+    ['MENU__TABLE__TELEPORT'] = 'Телепортироваться к столу',
+    ['MENU__TABLE__TELEPORT__DESC'] = 'Телепортироваться к местоположению стола',
+
+    ['MENU__ADD__BLIP'] = 'Добавить на карту',
+    ['MENU__ADD__PLANT__BLIP__DESC'] = 'Создать метку для данного растения',
+    ['MENU__ADD__TABLE__BLIP__DESC'] = 'Создать метку для данного стола',
+
+    ['MENU__TABLE__DESTROY'] = 'Уничтожить стол',
+    ['MENU__TABLE__DESTROY__DESC'] = 'Уничтожить данный стол',
+
+    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Вы успешно продали %gx %s за $%g',
+    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Вы успешно купили %gx %s за $%g',
+    ['NOTIFICATION__NO__MONEY'] = 'У Вас недостаточно денег',
+    ['NOTIFICATION__BUY__SUCCESS'] = 'Вы успешно приобрели %s',
+    ['NOTIFICATION__DEALER__NO__ITEM'] = 'У Вас недостаточно предметов для продажи',
+
+    ['NOTIFICATION__IN__VEHICLE'] = 'Вы не можете сделать это, находясь в транспортном средстве',
+    ['NOTIFICATION__CANT__PLACE'] = 'Вы не можете разместить это здесь',
+    ['NOTIFICATION__TO__NEAR'] = 'Вы не можете посадить это так близко к другому растению',
+    ['NOTIFICATION__CANCELED'] = 'Отменено...',
+    ['NOTIFICATION__NO__ITEMS'] = 'У Вас нет предметов для ухода за этим растением',
+
+    ['NOTIFICATION__NO__AMOUNT'] = 'Вам необходимо ввести количество',
+
+    ['NOTIFICATION__MISSING__INGIDIANT'] = 'У Вас нет всех ингредиентов',
+    ['NOTIFICATION__SKILL__SUCCESS'] = 'Вы обработали наркотик',
+    ['NOTIFICATION__SKILL__ERROR'] = 'Вы нажали неправильную кнопку',
+    ['NOTIFICATION__PROCESS__FAIL'] = 'Вам не удалось обработать наркотик',
+
+    ['NOTIFICATION__CALLING__COPS'] = 'Покупатель вызывает полицию!',
+    ['NOTIFICATION__MAX__PLANTS'] = 'Пожалуйста, сначала позаботьтесь о Ваших актуальных растениях',
+    ['NOTIFICATION__NOT__INTERESTED'] = 'Покупатель в настоящее время не заинтересован!',
+    ['NOTIFICATION__ALLREADY__SPOKE'] = 'Вы уже разговаривали с данным местным жителем',
+    ['NOTIFICATION__NO__DRUGS'] = 'У Вас нет ничего, что желает этот человек',
+    ['NOTIFICATION__TO__LONG'] = 'Вы потратили время, поэтому человек ушел',
+    ['NOTIFICATION__OFFER__REJECTED'] = 'Вы отклонили предложение',  
+    ['NOTIFICATION__SOLD__DRUG'] = "Вы получили $%g",
+    ['NOTIFICATION__SELL__FAIL'] = 'Вы не смогли продать Ваш %g!',
+    ['NOTIFICATION__NO__ITEM__LEFT'] = 'У Вас не осталось %g для продажи!',
+    ['NOTIFICATION__STOLEN__DRUG'] = 'Вас ограбили, и Вы не получите денег',
+
+    ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Данный наркотик не имеет эффекта',
+    ['NOTIFICATION__DRUG__ALREADY'] = 'Вы уже находитесь под воздействием наркотика.',
+    ['NOTIFICATION__DRUG__COOLDOWN'] = 'Вам необходимо подождать, прежде чем снова принимать данный наркотик',
+
+    ['NOTIFICATION__NO__PERMISSION'] = 'У Вас нет разрешения на это',
+    ['NOTIFICATION__ADMINMENU__USAGE'] = 'Пожалуйста, используйте: /%s [plants/tables]',
+
+    ['NOTIFICATION__COPY__CLIPBOARD'] = 'Информация скопирована в буфер обмена: %s',
+    
+    ['NOTIFICATION__TELEPORTED'] = 'Телепортирован к местоположению сущности',
+
+    ['NOTIFICATION__PLANT__DESTROYED'] = 'Растение успешно уничтожено',
+    ['NOTIFICATION__TABLE__DESTROYED'] = 'Стол успешно уничтожен',
+
+    ['NOTIFICATION__ADD__BLIP'] = 'Метка добавлена на карту',
+    ['NOTIFICATION__REMOVE__BLIP'] = 'Метка удалена с карты',
+
+    ['NOTIFICATION__NEED_LIGHTER'] = 'Вам потребуется зажигалка, чтобы уничтожить растение',
+
+    ['PROGRESSBAR__SPAWN__PLANT'] = 'Сажаем...',
+    ['PROGRESSBAR__HARVEST__PLANT'] = 'Собираем урожай...',
+    ['PROGRESSBAR__SOAK__PLANT'] = 'Поливаем...',
+    ['PROGRESSBAR__FERTILIZE__PLANT'] = 'Удобряем...',
+    ['PROGRESSBAR__DESTROY__PLANT'] = 'Уничтожаем...',
+
+    ['PROGRESSBAR__PLACE__TABLE'] = 'Поставить стол...',
+    ['PROGRESSBAR__REMOVE__TABLE'] = 'Убираем стол...',
+    ['PROGRESSBAR__PROCESS__DRUG'] = 'Обрабатываем...',
+
+    ['INTERACTION__PLACING__TEXT'] = '[E] - Посадить растение / [G] - Отменить',
+    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Поставить стол / [G] - Отменить',
+	
+    ['INTERACTION__INTERACT_TEXT'] = '[E] - Взаимодействовать',
+
+    ['INPUT__AMOUNT__HEADER'] = 'Обработка',
+    ['INPUT__AMOUNT__TEXT'] = 'Количество',
+    ['INPUT__AMOUNT__DESCRIPTION'] = 'Сколько Вы желаете обработать?',
+
+    ['INPUT__BUY__HEADER'] = 'Купить',
+    ['INPUT__BUY__TEXT'] = 'Количество',
+    ['INPUT__BUY__DESCRIPTION'] = 'Сколько %s Вы желаете купить?',
+    ['INPUT__SELL__DESCRIPTION'] = 'Сколько %s Вы желаете продать?',
+
+    ['TARGET__DEALER__LABLE'] = 'Проверить дилера',
+    ['TARGET__PLANT__LABEL'] = 'Проверить растение',
+    ['TARGET__TABLE__LABEL'] = 'Использовать стол',
+    ['TARGET__SELL__LABEL'] = 'Поговорить',
+
+    ['COMMAND__ADMINMENU'] = 'drugadmin',
+    ['COMMAND__GROUNDHASH'] = 'getGroundHash',
+
+    ['COMMAND__GROUNDHASH__HELP'] = 'Получить актуальный хэш поверхности',
+
+    ['3DTEXT__PLANT__LABLE'] = 'Нажмите ~g~E~w~, чтобы взаимодействовать с растением',
+    ['3DTEXT__TABLE__LABLE'] = 'Нажмите ~g~E~w~, чтобы взаимодействовать со столом',
+    ['3DTEXT__DEALER__LABLE'] = 'Нажмите ~g~E~w~, чтобы взаимодействовать с дилером',
+}
