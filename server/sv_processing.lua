@@ -177,7 +177,6 @@ RegisterNetEvent('it-drugs:server:createNewTable', function(coords, type, rotati
                 end
             end
 
-            currentTable:spawn()
             TriggerClientEvent('it-drugs:client:syncTables', -1, ProcessingTables)
             local tableData = currentTable:getData()
             SendToWebhook(src, 'table', 'place', tableData)
