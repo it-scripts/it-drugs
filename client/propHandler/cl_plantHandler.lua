@@ -6,6 +6,7 @@
     Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
 ]]
 local serverFramework = exports.it_bridge:GetServerFramework()
+local serverInteraction = exports.it_bridge:GetServerInteraction()
 if Config.Debug then lib.print.info('[cl_plantHandler] - Initialized with framework:', serverFramework) end
 
 local updateLoopStarted = false
@@ -95,7 +96,10 @@ local function spawnPlant(plantId)
     if Config.Debug then lib.print.info('[spawnPlant] - Entity position frozen') end
 
     -- Create Plant target
-    local plantTaget = generatePlantTargetData(plantData, modelHash, plantEntity)
+    local plantTaget = nil
+    if serverInteraction ~= nil then
+        plantTaget = generatePlantTargetData(plantData, modelHash, plantEntity)
+    end
     
     -- Store plant data
     spawnedPlants[plantId] = {
@@ -122,7 +126,10 @@ local function deletePlant(plantId)
     
     if DoesEntityExist(plant.entity) then
         if Config.Debug then lib.print.info('[deletePlant] - Deleting entity:', plant.entity, 'for plant:', plantId) end
-        exports.it_bridge:RemoveBoxZone(plant.target)
+        
+        if plant.target then
+            exports.it_bridge:RemoveBoxZone(plant.target)
+        end
         DeleteObject(plant.entity)
         
         if Config.Debug then lib.print.info('[deletePlant] - Plant deleted with ID:', plantId) end
@@ -394,7 +401,7 @@ local function initializePlantHandler()
 end
 
 if serverFramework == 'es_extended' then
-    AddEventHandler('esx:playerLoaded', function(_, _, _)
+    AddEventHandler('esx:playerLoaded', function(_, _)
         if Config.Debug then lib.print.info('[cl_plantHandler] - ESX player loaded event triggered') end
         initializePlantHandler()
     end)

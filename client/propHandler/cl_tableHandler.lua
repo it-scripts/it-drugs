@@ -6,6 +6,7 @@
     Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
 ]]
 local serverFramework = exports.it_bridge:GetServerFramework()
+local serverInteraction = exports.it_bridge:GetServerInteraction()
 if Config.Debug then lib.print.info('[cl_tableHandler] - Initialized with framework:', serverFramework) end
 
 local updateLoopStarted = false
@@ -73,7 +74,11 @@ local function spawnTable(tableId)
     SetEntityHeading(tableEntity, tableData.rotation)
     FreezeEntityPosition(tableEntity, true)
 
-    local tableTarget = generateTableTargetData(tableData, modelHash, tableEntity)
+    local tableTarget = nil
+    if serverInteraction ~= nil then
+        tableTarget = generateTableTargetData(tableData, modelHash, tableEntity)
+    end
+
     spawnedTables[tableId] = {
         entity = tableEntity,
         coords = tableData.coords,
@@ -96,7 +101,10 @@ local function deleteTable(tableId)
 
     if DoesEntityExist(tableData.entity) then
         DeleteObject(tableData.entity)
-        exports.it_bridge:RemoveBoxZone(tableData.target)
+        
+        if tableData.target then
+            exports.it_bridge:RemoveBoxZone(tableData.target)
+        end
         if Config.Debug then lib.print.info('[deleteTable] - Table entity deleted successfully') end
     else
         if Config.Debug then lib.print.warn('[deleteTable] - Table entity does not exist, skipping deletion') end
