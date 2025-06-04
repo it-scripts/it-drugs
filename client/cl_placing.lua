@@ -112,7 +112,7 @@ RegisterNetEvent('it-drugs:client:placeProp', function(type, item, metadata)
 
             if IsControlJustPressed(0, 38) then
                 placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
+                exports.it_bridge:CloseTextUI(nil)
 
                 DeleteObject(currentProp)
                 if type == 'plant' then
@@ -125,7 +125,7 @@ RegisterNetEvent('it-drugs:client:placeProp', function(type, item, metadata)
 
             if IsControlJustPressed(0, 47) then
                 placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
+                exports.it_bridge:CloseTextUI(nil)
                 DeleteObject(currentProp)
                 SetModelAsNoLongerNeeded(currentModel)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
@@ -143,7 +143,7 @@ RegisterNetEvent('it-drugs:client:placeProp', function(type, item, metadata)
             if IsControlJustPressed(0, 38) then
                 placed = true
                 local coords = GetEntityCoords(currentProp)
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
+                exports.it_bridge:CloseTextUI(nil)
                 DeleteObject(currentProp)
                 if type == 'plant' then
                     PlantSeed(ped, item, coords, metadata)
@@ -156,7 +156,7 @@ RegisterNetEvent('it-drugs:client:placeProp', function(type, item, metadata)
 
             if IsControlJustPressed(0, 47) then
                 placed = true
-                exports.it_bridge:CloseTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'))
+                exports.it_bridge:CloseTextUI(nil)
                 DeleteObject(currentProp)
                 SetModelAsNoLongerNeeded(currentModel)
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
