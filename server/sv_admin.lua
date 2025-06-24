@@ -6,7 +6,7 @@
     Copyright © 2025 AllRoundJonU <https://github.com/allroundjonu>
 ]]
 lib.addCommand(_U('COMMAND__ADMINMENU'), {
-    help = _U('NOTIFICATION__ADMINMENU__USAGE'):format(_U('COMMAND__ADMINMENU')),
+    help = _U('NOTIFICATION__ADMINMENU__USAGE', _U('COMMAND__ADMINMENU')),
     params = {
         {
             name = 'type',
@@ -19,7 +19,7 @@ lib.addCommand(_U('COMMAND__ADMINMENU'), {
     local src = source
     if IsPlayerAceAllowed(src, 'it-drugs') then
         if args.type == nil then
-            ShowNotification(src, _U('NOTIFICATION__ADMINMENU__USAGE'):format(_U('COMMAND__ADMINMENU')), "info")
+            ShowNotification(src, _U('NOTIFICATION__ADMINMENU__USAGE', _U('COMMAND__ADMINMENU')), "info")
             return
         end
         local menuType = args.type
@@ -28,7 +28,7 @@ lib.addCommand(_U('COMMAND__ADMINMENU'), {
         elseif menuType == 'tables' then
             TriggerClientEvent('it-drugs:client:showMainAdminMenu', src, {menuType = 'tables'})
         else
-            ShowNotification(src, _U('NOTIFICATION__ADMINMENU__USAGE'):format(_U('COMMAND__ADMINMENU')), "info")
+            ShowNotification(src, _U('NOTIFICATION__ADMINMENU__USAGE', _U('COMMAND__ADMINMENU')), "info")
         end
     else
         -- get user license
@@ -51,5 +51,37 @@ lib.addCommand(_U('COMMAND__GROUNDHASH'), {
         local username = GetPlayerName(src)
 
         TriggerClientEvent('it-drugs:client:showAdminAlertBox', src, {userLicense = userLicense, username = username})
+    end
+end)
+
+lib.addCommand('changeBucket', {
+    help = "Change the bucket of a player",
+    params = {
+        {
+            name = 'playerId',
+            help = 'ID of the player to change the bucket for',
+            type = 'number',
+            optional = false,
+        },
+        {
+            name = 'bucketId',
+            help = 'ID of the bucket to change to',
+            type = 'number',
+            optional = false,
+        }
+    }
+}, function(source, args, raw)
+
+    
+    local playerId = args.playerId
+    local bucketId = tonumber(args.bucketId)
+    local src = source
+
+    if playerId and bucketId then
+        SetPlayerRoutingBucket(playerId, bucketId)
+        print(("Player %d changed to bucket %d"):format(playerId, bucketId))
+        ShowNotification(src, "Changed Player Bucket to".. bucketId, "Success")
+    else
+        ShowNotification(src, "Faild to change bucket", "Error")
     end
 end)

@@ -68,16 +68,16 @@ RegisterNetEvent('it-drugs:server:initiatedrug', function(cad)
 							exports.it_bridge:GiveItem(src, v.name, (v.amount * cad.amount))
 						end
 					end
-					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG'):format(price), 'Success')
+					ShowNotification(src, _U('NOTIFICATION__SOLD__DRUG', price), 'Success')
 				end
 				local coords = GetEntityCoords(GetPlayerPed(src))
 				SendToWebhook(src, 'sell', nil, ({item = cad.item, amount = cad.amount, price = price, coords = coords}))
 				if Config.Debug then print('You got ' .. cad.amount .. ' ' .. cad.item .. ' for $' .. price) end
 			else
-				ShowNotification(src, _U('NOTIFICATION__SELL__FAIL'):format(cad.item), 'Error')
+				ShowNotification(src, _U('NOTIFICATION__SELL__FAIL', cad.item), 'Error')
 			end
 		else
-			ShowNotification(src, _U('NOTIFICATION__NO__ITEM__LEFT'):format(cad.item), 'Error')
+			ShowNotification(src, _U('NOTIFICATION__NO__ITEM__LEFT', cad.item), 'Error')
 		end
 	end
 end)

@@ -12,7 +12,7 @@ RegisterNetEvent('it-drugs:client:showDealerActionMenu', function(dealerId)
 
     lib.registerContext({
         id = "it-drugs-dealer-action-menu",
-        title = _U('MENU__DEALER'):format(dealerName),
+        title = _U('MENU__DEALER', dealerName),
         onExit = function()
             TriggerEvent('it-drugs:client:syncRestLoop', false)
         end,
@@ -59,7 +59,7 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
         for k, v in pairs(buyItems) do
             table.insert(options, {
                 title = exports.it_bridge:GetItemLabel(k),
-                description = _U('MENU__DEALER_SELL_ITEM__DESC'):format(exports.it_bridge:GetItemLabel(k), v.price),
+                description = _U('MENU__DEALER_SELL_ITEM__DESC', exports.it_bridge:GetItemLabel(k), v.price),
                 icon = "coins",
                 arrow = true,
                 event = "it-drugs:client:handleDealerInteraction",
@@ -74,7 +74,7 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
         for k, v in pairs(sellItems) do
             table.insert(options, {
                 title = exports.it_bridge:GetItemLabel(k),
-                description = _U('MENU__DEALER_BUY_ITEM__DESC'):format(exports.it_bridge:GetItemLabel(k), v.price),
+                description = _U('MENU__DEALER_BUY_ITEM__DESC', exports.it_bridge:GetItemLabel(k), v.price),
                 icon = "coins",
                 arrow = true,
                 event = "it-drugs:client:handleDealerInteraction",
@@ -89,7 +89,7 @@ RegisterNetEvent("it-drugs:client:showDealerMenu", function(args)
 
     lib.registerContext({
         id = "it-drugs-dealer-menu",
-        title = _U('MENU__DEALER'):format(dealerName),
+        title = _U('MENU__DEALER', dealerName),
         menu = 'it-drugs-dealer-action-menu',
         onBack = function()
             TriggerEvent('it-drugs:client:showDealerActionMenu', dealerId)
@@ -198,7 +198,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
     elseif plantData.growth == 100 then
         lib.registerContext({
             id = "it-drugs-harvest-plant-menu",
-            title = _U('MENU__PLANT'):format(plantName),
+            title = _U('MENU__PLANT', plantName),
             onExit = function()
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
             end,
@@ -268,7 +268,7 @@ RegisterNetEvent("it-drugs:client:showPlantMenu", function(plantData)
     else
         lib.registerContext({
             id = "it-drugs-plant-menu",
-            title = _U('MENU__PLANT'):format(plantName),
+            title = _U('MENU__PLANT', plantName),
             onExit = function()
                 TriggerEvent('it-drugs:client:syncRestLoop', false)
             end,
@@ -455,7 +455,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
             -- Menu only shows the amount not the name of the item
             table.insert(options, {
                 title = _U('MENU__UNKNOWN__INGREDIANT'),
-                description = _U('MENU__INGREDIANT__DESC'):format(v.amount),
+                description = _U('MENU__INGREDIANT__DESC', v.amount),
                 icon = "flask",
             })
         end
@@ -463,7 +463,7 @@ RegisterNetEvent("it-drugs:client:showProcessingMenu", function(data)
         for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
                 title = exports.it_bridge:GetItemLabel(k),
-                description = _U('MENU__INGREDIANT__DESC'):format(v.amount), --:replace("{amount}", v),
+                description = _U('MENU__INGREDIANT__DESC', v.amount),
                 icon = "flask",
             })
         end
@@ -517,13 +517,13 @@ RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
     if price > 0 then
         table.insert(options, {
             title = _U('MENU__SELL__DEAL'),
-            description = _U('MENU__SELL__DESC'):format(itemLabel, amount, amount * price),
+            description = _U('MENU__SELL__DESC', itemLabel, amount, amount * price),
             icon = "coins",
         })
     else
         table.insert(options, {
             title = _U('MENU__SELL__DEAL'),
-            description = _U('MENU__SEEL__DESC__ZERO'):format(itemLabel, amount),
+            description = _U('MENU__SEEL__DESC__ZERO', itemLabel, amount),
             icon = "coins",
         })
     end
@@ -536,7 +536,7 @@ RegisterNetEvent("it-drugs:client:showSellMenu", function(data)
         for _, itemData in pairs(rewardItems) do
             table.insert(options, {
                 title = exports.it_bridge:GetItemLabel(itemData.name),
-                description = _U('MENU__SELL_REWARD_DESC'):format(itemData.amount * amount),
+                description = _U('MENU__SELL_REWARD_DESC', itemData.amount * amount),
                 icon = "coins",
             })
         end
@@ -595,7 +595,7 @@ RegisterNetEvent('it-drugs:client:showMainAdminMenu', function(data)
             options = {
                 {
                     title = _U('MENU__PLANT__COUNT'),
-                    description = _U('MENU__PLANT__COUNT__DESC'):format(plantCount),
+                    description = _U('MENU__PLANT__COUNT__DESC', plantCount),
                     icon = "seedling",
                 },
                 {
@@ -634,7 +634,7 @@ RegisterNetEvent('it-drugs:client:showMainAdminMenu', function(data)
             options = {
                 {
                     title = _U('MENU__TABLE__COUNT'),
-                    description = _U('MENU__TABLE__COUNT__DESC'):format(tableCount),
+                    description = _U('MENU__TABLE__COUNT__DESC', tableCount),
                     icon = "flask-vial",
                 },
                 {
@@ -674,7 +674,7 @@ RegisterNetEvent('it-drugs:client:showPlantListMenu', function(data)
     for _, v in ipairs(plantList) do
         table.insert(options, {
             title = v.label,
-            description = _U('MENU__DIST'):format(math.round(v.distance, 2)),
+            description = _U('MENU__DIST', math.round(v.distance, 2)),
             icon = "seedling",
             arrow = true,
             event = "it-drugs:client:showPlantAdminMenu",
@@ -703,7 +703,7 @@ RegisterNetEvent('it-drugs:client:showTableListMenu', function(data)
     for _, v in ipairs(tableList) do
         table.insert(options, {
             title = v.label,
-            description = _U('MENU__DIST'):format(math.round(v.distance, 2)),
+            description = _U('MENU__DIST', math.round(v.distance, 2)),
             icon = "flask-vial",
             arrow = true,
             event = "it-drugs:client:showTableAdminMenu",
@@ -745,7 +745,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 },
                 onSelect = function()
                     lib.setClipboard(plantData.owner)
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format(plantData.owner), 'Success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD', plantData.owner), 'Success')
                 end
             },
             {
@@ -757,7 +757,7 @@ RegisterNetEvent('it-drugs:client:showPlantAdminMenu', function(data)
                 icon = "map-marker",
                 onSelect = function()
                     lib.setClipboard('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')')
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')'), 'Success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD', '('..plantData.coords.x..", "..plantData.coords.y..", "..plantData.coords.z..')'), 'Success')
                 end
             },
             {
@@ -815,7 +815,7 @@ RegisterNetEvent('it-drugs:client:showTableAdminMenu', function(data)
                 icon = "map-marker",
                 onSelect = function()
                     lib.setClipboard('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')')
-                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'Success')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD', '('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'Success')
                 end
             },
             {
