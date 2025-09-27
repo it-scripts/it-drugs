@@ -1,0 +1,206 @@
+:root {
+    --primary-bg-color: #1a1a1a;
+    --secondary-bg-color: #252525;
+    --text-color: #ffffff;
+    --accent-color: #fdd835; /* Yellow */
+    --progress-bar-bg: #444;
+    --button-hover-bg: #fbc02d;
+    --disabled-button-color: #555;
+}
+
+body {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    background-color: #000; /* Assuming a black background for the FiveM environment */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevent scrollbars */
+}
+
+#plantUI {
+    display: flex;
+    flex-direction: row-reverse; /* Ändert die Reihenfolge der Elemente */
+    gap: 20px; /* Space between main panel and item list */
+    position: absolute;
+    left: 25%; /* Positioniert das UI in der Mitte der linken Bildschirmhälfte */
+    transform: translateX(-50%); /* Zentriert das Element horizontal */
+}
+
+.main-panel {
+    background-color: var(--primary-bg-color);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 300px; /* Etwas schmaler, wie auf dem Bild */
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#plantTitle {
+    text-align: center;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.stat-item {
+    display: flex;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.3); /* Transparenter Hintergrund wie im Bild */
+    padding: 8px 12px;
+    border-radius: 8px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.stat-icon {
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    background-color: #232323; /* Dunklerer Hintergrund */
+    border: 1px solid #444444;
+    color: var(--accent-color); /* Icon in Akzentfarbe wie im Bild */
+    width: 30px;
+    height: 30px;
+}
+
+.stat-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    text-transform: uppercase;
+    font-weight: 500; /* Etwas leichter wie im Bild */
+    font-size: 0.9em;
+}
+
+.progress-bar-container {
+    background-color: rgba(0, 0, 0, 0.5); /* Dunklerer Hintergrund wie im Bild */
+    height: 6px; /* Flacherer Fortschrittsbalken wie im Bild */
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: 3px;
+    transition: width 0.3s ease-in-out;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: var(--accent-color);
+    text-align: right;
+    font-size: 0.9em;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 8px;
+}
+
+.action-buttons button, .main-action-button {
+    background-color: rgba(0, 0, 0, 0.4); /* Dunklerer transparenter Hintergrund */
+    color: var(--text-color);
+    border: 1px solid #333; /* Subtiler Rand wie im Bild */
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s, color 0.2s;
+    text-transform: uppercase;
+    flex: 1; /* Gleiche Breite für alle Buttons */
+}
+
+.action-buttons button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+    color: var(--primary-bg-color);
+}
+
+.action-buttons button:disabled {
+    background-color: var(--disabled-button-color);
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.main-action-button {
+    background-color: var(--accent-color);
+    color: #000; /* Schwarze Schrift auf gelbem Hintergrund wie im Bild */
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.main-action-button:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+}
+
+.main-action-button:disabled {
+    background-color: var(--disabled-button-color);
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.item-list-panel {
+    background-color: var(--primary-bg-color);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    width: 200px; /* Anpassung an Bildgröße */
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-right: auto; /* Hilft, das Panel auf der linken Seite zu halten */
+    align-self: flex-start; /* Ausrichtung oben wie im Bild */
+}
+
+.item-list-panel .item-button {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: var(--text-color);
+    border: 1px solid #333;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    text-align: left;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+}
+
+.item-list-panel .item-button:hover {
+    background-color: var(--button-hover-bg);
+    color: var(--primary-bg-color);
+}
+
+.hidden {
+    display: none;
+}

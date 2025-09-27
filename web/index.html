@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pflanzenmanagement UI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="plantUI">
+        <div class="main-panel">
+            <h2 id="plantTitle">LEMON HAZE</h2>            <div class="stat-item">
+                <span class="stat-icon"><i class="fas fa-seedling"></i></span>
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <span class="stat-label" data-translate="growth">WACHSTUM</span>
+                        <span class="stat-value" id="growthValue">85%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="growthProgressBar" style="width: 85%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-icon"><i class="fas fa-heartbeat"></i></span>
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <span class="stat-label" data-translate="health">GESUNDHEIT</span>
+                        <span class="stat-value" id="healthValue">90%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="healthProgressBar" style="width: 90%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-icon"><i class="fas fa-tint"></i></span>
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <span class="stat-label" data-translate="water">WASSER</span>
+                        <span class="stat-value" id="waterValue">70%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="waterProgressBar" style="width: 70%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <span class="stat-icon"><i class="fas fa-flask"></i></span>
+                <div class="stat-content">
+                    <div class="stat-header">
+                        <span class="stat-label" data-translate="fertilizer">DÜNGER</span>
+                        <span class="stat-value" id="fertilizerValue">95%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="fertilizerProgressBar" style="width: 95%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="waterButton" data-translate="water_action">WÄSSERN</button>
+                <button id="fertilizeButton" data-translate="fertilize_action">DÜNGEN</button>
+                <button id="destroyButton" data-translate="destroy_action">Zerstören</button>
+            </div>
+
+            <button id="harvestButton" class="main-action-button" data-translate="harvest_action">ERNTEN</button>
+        </div>
+
+        <div class="item-list-panel hidden" id="itemListPanel">
+            </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
