@@ -7,13 +7,13 @@
 ]]
 local serverFramework = exports.it_bridge:GetServerFramework()
 local serverInteraction = exports.it_bridge:GetServerInteraction()
-if Config.Debug then lib.print.info('[cl_tableHandler] - Initialized with framework:', serverFramework) end
 
 local updateLoopStarted = false
 
 local serverTables = {}
 local spawnedTables = {}
 local lastCoordinates = nil
+local lastBucket = nil
 local checkFrequency = Config.CheckFrequency -- Configurable check frequency
 
 -- Improved model loading with timeout
@@ -32,7 +32,8 @@ local function generateTableTargetData(tableData, tableModel, entity)
     local size = vector3(maxSize.x - minSize.x, maxSize.y - minSize.y, maxSize.z - minSize.z)
 
     local tableCoords = GetEntityCoords(entity)
-    local tableRotation = GetEntityHeading(entity)    if exports.it_bridge:GetServerInteraction() == 'qb-target' then
+    local tableRotation = GetEntityHeading(entity)
+    if exports.it_bridge:GetServerInteraction() == 'qb-target' then
         tableRotation = tableRotation + 90.0
     end
     
@@ -117,7 +118,14 @@ end
 local function processTableInView()
     if Config.Debug then lib.print.info('[processTableInView] - Processing tables in view') end
     local currentPlayerCoords = GetEntityCoords(PlayerPedId())
+    local currentBucket = lib.callback.await('it-drugs:server:getPlayerBucket', false)
     local playerHasMoved = not lastCoordinates or #(currentPlayerCoords - lastCoordinates) > 10
+
+        if lastBucket ~= currentBucket then
+        if Config.Debug then lib.print.info('[processPlantsInView] - Player bucket changed from', lastBucket, 'to', currentBucket) end
+        lastBucket = currentBucket
+        playerHasMoved = true -- Force update if bucket changes
+    end
 
     if not playerHasMoved then
         if Config.Debug then lib.print.info('[processTableInView] - Player has not moved significantly, skipping update') end
@@ -136,9 +144,9 @@ local function processTableInView()
         if tableData and tableData.coords then
             local distance = #(currentPlayerCoords - vector3(tableData.coords.x, tableData.coords.y, tableData.coords.z))
             
-            if distance <= Config.MinPropDistance and not spawnedTables[tableId] then
+            if distance <= Config.MinPropDistance and tableData.dimension == currentBucket and not spawnedTables[tableId] then
                 tableToSpawn[tableId] = true
-            elseif distance > Config.MinPropDistance and spawnedTables[tableId] then
+            elseif (distance > Config.MinPropDistance or tableData.dimension ~= currentBucket) and spawnedTables[tableId] then
                 tablesToDelete[tableId] = true
             end
         end
@@ -254,14 +262,18 @@ RegisterNetEvent('it-drugs:client:syncTables', function(tables)
         deleteTable(tableId)
     end
 
+    local currentPlayerBucket = lib.callback.await('it-drugs:server:getPlayerBucket', false)
+    lastBucket = currentPlayerBucket -- Update last bucket for next checks
+
     for tableId, tableData in pairs(newTables) do
         if tableData and tableData.coords then
             local distance = #(playerCoords - vector3(tableData.coords.x, tableData.coords.y, tableData.coords.z))
-            if distance <= Config.MinPropDistance then
+            if distance <= Config.MinPropDistance and tableData.dimension == currentPlayerBucket then
+                if Config.Debug then lib.print.info('[it-drugs:client:syncPlants] - New table', tableId, 'is in range (', distance, 'm), spawning') end
                 spawnTable(tableId)
             else
                 if Config.Debug then
-                    lib.print.warn('[it-drugs:client:syncTables] - Table with ID:', tableId, 'is too far away to spawn')
+                    lib.print.warn('[it-drugs:client:syncTables] - Table with ID:', tableId, 'is too far away or in wrong dimension to spawn')
                 end
             end
         end

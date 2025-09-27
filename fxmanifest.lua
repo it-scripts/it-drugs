@@ -17,9 +17,8 @@ ox_libs {
 
 shared_scripts {
     'shared/config.lua',
+    'shared/locales.lua',
     'shared/functions.lua',
-    'locales/en.lua',
-    'locales/*.lua',
 }
 
 client_scripts {

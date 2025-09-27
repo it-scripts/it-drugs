@@ -125,6 +125,32 @@ Config.Items = {
         water = 15,
         fertilizer = 15,
         itemBack = nil,
+
+        animationSettings = {
+            animations = {
+                {
+                    dict = 'amb@world_human_gardener_plant@male@base',
+                    anim = 'base',
+                    duration = 3000, -- Duration of the animation in milliseconds
+                    flag = 1,
+                },
+            },
+            prop = {
+                model = 'prop_plant_watering_can',
+                boneIndex = 28422, -- Bone where the prop is attached
+                position = vector3(0.0, 0.0, 0.0), -- Position of the prop relative to the bone
+                rotation = vector3(0.0, 0.0, 0.0), -- Rotation of the prop relative to the bone
+                
+                particles = {
+                    {
+                        name = 'ent_amb_watering_can',
+                        boneIndex = 28422, -- Bone where the particles are attached
+                        position = vector3(0.0, 0.0, 0.0), -- Position of the particles relative to the bone
+                        rotation = vector3(0.0, 0.0, 0.0), -- Rotation of the particles relative to the bone
+                    },
+                },
+            }
+        }
     },
     ['fertilizer'] = {
         water = 0,
@@ -189,6 +215,35 @@ Config.Plants = { -- Create seeds for drugs
             max = 2 -- Max amount of seeds
         },
         time = 3000, -- Time it takes to plant/harvest in miliseconds
+
+        -- Custom allowed grounds
+        allowedGrounds = Config.AllowedGrounds, -- Will overide the default allowed ground settings
+
+        -- Animation Settings when planting/harvesting
+        animationSettings = {
+            animations = {
+                {
+                    dict = 'amb@world_human_gardener_plant@male@base',
+                    anim = 'base',
+                    duration = 3000, -- Duration of the animation in milliseconds
+                    flag = 1,
+                },
+            },
+            prop = {
+                model = 'prop_plant_watering_can',
+                boneIndex = 28422, -- Bone where the prop is attached
+                position = vector3(0.0, 0.0, 0.0), -- Position of the prop relative to the bone
+                rotation = vector3(0.0, 0.0, 0.0), -- Rotation of the prop relative to the bone
+                
+                particles = {
+                    {
+                        name = 'ent_amb_watering_can',
+                        asset = 28422, -- Bone where the particles are attached
+                        scale = 0.5, -- Scale of the particles
+                    },
+                },
+            }
+        }
     },
     ['weed_og_seed'] = {
         label = 'Og Kush', -- Label for the plant
